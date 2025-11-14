@@ -1,16 +1,26 @@
 package gui;
-//NO LO VIMOS, LO VEMOS LA CLASE QUE VIENE (5 NOV)
-import dao.DaoException;
+
+import entidades.Estadio;
 import service.ServiceEstadio;
+import service.ServiceException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
-import entidades.Estadio;
-import service.ServiceException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 
+/*
+ * REPORTE ESTADIOS - Tabla con todos los estadios
+ *
+ * Esta pantalla muestra una tabla con todos los estadios guardados en la BD.
+ *
+ * RELACIÓN CON OTRAS CLASES:
+ * - ServiceEstadio: para obtener todos los estadios
+ * - PanelManager: para volver al menú
+ */
 
 //pantalla 4 //tabla tipo reporte
 
@@ -18,17 +28,28 @@ import service.ServiceException;
 
 
 public class ReporteEstadios extends JPanel { //entiende de panel para poder usarla en el panel manager
-        private PanelManager panelManager;
+        private PanelManager panelManager; // Para cambiar de pantalla
+        ServiceEstadio serviceEstadio;  // Para consultar los estadios
+        JPanel panelReporte;  // Panel interno que contiene todo
+
         private JTable jTable; //es el dibujo
         private DefaultTableModel contenido; //son los datos que le da al table
         private JScrollPane scrollPane; //tiene un scroll para poder hacerlo sobre la tabla
     //*
 
-        public ReporteEstadios(PanelManager panelManager)  {
+        JButton jButtonVolver;  // Botón para volver al menú
+
+
+        //CONSTRUCTOR -------
+        public ReporteEstadios(PanelManager panelManager)  { //parametro: panelManager - gestor de pantalla
             this.panelManager = panelManager; //recibo el panel manager y los asocio
+            serviceEstadio = new ServiceEstadio();
             armarTablaReporte(); //arma la parte visual
         }
 
+
+
+        //METODO -----
         public void armarTablaReporte() {
             setLayout(new BorderLayout()); //ordeno mi pantalla con el border que me permite poner norte, sur, este, oeste, centro
             contenido= new DefaultTableModel(); //datos que se van a mostrar

@@ -22,12 +22,6 @@ public class Main {
 */
 
 
-
-        //lo de gui formularioestadio
-        PanelManager panel=new PanelManager(1);
-
-
-
     }
 
 
