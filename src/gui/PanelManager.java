@@ -108,25 +108,19 @@ public class PanelManager {
 
                 case 4:
                     // PANTALLA ELIMINAR
-                    // Por ahora mostramos un mensaje
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Pantalla de eliminar aún no implementada",
-                            "En desarrollo",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
-                    mostrar(1);  // Volver al menú
+                    // Muestra un ComboBox con todos los estadios
+                    // El usuario selecciona uno y hace click en "Eliminar"
+                    // Antes de eliminar, se pide confirmación
+                    pantallaEliminar = new PantallaEliminar(this);
+                    mostrar(pantallaEliminar);
                     break;
+
                 case 5:
                     // REPORTE DE ESTADIOS
-                    // Por ahora mostramos un mensaje
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Reporte de estadios aún no implementado",
-                            "En desarrollo",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
-                    mostrar(1);  // Volver al menú
+                    // Muestra una tabla (JTable) con todos los estadios y sus datos
+                    // Incluye: ID, Nombre, Dirección, Capacidad Total
+                    reporteEstadios = new ReporteEstadios(this);
+                    mostrar(reporteEstadios);
                     break;
             }
         }
