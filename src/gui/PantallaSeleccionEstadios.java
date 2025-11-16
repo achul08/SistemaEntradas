@@ -39,7 +39,6 @@ public class PantallaSeleccionEstadios extends JPanel {
 
     // Lista con TODOS los estadios de la BD
     // La necesitamos para saber cuál estadio seleccionó el usuario
-    // Ejemplo: Usuario selecciona índice 0 del combo → tomamos listaEstadios.get(0)
     List<Estadio> listaEstadios;
 
 
@@ -54,14 +53,6 @@ public class PantallaSeleccionEstadios extends JPanel {
     }
 
     //METODO ARMAR PANTALLA ----------
-    /*
-     Este método construye toda la interfaz visual
-     * ESTRUCTURA:
-     * - NORTH: Título
-     * - CENTER: Label + ComboBox
-     * - SOUTH: Botones
-     */
-
 public void armarPantalla() {
     //crear el panel interno
     pantallaSeleccion = new JPanel();
@@ -173,8 +164,7 @@ public void armarPantalla() {
 
 
         //METODO --- ABRIR FORM
-    // Este método se ejecuta cuando el usuario hace click en "Modificar"
-    //FLUJO:
+    // s ejecuta cuando el usuario hace click en "Modificar"
     //1. Obtener el índice seleccionado del ComboBox
     //2. Buscar el estadio correspondiente en listaEstadios
     //3. Abrir FormularioEstadio en modo modificar con ese estadio
@@ -185,7 +175,6 @@ public void armarPantalla() {
         return;
     }
         // Obtener el índice seleccionado
-        // Ejemplo: Usuario seleccionó "2 - Bombonera" que está en posición 1
         int indiceSeleccionado = comboEstadios.getSelectedIndex();
 
         // Obtener el estadio correspondiente de la lista
@@ -194,7 +183,7 @@ public void armarPantalla() {
         Estadio estadioSeleccionado = listaEstadios.get(indiceSeleccionado);
 
         // Abrir FormularioEstadio en modo MODIFICAR con ese estadio
-        // Esto llamará al constructor: FormularioEstadio(panel, estadio)
+        // Esto llama al constructor: FormularioEstadio(panel, estadio)
         // que automáticamente:
         // - Pone modoModificar = true
         // - Guarda el ID

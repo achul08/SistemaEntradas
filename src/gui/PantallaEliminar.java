@@ -14,20 +14,19 @@ import java.util.List;
  * PANTALLA ELIMINAR ESTADIO - Para seleccionar y eliminar un estadio
  *
  * Esta pantalla muestra un ComboBox con todos los estadios disponibles.
- * El usuario selecciona uno y hace click en "Eliminar".
+ * El usuario selecciona uno y hace click en eliminar
  * Antes de eliminar, se pide confirmación.
  *
  * RELACIÓN CON OTRAS CLASES:
  * - ServiceEstadio: para obtener todos los estadios y eliminar el seleccionado
  * - PanelManager: para cambiar de pantalla (volver al menú)
  *
- * FLUJO:
  * 1. Se carga el ComboBox con todos los estadios
- * 2. Usuario selecciona un estadio
- * 3. Usuario hace click en "Eliminar"
- * 4. Sistema pide confirmación con JOptionPane
- * 5. Si confirma → elimina y muestra mensaje de éxito
- * 6. Si cancela → no hace nada
+ * 2. se selecciona un estadio
+ * 3. se hace click en eliminar
+ * 4. se pide confirmación con JOptionPane
+ * 5. si se confirma → elimina y muestra mensaje de éxito
+ * 6. si se cancela → no hace nada
  */
 
 
@@ -44,7 +43,6 @@ public class PantallaEliminar extends JPanel {
 
     // Lista con TODOS los estadios de la BD
     // La necesitamos para saber cuál estadio seleccionó el usuario
-    // Ejemplo: Usuario selecciona índice 0 del combo → tomamos listaEstadios.get(0)
     List<Estadio> listaEstadios;
 
 
@@ -62,15 +60,7 @@ public class PantallaEliminar extends JPanel {
 
 
 
-    // MÉODO ARMAR PANTALLA ----------
-    /*
-     * Este méodo construye toda la interfaz visual
-     * ESTRUCTURA (igual que PantallaSeleccionEstadios):
-     * - NORTH: Título
-     * - CENTER: Label + ComboBox
-     * - SOUTH: Botones
-     */
-
+//METODO ------
     public void armarPantalla() {
         // Crear el panel interno
         pantallaEliminar = new JPanel();
@@ -81,7 +71,7 @@ public class PantallaEliminar extends JPanel {
         // ZONA NORTE - TÍTULO ------
         JLabel titulo = new JLabel("ELIMINAR ESTADIO", SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 20));
-        titulo.setForeground(new Color(220, 20, 60));  // Rojo para indicar acción destructiva
+        titulo.setForeground(new Color(220, 20, 60));  // Rojo
         titulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));  // Margen abajo
 
         pantallaEliminar.add(titulo, BorderLayout.NORTH);
@@ -96,7 +86,7 @@ public class PantallaEliminar extends JPanel {
         JLabel labelInstruccion = new JLabel("Seleccione el estadio que desea eliminar:", SwingConstants.CENTER);
         labelInstruccion.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        // Crear ComboBox vacío (se llenará después)
+        // Crear ComboBox vacio
         comboEstadios = new JComboBox<>();
         comboEstadios.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -108,7 +98,7 @@ public class PantallaEliminar extends JPanel {
 
 
         // CARGAR LOS ESTADIOS EN EL COMBOBOX -------
-        // Este méodo consulta la BD y llena el ComboBox
+        // Este meodo consulta la BD y llena el ComboBox
         cargarEstadiosEnCombo();
 
 
@@ -119,13 +109,13 @@ public class PantallaEliminar extends JPanel {
         // Botón Eliminar
         jButtonEliminar = new JButton("Eliminar");
         jButtonEliminar.setFont(new Font("Arial", Font.BOLD, 14));
-        jButtonEliminar.setBackground(new Color(255, 182, 193));  // Rosa/rojo clarito
+        jButtonEliminar.setBackground(new Color(255, 182, 193));  // rojo clarito
         jButtonEliminar.setPreferredSize(new Dimension(150, 40));
 
         // Botón Cancelar
         jButtonCancelar = new JButton("Cancelar");
         jButtonCancelar.setFont(new Font("Arial", Font.BOLD, 14));
-        jButtonCancelar.setBackground(new Color(220, 220, 220));  // Gris claro
+        jButtonCancelar.setBackground(new Color(220, 220, 220));  // Gris
         jButtonCancelar.setPreferredSize(new Dimension(150, 40));
 
         panelBotones.add(jButtonEliminar);
@@ -146,7 +136,7 @@ public class PantallaEliminar extends JPanel {
         jButtonEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                eliminarEstadio();  // Llamar al méodo que hace el trabajo
+                eliminarEstadio();  // Llamar al metodo que hace el trabajo
             }
         });
 
@@ -160,18 +150,16 @@ public class PantallaEliminar extends JPanel {
     }
 
 
-    // MÉODO --- CARGAR ESTADIOS EN COMBOBOX
+    // METODO --- CARGAR ESTADIOS EN COMBOBOX
     /*
-     * Este méodo consulta todos los estadios de la BD
+     * consulta todos los estadios de la BD
      * y los carga en el ComboBox para que el usuario pueda elegir.
      *
-     * FLUJO:
      * 1. Consultar todos los estadios con serviceEstadio.consultarTodos()
      * 2. Si no hay estadios → mostrar mensaje y volver al menú
      * 3. Si hay estadios → recorrerlos y agregar cada uno al ComboBox
      *
-     * FORMATO EN EL COMBO: "ID - Nombre"
-     * Ejemplo: "1 - Luna Park", "2 - Bombonera"
+     * FORMATO EN EL COMBOBOX: id-nombre
      */
 
     private void cargarEstadiosEnCombo() {
@@ -211,11 +199,8 @@ public class PantallaEliminar extends JPanel {
     }
 
 
-    // MÉODO --- ELIMINAR ESTADIO
+    // METODO --- ELIMINAR ESTADIO
     /*
-     * Este méodo se ejecuta cuando el usuario hace click en "Eliminar"
-     *
-     * FLUJO:
      * 1. Verificar que haya algo seleccionado en el ComboBox
      * 2. Obtener el estadio seleccionado
      * 3. Pedir confirmación al usuario (JOptionPane.showConfirmDialog)
@@ -239,7 +224,6 @@ public class PantallaEliminar extends JPanel {
         }
 
         // PASO 2: Obtener el índice seleccionado
-        // Ejemplo: Usuario seleccionó "2 - Bombonera" que está en posición 1
         int indiceSeleccionado = comboEstadios.getSelectedIndex();
 
         // Obtener el estadio correspondiente de la lista
@@ -296,7 +280,7 @@ public class PantallaEliminar extends JPanel {
                 );
             }
         }
-        // Si el usuario dijo "No", no hacemos nada (el método termina aquí)
+        // Si el usuario dijo "No", no hacemos nada
     }
 }
 

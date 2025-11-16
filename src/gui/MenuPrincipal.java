@@ -8,8 +8,6 @@ import java.awt.event.ActionListener;
 public class MenuPrincipal extends JPanel {
 //primer pantalla que se va a ver, tiene los 5 botones
 
-    //bien hecho 11/11 15hs
-
 
     private PanelManager panelManager; //esto para decirle al PanelManager cambia a otra pantalla cuando el usuario hace click
 

@@ -43,8 +43,6 @@ public class ServiceEstadio {
                 throw new ServiceException("La capacidad debe ser mayor a 0");
             }
 
-            //PREGUNTARLE A MARTHA SI ESTA BIEN !!!
-
             //verificar que el nombre y la direc no existan (asi no hay 2 con el mismo nombre y direc)
             List<Estadio> estadios = daoEstadio.consultarTodos();
 

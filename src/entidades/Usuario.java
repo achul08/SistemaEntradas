@@ -1,5 +1,10 @@
 package entidades;
 
+
+//HACER ESTA ENTIDAD 2DA
+
+
+
 public class Usuario {
     private int idUsuario;
     private String nombre;

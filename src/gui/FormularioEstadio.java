@@ -17,9 +17,9 @@ import java.awt.event.ActionListener;
 //Esta clase es un JPanel (una pantalla) que muestra un formulario
 // donde el usuario puede ingresar los datos de un estadio.
 
-//* RELACIÓN CON OTRAS CLASES:
-// * - ServiceEstadio: para guardar/modificar en la base de datos
-// * - PanelManager: para cambiar entre pantallas
+//RELACIÓN CON OTRAS CLASES:
+//- ServiceEstadio: para guardar/modificar en la base de datos
+//- PanelManager: para cambiar entre pantallas
 
 
 public class FormularioEstadio extends JPanel {
@@ -209,12 +209,11 @@ public class FormularioEstadio extends JPanel {
             //METODO GUARDAR ESTADIO ----------------------------
             // Este método se ejecuta cuando el
             // usuario hace click en "Guardar"
-            //     * FLUJO:
-            //     * 1. Leer los datos de los campos
-            //     * 2. Validaciones básicas de GUI (campos vacíos, formato de número)
-            //     * 3. Crear objeto Estadio
-            //     * 4. Llamar al Service (que hace validaciones de negocio)
-            //     * 5. Mostrar mensaje de éxito o error
+            //1. Lee los datos de los campos
+            //2. Validaciones de GUI (campos vacíos, formato de número)
+            //3. Crea objeto Estadio
+            //4. Llama al Service
+            //5. Muestra mensaje de éxito o error
 
            //necesito dos validaciones, las del service y las de la gui
             private void guardarEstadio(){
@@ -222,8 +221,8 @@ public class FormularioEstadio extends JPanel {
                 String nombre = jTextFieldNombre.getText();
                 String direccion = jTextFieldDireccion.getText();
 
-                //String capacidadTexto = jTextFieldCapacidad.getText(); //claude, capacidad es un numero, por que usas string ? no tendria que ser algo asi: int capacidad=Integer.parseInt(jTextFieldCapacidad.getText()); ? asi nos enseño nuestra profe y prefiero basarme en esas cosas
-                //claude este no lo pongo aca entonces?
+                //String capacidadTexto = jTextFieldCapacidad.getText();
+
 
 
             //VALIDACIONES ----------
@@ -267,9 +266,7 @@ public class FormularioEstadio extends JPanel {
 
                 if(modoModificar){
                     estadio.setIdEstadio((idEstadioModificar)); //si estamos modificando asignar id
-                } //claude, si estoy modificando deberia poder buscar el id en el
-                //combo box y de ahi que se llene el formulario con los datos para poder modificar(menos el id). Es asi?
-
+                }
 
 
              //GUARDAR/MODIFICAR EN BASE DE DATOS -----------
@@ -277,7 +274,7 @@ public class FormularioEstadio extends JPanel {
                     if(modoModificar){
                         serviceEstadio.modificar(estadio);
 
-                        JOptionPane.showMessageDialog(this, "Estadio modificado correctamente", "Exito", JOptionPane.INFORMATION_MESSAGE); //claude, este this por ejemplo, a que se refiere ?
+                        JOptionPane.showMessageDialog(this, "Estadio modificado correctamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
                         panel.mostrar(1); //vuelvo al menu
 
                     } else{

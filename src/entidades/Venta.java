@@ -2,6 +2,10 @@ package entidades;
 
 import java.sql.Timestamp;
 
+
+//HACER ESTA ULTIMA (depende de todo)
+
+
 public class Venta {
     private int idVenta;
     private int idEspectaculo;

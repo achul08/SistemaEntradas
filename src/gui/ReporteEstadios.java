@@ -22,7 +22,6 @@ import java.util.List;
  * - PanelManager: para volver al menú
  */
 
-//pantalla 4 //tabla tipo reporte
 
 //combo box, list box
 
@@ -189,6 +188,7 @@ public class ReporteEstadios extends JPanel { //entiende de panel para poder usa
 
 
 /*
+           clalse con martha
             ServiceEstadio service = new ServiceEstadio(); //esta aca el service porque levanto los datos y listo, si tiene mas utilidades se pone arriba *
             /*try {
 

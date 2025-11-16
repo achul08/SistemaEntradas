@@ -3,6 +3,10 @@ package entidades;
 import java.util.Date;
 
 
+//HACER ESTA 4TA (tambien depende de estadio)
+
+
+
 public class Espectaculo {
     private int idEspectaculo;
     private String nombre;

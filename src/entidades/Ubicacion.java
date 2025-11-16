@@ -1,5 +1,9 @@
 package entidades;
 
+//HACER ESTA 3RA (depende de estadio)
+
+
+
 public class Ubicacion {
     private int idUbicacion;
     private int idEstadio;
