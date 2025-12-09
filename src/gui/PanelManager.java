@@ -1,6 +1,15 @@
 package gui;
 
 import entidades.Estadio;
+import gui.estadio.FormularioEstadio;
+import gui.estadio.PantallaEliminarEstadio;
+import gui.estadio.PantallaSeleccionEstadios;
+import gui.estadio.ReporteEstadios;
+import gui.ubicacion.MenuGestionUbicaciones;
+import gui.ubicacion.FormularioUbicacion;
+import gui.ubicacion.PantallaSeleccionUbicaciones;
+import gui.ubicacion.PantallaEliminarUbicacion;
+import gui.ubicacion.ReporteUbicaciones;
 import javax.swing.*;
 import java.awt.*;
 
@@ -27,8 +36,13 @@ public class PanelManager {
         private MenuPrincipal menuPrincipal;
         private FormularioEstadio formularioEstadio;
         private PantallaSeleccionEstadios pantallaSeleccionEstadios;
-        private PantallaEliminar pantallaEliminar;
+        private PantallaEliminarEstadio pantallaEliminarEstadio;
         private ReporteEstadios reporteEstadios;
+        private MenuGestionUbicaciones menuGestionUbicaciones;
+        private FormularioUbicacion formularioUbicacion;
+        private PantallaSeleccionUbicaciones pantallaSeleccionUbicaciones;
+        private PantallaEliminarUbicacion pantallaEliminarUbicacion;
+        private ReporteUbicaciones reporteUbicaciones;
         JFrame jFrame; //aparece aca mi unica ventana
 
 
@@ -75,7 +89,12 @@ public class PanelManager {
         {
             switch (codigoPantalla)
             { //aca deberia enumerar las distintas vistas que deberia tener para crearla o mostrarla
-              case 1:
+                case 0:  // NUEVO - Pantalla de Login
+                    PantallaLogin pantallaLogin = new PantallaLogin(this);
+                    mostrar(pantallaLogin);
+                    break;
+
+                case 1:
                   // MENÚ PRINCIPAL
                   // Crear el menú principal
                   // this = PanelManager se pasa a sí mismo para que el menú
@@ -106,8 +125,8 @@ public class PanelManager {
                     // Muestra un ComboBox con todos los estadios
                     // El usuario selecciona uno y hace click en "Eliminar"
                     // Antes de eliminar, se pide confirmación
-                    pantallaEliminar = new PantallaEliminar(this);
-                    mostrar(pantallaEliminar);
+                    pantallaEliminarEstadio = new PantallaEliminarEstadio(this);
+                    mostrar(pantallaEliminarEstadio);
                     break;
 
                 case 5:
@@ -116,6 +135,72 @@ public class PanelManager {
                     // Incluye: ID, Nombre, Dirección, Capacidad Total
                     reporteEstadios = new ReporteEstadios(this);
                     mostrar(reporteEstadios);
+                    break;
+
+                case 10:  // NUEVO - Menú Administrador
+                    MenuAdmin menuAdmin = new MenuAdmin(this);
+                    mostrar(menuAdmin);
+                    break;
+
+                case 11:  // Gestión de Usuarios (todavía no existe la pantalla)
+                    // Por ahora mostramos un mensaje
+                    JOptionPane.showMessageDialog(null, "Gestión de Usuarios - En desarrollo");
+                    mostrar(10); // Vuelve al MenuAdmin
+                    break;
+
+                case 20:  // NUEVO - Menú Vendedor
+                    MenuVendedor menuVendedor = new MenuVendedor(this);
+                    mostrar(menuVendedor);
+                    break;
+
+                case 21:  // Registrar Venta (todavía no existe)
+                    JOptionPane.showMessageDialog(null, "Registrar Venta - En desarrollo");
+                    mostrar(20); // Vuelve al MenuVendedor
+                    break;
+
+                case 22:  // Ver Espectáculos Disponibles (todavía no existe)
+                    JOptionPane.showMessageDialog(null, "Ver Espectáculos - En desarrollo");
+                    mostrar(20);
+                    break;
+
+                case 23:  // Ver Mis Ventas (todavía no existe)
+                    JOptionPane.showMessageDialog(null, "Ver Mis Ventas - En desarrollo");
+                    mostrar(20);
+                    break;
+
+                case 30:  // MenuGestionUbicaciones
+                    menuGestionUbicaciones = new MenuGestionUbicaciones(this);
+                    mostrar(menuGestionUbicaciones);
+                    break;
+
+                case 31:  // FormularioUbicacion (crear)
+                    formularioUbicacion = new FormularioUbicacion(this);
+                    mostrar(formularioUbicacion);
+                    break;
+
+                case 32:  // PantallaSeleccionUbicaciones
+                    pantallaSeleccionUbicaciones = new PantallaSeleccionUbicaciones(this);
+                    mostrar(pantallaSeleccionUbicaciones);
+                    break;
+
+                case 33:  // PantallaEliminarUbicacion
+                    pantallaEliminarUbicacion = new PantallaEliminarUbicacion(this);
+                    mostrar(pantallaEliminarUbicacion);
+                    break;
+
+                case 34:  // ReporteUbicaciones
+                    reporteUbicaciones = new ReporteUbicaciones(this);
+                    mostrar(reporteUbicaciones);
+                    break;
+
+                case 40:  // Gestión Espectáculos (todavía no existe)
+                    JOptionPane.showMessageDialog(null, "Gestión de Espectáculos - En desarrollo");
+                    mostrar(10);
+                    break;
+
+                case 50:  // Reportes (todavía no existe)
+                    JOptionPane.showMessageDialog(null, "Reportes - En desarrollo");
+                    mostrar(10);
                     break;
             }
         }

@@ -31,7 +31,7 @@ public class Main {
                     // CREAR EL PANEL MANAGER
                     // Le pasamos 1 = código del MenuPrincipal
                     // Esto hace que al arrancar el programa, se muestre el menú
-                    PanelManager panelManager = new PanelManager(1);
+                    PanelManager panelManager = new PanelManager(0);
 
                     System.out.println("Sistema de gestion de estadios iniciado correctamente");
 

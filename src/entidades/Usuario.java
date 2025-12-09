@@ -1,33 +1,43 @@
 package entidades;
 
+//CLASE PADRE ABSTRACTA - Usuario
+//No se pueden crear objetos de tipo Usuario directamente
+//Solo se pueden crear objetos de las clases hijas: Administrador o Vendedor
 
-//HACER ESTA ENTIDAD 2DA
+//RELACIÓN CON OTRAS CLASES:
+//- Administrador extends Usuario (clase hija)
+//- Vendedor extends Usuario (clase hija)
 
 
-
-public class Usuario {
+public abstract class Usuario {
+    //atributos comunes a todos los usuarios
     private int idUsuario;
     private String nombre;
     private String apellido;
     private String username;
     private String password;
-    private String rol;
+
+    //NOTA: NO tiene el atributo "rol" porque ahora el rol
+    //está definido por la clase misma (Administrador o Vendedor)
 
 
-    //constructores
+    //CONSTRUCTORES ------
 
+    //constructor vacío
     public Usuario() {
     }
 
-    public Usuario(String nombre, String apellido, String username, String password, String rol) {
+    //constructor con parámetros (SIN id porque es auto_increment)
+    public Usuario(String nombre, String apellido, String username, String password) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.username = username;
         this.password = password;
-        this.rol = rol;
     }
 
-    //getters y setters
+
+    //GETTERS Y SETTERS ------
+
     public int getIdUsuario() {
         return idUsuario;
     }
@@ -68,16 +78,14 @@ public class Usuario {
         this.password = password;
     }
 
-    public String getRol() {
-        return rol;
-    }
 
-    public void setRol(String rol) {
-        this.rol = rol;
-    }
+    //MÉTODO ABSTRACTO ------
+    //Este método OBLIGA a las clases hijas a implementarlo
+    //Cada clase hija (Administrador, Vendedor) va a devolver su propio rol
+    public abstract String getRol();
 
 
-    //toString
+    //TOSTRING ------
     @Override
     public String toString() {
         return "Usuario\n" +
@@ -86,6 +94,6 @@ public class Usuario {
                 "\nApellido: " + apellido +
                 "\nUsername: " + username +
                 "\nPassword: " + password +
-                "\nRol: " + rol;
+                "\nRol: " + getRol(); //llama al método de la clase hija
     }
 }

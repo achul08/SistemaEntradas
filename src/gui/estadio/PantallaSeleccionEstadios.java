@@ -1,6 +1,7 @@
-package gui;
+package gui.estadio;
 
 import entidades.Estadio;
+import gui.PanelManager;
 import service.ServiceEstadio;
 import service.ServiceException;
 
