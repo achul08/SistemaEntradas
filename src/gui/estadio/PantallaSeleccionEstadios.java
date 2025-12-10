@@ -25,7 +25,7 @@ RELACIÓN CON OTRAS CLASES:
 
 public class PantallaSeleccionEstadios extends JPanel {
     //ATRIBUTOS -----
-    ServiceEstadio serviceEstadio;  //para consultar los estadios en la bd
+    private ServiceEstadio serviceEstadio = new ServiceEstadio();  //para consultar los estadios en la bds estadios en la bd
     PanelManager panel; //para cambiar de pantalla
     JPanel pantallaSeleccion; //panel interno que contiene todo
 
@@ -49,7 +49,6 @@ public class PantallaSeleccionEstadios extends JPanel {
         // this.panel = el atributo de ESTA clase (PantallaSeleccionEstadio)
         // panel = el parámetro que recibí (viene del PanelManager)
         // Estoy guardando el panel que me pasaron en mi atributo panel
-        serviceEstadio = new ServiceEstadio();
         armarPantalla();
     }
 

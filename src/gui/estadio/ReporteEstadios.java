@@ -19,13 +19,11 @@ import java.util.List;
 
 public class ReporteEstadios extends ReporteBase {
     //ATRIBUTOS ESPECÍFICOS DE ESTADIO -----
-    private ServiceEstadio serviceEstadio; //para consultar los estadios
-
+    private ServiceEstadio serviceEstadio = new ServiceEstadio(); //para consultar los estadios
 
     //CONSTRUCTOR -----
     public ReporteEstadios(PanelManager panelManager) {
         super(panelManager); //llama al constructor de ReporteBase
-        serviceEstadio = new ServiceEstadio(); //inicializar el service
     }
 
 

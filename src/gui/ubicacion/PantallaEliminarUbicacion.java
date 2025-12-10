@@ -19,13 +19,11 @@ import java.util.List;
 
 public class PantallaEliminarUbicacion extends PantallaEliminarBase {
     //ATRIBUTOS ESPECÍFICOS DE UBICACION -----
-    private ServiceUbicacion serviceUbicacion; //para consultar y eliminar ubicaciones en la BD
-
+    private ServiceUbicacion serviceUbicacion = new ServiceUbicacion(); //para consultar y eliminar ubicaciones en la BD
 
     //CONSTRUCTOR -----
     public PantallaEliminarUbicacion(PanelManager panel) {
         super(panel); //llama al constructor de PantallaEliminarBase
-        serviceUbicacion = new ServiceUbicacion(); //inicializar el service
     }
 
 

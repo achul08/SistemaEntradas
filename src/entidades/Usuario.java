@@ -17,7 +17,7 @@ public abstract class Usuario {
     private String username;
     private String password;
 
-    //NOTA: NO tiene el atributo "rol" porque ahora el rol
+    //NO tiene el atributo "rol" porque ahora el rol
     //está definido por la clase misma (Administrador o Vendedor)
 
 

@@ -20,14 +20,12 @@ import java.util.List;
 
 public class ReporteEspectaculos extends ReporteBase {
     //ATRIBUTOS ESPECÍFICOS DE ESPECTACULO -----
-    private ServiceEspectaculo serviceEspectaculo; //para consultar los espectáculos
+    private ServiceEspectaculo serviceEspectaculo = new ServiceEspectaculo(); //para consultar los espectáculos
     private SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy"); //para mostrar fechas
-
 
     //CONSTRUCTOR -----
     public ReporteEspectaculos(PanelManager panelManager) {
         super(panelManager); //llama al constructor de ReporteBase
-        serviceEspectaculo = new ServiceEspectaculo(); //inicializar el service
     }
 
 

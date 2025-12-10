@@ -19,13 +19,11 @@ import java.util.List;
 
 public class PantallaSeleccionUbicaciones extends PantallaSeleccionBase {
     //ATRIBUTOS ESPECÍFICOS DE UBICACION -----
-    private ServiceUbicacion serviceUbicacion; //para consultar las ubicaciones en la BD
-
+    private ServiceUbicacion serviceUbicacion = new ServiceUbicacion(); //para consultar las ubicaciones en la BD
 
     //CONSTRUCTOR -----
     public PantallaSeleccionUbicaciones(PanelManager panel) {
         super(panel); //llama al constructor de PantallaSeleccionBase
-        serviceUbicacion = new ServiceUbicacion(); //inicializar el service
     }
 
 

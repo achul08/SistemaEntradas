@@ -10,6 +10,11 @@ import gui.ubicacion.FormularioUbicacion;
 import gui.ubicacion.PantallaSeleccionUbicaciones;
 import gui.ubicacion.PantallaEliminarUbicacion;
 import gui.ubicacion.ReporteUbicaciones;
+import gui.espectaculo.MenuGestionEspectaculos;
+import gui.espectaculo.FormularioEspectaculo;
+import gui.espectaculo.PantallaSeleccionEspectaculos;
+import gui.espectaculo.PantallaEliminarEspectaculo;
+import gui.espectaculo.ReporteEspectaculos;
 import javax.swing.*;
 import java.awt.*;
 
@@ -43,6 +48,11 @@ public class PanelManager {
         private PantallaSeleccionUbicaciones pantallaSeleccionUbicaciones;
         private PantallaEliminarUbicacion pantallaEliminarUbicacion;
         private ReporteUbicaciones reporteUbicaciones;
+        private MenuGestionEspectaculos menuGestionEspectaculos;
+        private FormularioEspectaculo formularioEspectaculo;
+        private PantallaSeleccionEspectaculos pantallaSeleccionEspectaculos;
+        private PantallaEliminarEspectaculo pantallaEliminarEspectaculo;
+        private ReporteEspectaculos reporteEspectaculos;
         JFrame jFrame; //aparece aca mi unica ventana
 
 
@@ -193,13 +203,47 @@ public class PanelManager {
                     mostrar(reporteUbicaciones);
                     break;
 
-                case 40:  // Gestión Espectáculos (todavía no existe)
-                    JOptionPane.showMessageDialog(null, "Gestión de Espectáculos - En desarrollo");
-                    mostrar(10);
+                case 40:  // MenuGestionEspectaculos
+                    // Crear el menú de gestión de espectáculos
+                    // Es similar al MenuGestionUbicaciones pero para espectáculos
+                    menuGestionEspectaculos = new MenuGestionEspectaculos(this);
+                    mostrar(menuGestionEspectaculos);
                     break;
 
-                case 50:  // Reportes (todavía no existe)
-                    JOptionPane.showMessageDialog(null, "Reportes - En desarrollo");
+                case 41:  // FormularioEspectaculo (crear)
+                    // Crear el formulario vacío para crear un espectáculo nuevo
+                    // Llama al constructor: FormularioEspectaculo(panel)
+                    // que pone modoModificar = false
+                    formularioEspectaculo = new FormularioEspectaculo(this);
+                    mostrar(formularioEspectaculo);
+                    break;
+
+                case 42:  // PantallaSeleccionEspectaculos
+                    // Pantalla para ELEGIR qué espectáculo modificar
+                    // Muestra un ComboBox con todos los espectáculos
+                    // Cuando el usuario selecciona uno y hace click en "Modificar",
+                    // se abre FormularioEspectaculo en modo modificar
+                    pantallaSeleccionEspectaculos = new PantallaSeleccionEspectaculos(this);
+                    mostrar(pantallaSeleccionEspectaculos);
+                    break;
+
+                case 43:  // PantallaEliminarEspectaculo
+                    // Pantalla para ELEGIR qué espectáculo eliminar
+                    // Muestra un ComboBox con todos los espectáculos
+                    // El usuario selecciona uno y confirma la eliminación
+                    pantallaEliminarEspectaculo = new PantallaEliminarEspectaculo(this);
+                    mostrar(pantallaEliminarEspectaculo);
+                    break;
+
+                case 44:  // ReporteEspectaculos
+                    // Muestra una tabla (JTable) con todos los espectáculos
+                    // Incluye: ID, Nombre, Fecha, ID Estadio, Estado (Activo/Inactivo)
+                    reporteEspectaculos = new ReporteEspectaculos(this);
+                    mostrar(reporteEspectaculos);
+                    break;
+
+                case 50:  // Reportes de Ventas (todavía no existe)
+                    JOptionPane.showMessageDialog(null, "Reportes de Ventas - En desarrollo");
                     mostrar(10);
                     break;
             }

@@ -51,7 +51,7 @@ public class MenuPrincipal extends JPanel {
         btnModificar = new JButton("Modificar estadio existente");
         btnEliminar = new JButton("Eliminar estadio existente");
         btnReporte = new JButton("Ver reporte de los estadios");
-        btnSalir = new JButton("Salir");
+        btnSalir = new JButton("Volver al menu anterior");
 
 
         Font fuenteBotones = new Font("Arial", Font.PLAIN, 16);
@@ -119,11 +119,11 @@ public class MenuPrincipal extends JPanel {
             }
         });
 
-        //cerrar el programa
+        //volver al menu admin
         btnSalir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                panelManager.mostrar(10); //codigo 10 = MenuAdmin
             }
         });
 

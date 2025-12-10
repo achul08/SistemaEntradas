@@ -20,8 +20,7 @@ import java.awt.*;
 
 public class FormularioEstadio extends FormularioBase {
     //ATRIBUTOS ESPECÍFICOS DE ESTADIO -----
-    private ServiceEstadio serviceEstadio; //para comunicarse con la base de datos
-
+    private ServiceEstadio serviceEstadio = new ServiceEstadio(); //para comunicarse con la base de datos
     //campos de texto específicos de estadio
     private JTextField jTextFieldNombre;
     private JTextField jTextFieldDireccion;
@@ -35,18 +34,14 @@ public class FormularioEstadio extends FormularioBase {
 
 
     //CONSTRUCTOR PARA CREAR -----
-    //Solo recibe el PanelManager
     public FormularioEstadio(PanelManager panel) {
         super(panel); //llama al constructor de FormularioBase para modo crear
-        serviceEstadio = new ServiceEstadio(); //inicializar el service
     }
 
 
     //CONSTRUCTOR PARA MODIFICAR -----
-    //Recibe el PanelManager y el estadio que se va a modificar
     public FormularioEstadio(PanelManager panel, Estadio estadio) {
         super(panel, estadio.getIdEstadio()); //llama al constructor de FormularioBase para modo modificar
-        serviceEstadio = new ServiceEstadio(); //inicializar el service
         cargarDatos(estadio); //llenar los campos con los datos del estadio
     }
 

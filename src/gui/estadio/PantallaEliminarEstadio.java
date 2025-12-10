@@ -19,13 +19,11 @@ import java.util.List;
 
 public class PantallaEliminarEstadio extends PantallaEliminarBase {
     //ATRIBUTOS ESPECÍFICOS DE ESTADIO -----
-    private ServiceEstadio serviceEstadio; //para consultar y eliminar estadios en la BD
-
+    private ServiceEstadio serviceEstadio = new ServiceEstadio(); //para consultar y eliminar estadios en la BD
 
     //CONSTRUCTOR -----
     public PantallaEliminarEstadio(PanelManager panel) {
         super(panel); //llama al constructor de PantallaEliminarBase
-        serviceEstadio = new ServiceEstadio(); //inicializar el service
     }
 
 

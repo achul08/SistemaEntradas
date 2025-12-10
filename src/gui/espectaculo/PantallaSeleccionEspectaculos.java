@@ -20,16 +20,14 @@ import java.util.List;
 
 public class PantallaSeleccionEspectaculos extends PantallaSeleccionBase {
     //ATRIBUTOS ESPECÍFICOS DE ESPECTACULO -----
-    private ServiceEspectaculo serviceEspectaculo; //para consultar los espectáculos en la BD
+    private ServiceEspectaculo serviceEspectaculo = new ServiceEspectaculo(); //para consultar los espectáculos en la BD
     private SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy"); //para mostrar fechas
     //Porque Espectaculo tiene un atributo fecha que queremos mostrar en el ComboBox.
-
 
 
     //CONSTRUCTOR -----
     public PantallaSeleccionEspectaculos(PanelManager panel) {
         super(panel); //llama al constructor de PantallaSeleccionBase
-        serviceEspectaculo = new ServiceEspectaculo(); //inicializar el service
     }
 
 

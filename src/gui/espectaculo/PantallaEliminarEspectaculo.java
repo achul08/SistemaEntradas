@@ -20,14 +20,13 @@ import java.util.List;
 
 public class PantallaEliminarEspectaculo extends PantallaEliminarBase {
     //ATRIBUTOS ESPECÍFICOS DE ESPECTACULO -----
-    private ServiceEspectaculo serviceEspectaculo; //para consultar y eliminar espectáculos en la BD
+    private ServiceEspectaculo serviceEspectaculo= new ServiceEspectaculo(); //para consultar y eliminar espectáculos en la BD
     private SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy"); //para mostrar fechas
 
 
     //CONSTRUCTOR -----
     public PantallaEliminarEspectaculo(PanelManager panel) {
         super(panel); //llama al constructor de PantallaEliminarBase
-        serviceEspectaculo = new ServiceEspectaculo(); //inicializar el service
     }
 
 

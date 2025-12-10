@@ -27,8 +27,8 @@ import java.util.List;
 
 public class FormularioEspectaculo extends FormularioBase {
     //ATRIBUTOS ESPECÍFICOS DE ESPECTACULO -----
-    private ServiceEspectaculo serviceEspectaculo; //para comunicarse con la BD de espectáculos
-    private ServiceEstadio serviceEstadio; //para obtener la lista de estadios
+    private ServiceEspectaculo serviceEspectaculo = new ServiceEspectaculo(); //para comunicarse con la BD de espectáculos
+    private ServiceEstadio serviceEstadio = new ServiceEstadio(); //para obtener la lista de estadios
 
     //campos específicos de espectaculo
     private JComboBox<String> comboEstadios; //ComboBox para seleccionar el estadio
@@ -54,8 +54,6 @@ public class FormularioEspectaculo extends FormularioBase {
     //CONSTRUCTOR PARA CREAR -----
     public FormularioEspectaculo(PanelManager panel) {
         super(panel); //llama al constructor de FormularioBase para modo crear
-        serviceEspectaculo = new ServiceEspectaculo();
-        serviceEstadio = new ServiceEstadio();
         formatoFecha.setLenient(false); //no permitir fechas inválidas como 32/13/2025
     }
 
@@ -63,8 +61,6 @@ public class FormularioEspectaculo extends FormularioBase {
     //CONSTRUCTOR PARA MODIFICAR -----
     public FormularioEspectaculo(PanelManager panel, Espectaculo espectaculo) {
         super(panel, espectaculo.getIdEspectaculo()); //llama al constructor de FormularioBase para modo modificar
-        serviceEspectaculo = new ServiceEspectaculo();
-        serviceEstadio = new ServiceEstadio();
         formatoFecha.setLenient(false);
         cargarDatos(espectaculo); //llenar los campos con los datos del espectaculo
     }

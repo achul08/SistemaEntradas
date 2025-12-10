@@ -19,13 +19,12 @@ import java.util.List;
 
 public class ReporteUbicaciones extends ReporteBase {
     //ATRIBUTOS ESPECÍFICOS DE UBICACION -----
-    private ServiceUbicacion serviceUbicacion; //para consultar las ubicaciones
+    private ServiceUbicacion serviceUbicacion = new ServiceUbicacion(); //para consultar las ubicaciones
 
 
     //CONSTRUCTOR -----
     public ReporteUbicaciones(PanelManager panelManager) {
         super(panelManager); //llama al constructor de ReporteBase
-        serviceUbicacion = new ServiceUbicacion(); //inicializar el service
     }
 
 

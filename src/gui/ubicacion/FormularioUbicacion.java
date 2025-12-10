@@ -24,9 +24,8 @@ import java.util.List;
 
 public class FormularioUbicacion extends FormularioBase {
     //ATRIBUTOS ESPECÍFICOS DE UBICACION -----
-    private ServiceUbicacion serviceUbicacion; //para comunicarse con la BD de ubicaciones
-    private ServiceEstadio serviceEstadio; //para obtener la lista de estadios
-
+    private ServiceUbicacion serviceUbicacion = new ServiceUbicacion(); //para comunicarse con la BD de ubicaciones
+    private ServiceEstadio serviceEstadio = new ServiceEstadio(); //para obtener la lista de estadios
     //campos específicos de ubicacion
     private JComboBox<String> comboEstadios; //ComboBox para seleccionar el estadio
     private JTextField jTextFieldNombre;
@@ -45,20 +44,14 @@ public class FormularioUbicacion extends FormularioBase {
 
 
     //CONSTRUCTOR PARA CREAR -----
-    //Solo recibe el PanelManager
     public FormularioUbicacion(PanelManager panel) {
         super(panel); //llama al constructor de FormularioBase para modo crear
-        serviceUbicacion = new ServiceUbicacion();
-        serviceEstadio = new ServiceEstadio();
     }
 
 
     //CONSTRUCTOR PARA MODIFICAR -----
-    //Recibe el PanelManager y la ubicacion que se va a modificar
     public FormularioUbicacion(PanelManager panel, Ubicacion ubicacion) {
         super(panel, ubicacion.getIdUbicacion()); //llama al constructor de FormularioBase para modo modificar
-        serviceUbicacion = new ServiceUbicacion();
-        serviceEstadio = new ServiceEstadio();
         cargarDatos(ubicacion); //llenar los campos con los datos de la ubicacion
     }
 
