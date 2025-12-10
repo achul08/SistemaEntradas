@@ -1,9 +1,3 @@
-import entidades.Estadio;
-import gui.MenuPrincipal;
-import service.ServiceEstadio;
-import service.ServiceException;
-import dao.DaoEstadio;
-import dao.DaoException;
 import gui.PanelManager;
 import javax.swing.*;
 

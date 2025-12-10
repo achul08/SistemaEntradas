@@ -5,6 +5,7 @@ import gui.estadio.FormularioEstadio;
 import gui.estadio.PantallaEliminarEstadio;
 import gui.estadio.PantallaSeleccionEstadios;
 import gui.estadio.ReporteEstadios;
+import gui.estadio.MenuGestionEstadios;
 import gui.ubicacion.MenuGestionUbicaciones;
 import gui.ubicacion.FormularioUbicacion;
 import gui.ubicacion.PantallaSeleccionUbicaciones;
@@ -26,23 +27,16 @@ import java.awt.*;
     /*
      * PANEL MANAGER - El controlador de pantallas
      *tiene una única ventana (JFrame) y va cambiando el contenido.
-     *
-     * PANTALLAS QUE MANEJA:
-     * 1 = MenuPrincipal
-     * 2 = FormularioEstadio (crear nuevo)
-     * 3 = PantallaSeleccionEstadios (para elegir cuál modificar)
-     * 4 = PantallaEliminar
-     * 5 = ReporteEstadios
      */
 
 
 public class PanelManager {
     //ATRIBUTOS. Hacen referencia a las pantallas ------
-        private MenuPrincipal menuPrincipal;
         private FormularioEstadio formularioEstadio;
         private PantallaSeleccionEstadios pantallaSeleccionEstadios;
         private PantallaEliminarEstadio pantallaEliminarEstadio;
         private ReporteEstadios reporteEstadios;
+        private MenuGestionEstadios menuGestionEstadios;
         private MenuGestionUbicaciones menuGestionUbicaciones;
         private FormularioUbicacion formularioUbicacion;
         private PantallaSeleccionUbicaciones pantallaSeleccionUbicaciones;
@@ -109,8 +103,8 @@ public class PanelManager {
                   // Crear el menú principal
                   // this = PanelManager se pasa a sí mismo para que el menú
                   // pueda llamar a panel.mostrar() y cambiar de pantalla
-                menuPrincipal =new MenuPrincipal(this);
-                    mostrar(menuPrincipal);
+                    menuGestionEstadios = new MenuGestionEstadios(this);
+                    mostrar(menuGestionEstadios);
                     break;
 
                 case 2:
