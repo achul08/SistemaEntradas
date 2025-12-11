@@ -46,14 +46,18 @@ public class FormularioUbicacion extends FormularioBase {
     //CONSTRUCTOR PARA CREAR -----
     public FormularioUbicacion(PanelManager panel) {
         super(panel); //llama al constructor de FormularioBase para modo crear
+        cargarEstadiosEnCombo();
     }
 
 
     //CONSTRUCTOR PARA MODIFICAR -----
     public FormularioUbicacion(PanelManager panel, Ubicacion ubicacion) {
-        super(panel, ubicacion.getIdUbicacion()); //llama al constructor de FormularioBase para modo modificar
-        cargarDatos(ubicacion); //llenar los campos con los datos de la ubicacion
+        super(panel, ubicacion.getIdUbicacion());
+        //DESPUÉS del super, cargar los datos
+        cargarEstadiosEnCombo();
+        cargarDatos(ubicacion);
     }
+
 
 
     //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS -----
@@ -69,24 +73,21 @@ public class FormularioUbicacion extends FormularioBase {
     }
 
 
-    //METODO 2 - crearPanelCampos() -----
+    //METODO 2 - crearPanelCampos()
     @Override
     public JPanel crearPanelCampos() {
         JPanel panelCampos = new JPanel();
 
-        //en modo MODIFICAR son 5 filas (id, estadio, nombre, precio, capacidad)
-        //en modo CREAR son 4 filas (estadio, nombre, precio, capacidad)
         if (isModoModificar()) {
             panelCampos.setLayout(new GridLayout(5, 2, 10, 15));
         } else {
             panelCampos.setLayout(new GridLayout(4, 2, 10, 15));
         }
 
-        //si el modo es MODIFICAR se muestra el id
         if (isModoModificar()) {
             jLabelIdUbicacion = new JLabel("ID: " + getIdElementoModificar() + " (no se puede modificar el id)");
             jLabelIdUbicacion.setFont(new Font("Arial", Font.PLAIN, 14));
-            jLabelIdUbicacion.setForeground(new Color(100, 100, 100)); //gris
+            jLabelIdUbicacion.setForeground(new Color(100, 100, 100));
 
             JLabel espacioVacio = new JLabel("");
 
@@ -100,7 +101,7 @@ public class FormularioUbicacion extends FormularioBase {
 
         comboEstadios = new JComboBox<>();
         comboEstadios.setFont(new Font("Arial", Font.PLAIN, 14));
-        cargarEstadiosEnCombo(); //llenar el combo con los estadios de la BD
+        //NO llamar a cargarEstadiosEnCombo() acá!
 
         panelCampos.add(jLabelEstadio);
         panelCampos.add(comboEstadios);

@@ -1,3 +1,4 @@
+import entidades.Usuario;
 import gui.PanelManager;
 import service.ServiceUsuario;
 import service.ServiceException;
@@ -65,7 +66,7 @@ public class Main {
                 //USUARIO 1: ADMINISTRADOR
                 boolean adminExiste = false;
                 try {
-                    var usuarioExistente = serviceUsuario.consultar(1);
+                    Usuario usuarioExistente = serviceUsuario.consultar(1);
                     if(usuarioExistente != null && usuarioExistente.getIdUsuario() != 0) {
                         adminExiste = true;
                         System.out.println("✓ Administrador ya existe (ID: 1)");
@@ -82,7 +83,7 @@ public class Main {
                 //USUARIO 2: VENDEDOR 1
                 boolean vendedor1Existe = false;
                 try {
-                    var usuarioExistente = serviceUsuario.consultar(2);
+                    Usuario usuarioExistente = serviceUsuario.consultar(2);
                     if(usuarioExistente != null && usuarioExistente.getIdUsuario() != 0) {
                         vendedor1Existe = true;
                         System.out.println("✓ Vendedor 1 ya existe (ID: 2)");
@@ -99,7 +100,7 @@ public class Main {
                 //USUARIO 3: VENDEDOR 2
                 boolean vendedor2Existe = false;
                 try {
-                    var usuarioExistente = serviceUsuario.consultar(3);
+                    Usuario usuarioExistente = serviceUsuario.consultar(3);
                     if(usuarioExistente != null && usuarioExistente.getIdUsuario() != 0) {
                         vendedor2Existe = true;
                         System.out.println("✓ Vendedor 2 ya existe (ID: 3)");

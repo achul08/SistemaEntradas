@@ -55,6 +55,7 @@ public class FormularioEspectaculo extends FormularioBase {
     public FormularioEspectaculo(PanelManager panel) {
         super(panel); //llama al constructor de FormularioBase para modo crear
         formatoFecha.setLenient(false); //no permitir fechas inválidas como 32/13/2025
+        cargarEstadiosEnCombo();
     }
 
 
@@ -62,6 +63,7 @@ public class FormularioEspectaculo extends FormularioBase {
     public FormularioEspectaculo(PanelManager panel, Espectaculo espectaculo) {
         super(panel, espectaculo.getIdEspectaculo()); //llama al constructor de FormularioBase para modo modificar
         formatoFecha.setLenient(false);
+        cargarEstadiosEnCombo();
         cargarDatos(espectaculo); //llenar los campos con los datos del espectaculo
     }
 
@@ -79,24 +81,21 @@ public class FormularioEspectaculo extends FormularioBase {
     }
 
 
-    //METODO 2 - crearPanelCampos() -----
+    //METODO 2 - crearPanelCampos()
     @Override
     public JPanel crearPanelCampos() {
         JPanel panelCampos = new JPanel();
 
-        //en modo MODIFICAR son 5 filas (id, estadio, nombre, fecha, activo)
-        //en modo CREAR son 4 filas (estadio, nombre, fecha, activo)
         if (isModoModificar()) {
             panelCampos.setLayout(new GridLayout(5, 2, 10, 15));
         } else {
             panelCampos.setLayout(new GridLayout(4, 2, 10, 15));
         }
 
-        //si el modo es MODIFICAR se muestra el id
         if (isModoModificar()) {
             jLabelIdEspectaculo = new JLabel("ID: " + getIdElementoModificar() + " (no se puede modificar el id)");
             jLabelIdEspectaculo.setFont(new Font("Arial", Font.PLAIN, 14));
-            jLabelIdEspectaculo.setForeground(new Color(100, 100, 100)); //gris
+            jLabelIdEspectaculo.setForeground(new Color(100, 100, 100));
 
             JLabel espacioVacio = new JLabel("");
 
@@ -110,7 +109,7 @@ public class FormularioEspectaculo extends FormularioBase {
 
         comboEstadios = new JComboBox<>();
         comboEstadios.setFont(new Font("Arial", Font.PLAIN, 14));
-        cargarEstadiosEnCombo(); //llenar el combo con los estadios de la BD
+        //NO llamar a cargarEstadiosEnCombo() acá!
 
         panelCampos.add(jLabelEstadio);
         panelCampos.add(comboEstadios);
@@ -123,20 +122,11 @@ public class FormularioEspectaculo extends FormularioBase {
         panelCampos.add(jLabelNombre);
         panelCampos.add(jTextFieldNombre);
 
-        //CAMPO 3 - Fecha (formato dd/MM/yyyy)
+        //CAMPO 3 - Fecha
         jLabelFecha = new JLabel("Fecha (dd/MM/yyyy)");
         jLabelFecha.setFont(new Font("Arial", Font.PLAIN, 14));
         jTextFieldFecha = new JTextField(20);
         jTextFieldFecha.setToolTipText("Formato: dd/MM/yyyy (ejemplo: 25/12/2025)");
-
-        /*
-        Con tooltip:
-        Pasa el mouse por encima
-        Ve "Formato: dd/MM/yyyy (ejemplo: 25/12/2025)"
-        Escribe correctamente "25/12/2025"
-         */
-
-
 
         panelCampos.add(jLabelFecha);
         panelCampos.add(jTextFieldFecha);
@@ -145,7 +135,7 @@ public class FormularioEspectaculo extends FormularioBase {
         jLabelActivo = new JLabel("¿Espectáculo activo?");
         jLabelActivo.setFont(new Font("Arial", Font.PLAIN, 14));
         jCheckBoxActivo = new JCheckBox();
-        jCheckBoxActivo.setSelected(true); //por defecto activo
+        jCheckBoxActivo.setSelected(true);
 
         panelCampos.add(jLabelActivo);
         panelCampos.add(jCheckBoxActivo);
