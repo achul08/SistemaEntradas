@@ -1,60 +1,63 @@
 package gui;
 
+import entidades.Usuario;
+import service.ServiceUsuario;
+import service.ServiceException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 //PANTALLA LOGIN - Primera pantalla del sistema
-//Permite seleccionar el ROL del usuario: Administrador o Vendedor
-
-//RELACIÓN CON OTRAS CLASES:
-//- PanelManager: para cambiar de pantalla según el rol elegido
-
+//Permite ingresar con username y password
+//Valida contra la base de datos y redirige según el rol
 
 public class PantallaLogin extends JPanel {
-    //ATRIBUTOS -----
-    private PanelManager panelManager; //para cambiar de pantalla
-    private JPanel pantallaLogin; //panel interno que contiene todo
+    //ATRIBUTOS
+    private PanelManager panelManager;
+    private ServiceUsuario serviceUsuario = new ServiceUsuario();
+    private JPanel pantallaLogin;
+
+    //campos de texto
+    private JTextField jTextFieldUsername;
+    private JPasswordField jPasswordField;
 
     //botones
-    private JButton btnAdmin;
-    private JButton btnVendedor;
+    private JButton btnLogin;
     private JButton btnSalir;
 
 
-    //CONSTRUCTOR ------
+    //CONSTRUCTOR
     public PantallaLogin(PanelManager panelManager) {
-        this.panelManager = panelManager; //recibo el panel manager y lo asocio
-        armarPantalla(); //arma la parte visual
+        this.panelManager = panelManager;
+        armarPantalla();
     }
 
 
-    //METODO ARMAR PANTALLA ----------
+    //METODO ARMAR PANTALLA
     private void armarPantalla() {
-        //crear el panel interno
         pantallaLogin = new JPanel();
-        pantallaLogin.setLayout(new BorderLayout(20, 20)); //espacio entre zonas
-        pantallaLogin.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40)); //margen general
+        pantallaLogin.setLayout(new BorderLayout(20, 20));
+        pantallaLogin.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
 
 
-        //ZONA NORTE - TÍTULO ------
+        //ZONA NORTE - TÍTULO
         JPanel panelNorte = new JPanel();
-        panelNorte.setLayout(new BoxLayout(panelNorte, BoxLayout.Y_AXIS)); //componentes uno debajo del otro
-        panelNorte.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0)); //margen
+        panelNorte.setLayout(new BoxLayout(panelNorte, BoxLayout.Y_AXIS));
+        panelNorte.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0));
 
-        //titulo principal
         JLabel titulo = new JLabel("SISTEMA DE VENTA DE ENTRADAS");
         titulo.setFont(new Font("Arial", Font.BOLD, 28));
-        titulo.setForeground(new Color(41, 98, 255)); //azul
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT); //centrado
+        titulo.setForeground(new Color(41, 98, 255));
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        //subtitulo
         JLabel subtitulo = new JLabel("Gestión de Espectáculos Públicos");
         subtitulo.setFont(new Font("Arial", Font.PLAIN, 16));
-        subtitulo.setForeground(new Color(100, 100, 100)); //gris
+        subtitulo.setForeground(new Color(100, 100, 100));
         subtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        subtitulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0)); //margen arriba
+        subtitulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         panelNorte.add(titulo);
         panelNorte.add(subtitulo);
@@ -62,99 +65,188 @@ public class PantallaLogin extends JPanel {
         pantallaLogin.add(panelNorte, BorderLayout.NORTH);
 
 
-        //ZONA CENTRO - SELECCIÓN DE ROL ------
+        //ZONA CENTRO - FORMULARIO DE LOGIN
         JPanel panelCentro = new JPanel();
-        panelCentro.setLayout(new GridLayout(3, 1, 20, 20)); //3 filas, 1 columna, espacio entre ellas
-        panelCentro.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50)); //margen
+        panelCentro.setLayout(new GridLayout(3, 2, 15, 15));
+        panelCentro.setBorder(BorderFactory.createEmptyBorder(30, 80, 30, 80));
 
-        //label de instrucción
-        JLabel lblInstruccion = new JLabel("Seleccione su rol:", SwingConstants.CENTER);
+        //Label de instrucción
+        JLabel lblInstruccion = new JLabel("Ingrese sus credenciales:", SwingConstants.CENTER);
         lblInstruccion.setFont(new Font("Arial", Font.BOLD, 18));
         lblInstruccion.setForeground(new Color(60, 60, 60));
-
-        //boton ADMINISTRADOR
-        btnAdmin = new JButton("ADMINISTRADOR");
-        btnAdmin.setFont(new Font("Arial", Font.BOLD, 18));
-        btnAdmin.setPreferredSize(new Dimension(300, 70));
-        btnAdmin.setBackground(new Color(144, 238, 144)); //verde clarito
-        btnAdmin.setFocusPainted(false); //saca el borde cuando haces click
-
-        //boton VENDEDOR
-        btnVendedor = new JButton("VENDEDOR");
-        btnVendedor.setFont(new Font("Arial", Font.BOLD, 18));
-        btnVendedor.setPreferredSize(new Dimension(300, 70));
-        btnVendedor.setBackground(new Color(173, 216, 230)); //azul clarito
-        btnVendedor.setFocusPainted(false);
-
+        panelCentro.add(new JLabel("")); //espacio vacío
         panelCentro.add(lblInstruccion);
-        panelCentro.add(btnAdmin);
-        panelCentro.add(btnVendedor);
+
+        //Campo USERNAME
+        JLabel lblUsername = new JLabel("Username:");
+        lblUsername.setFont(new Font("Arial", Font.PLAIN, 16));
+        jTextFieldUsername = new JTextField(20);
+        jTextFieldUsername.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        panelCentro.add(lblUsername);
+        panelCentro.add(jTextFieldUsername);
+
+        //Campo PASSWORD
+        JLabel lblPassword = new JLabel("Password:");
+        lblPassword.setFont(new Font("Arial", Font.PLAIN, 16));
+        jPasswordField = new JPasswordField(20);
+        jPasswordField.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        panelCentro.add(lblPassword);
+        panelCentro.add(jPasswordField);
 
         pantallaLogin.add(panelCentro, BorderLayout.CENTER);
 
 
-        //ZONA SUR - BOTÓN SALIR ------
+        //ZONA SUR - BOTONES
         JPanel panelSur = new JPanel();
-        panelSur.setLayout(new FlowLayout(FlowLayout.CENTER)); //centrado
-        panelSur.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0)); //margen arriba
+        panelSur.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        panelSur.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 
-        btnSalir = new JButton("Salir del Sistema");
+        btnLogin = new JButton("Iniciar Sesión");
+        btnLogin.setFont(new Font("Arial", Font.BOLD, 16));
+        btnLogin.setPreferredSize(new Dimension(180, 50));
+        btnLogin.setBackground(new Color(76, 175, 80)); //verde
+        btnLogin.setForeground(Color.WHITE);
+        btnLogin.setFocusPainted(false);
+
+        btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("Arial", Font.PLAIN, 14));
-        btnSalir.setPreferredSize(new Dimension(200, 40));
-        btnSalir.setBackground(new Color(220, 220, 220)); //gris claro
+        btnSalir.setPreferredSize(new Dimension(120, 40));
+        btnSalir.setBackground(new Color(220, 220, 220));
         btnSalir.setFocusPainted(false);
 
+        panelSur.add(btnLogin);
         panelSur.add(btnSalir);
+
         pantallaLogin.add(panelSur, BorderLayout.SOUTH);
 
 
         //agregar el panel interno a this
-        //PantallaLogin ES un JPanel, entonces le ponemos BorderLayout
-        //y agregamos el panel interno (pantallaLogin) en el centro
         this.setLayout(new BorderLayout());
         this.add(pantallaLogin, BorderLayout.CENTER);
 
 
-        //COMPORTAMIENTO DE LOS BOTONES ------
+        //COMPORTAMIENTO DE LOS BOTONES
 
-        //boton ADMINISTRADOR
-        //cuando haces click, va al MenuAdmin (código 10)
-        btnAdmin.addActionListener(new ActionListener() {
+        //botón LOGIN
+        btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(10); //codigo 10 = MenuAdmin
+                validarLogin();
             }
         });
 
-        //boton VENDEDOR
-        //cuando haces click, va al MenuVendedor (código 20)
-        btnVendedor.addActionListener(new ActionListener() {
+        //permitir hacer login con ENTER
+        jPasswordField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(20); //codigo 20 = MenuVendedor
+                validarLogin();
             }
         });
 
-        //boton SALIR
-        //pide confirmación antes de cerrar el programa
+        //botón SALIR
         btnSalir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //JOptionPane.showConfirmDialog muestra un mensaje con botones SI/NO
                 int confirmacion = JOptionPane.showConfirmDialog(
-                        PantallaLogin.this, //el this es para que el mensaje salga centrado sobre esta pantalla
+                        PantallaLogin.this,
                         "¿Está seguro que desea salir del sistema?",
                         "Confirmar salida",
-                        JOptionPane.YES_NO_OPTION, //botones Si/No
-                        JOptionPane.QUESTION_MESSAGE //icono de pregunta
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
                 );
 
-                //si el usuario dijo SI, cerrar el programa
                 if (confirmacion == JOptionPane.YES_OPTION) {
-                    System.exit(0); //cierra todo
+                    System.exit(0);
                 }
-                //si dijo NO, no hace nada y se queda en la pantalla
             }
         });
+    }
+
+
+    //METODO VALIDAR LOGIN
+    private void validarLogin() {
+        //obtener los datos ingresados
+        String username = jTextFieldUsername.getText().trim();
+        String password = new String(jPasswordField.getPassword()).trim();
+
+        //validar que no estén vacíos
+        if(username.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Debe ingresar un username",
+                    "Campo vacío",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            jTextFieldUsername.requestFocus();
+            return;
+        }
+
+        if(password.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Debe ingresar una contraseña",
+                    "Campo vacío",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            jPasswordField.requestFocus();
+            return;
+        }
+
+        //buscar el usuario en la base de datos
+        try {
+            List<Usuario> usuarios = serviceUsuario.consultarTodos();
+
+            Usuario usuarioEncontrado = null;
+
+            //buscar si existe un usuario con ese username y password
+            for(Usuario usuario : usuarios) {
+                if(usuario.getUsername().equals(username) && usuario.getPassword().equals(password)) {
+                    usuarioEncontrado = usuario;
+                    break;
+                }
+            }
+
+            //verificar si se encontró
+            if(usuarioEncontrado == null) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Username o contraseña incorrectos",
+                        "Login fallido",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                jPasswordField.setText("");
+                jPasswordField.requestFocus();
+                return;
+            }
+
+            //si llegamos acá, el login fue exitoso
+            //guardar el usuario en el PanelManager
+            panelManager.setUsuarioLogueado(usuarioEncontrado);
+
+            //mostrar mensaje de bienvenida
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Bienvenido/a " + usuarioEncontrado.getNombre() + " " + usuarioEncontrado.getApellido(),
+                    "Login exitoso",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            //redirigir según el rol
+            if(usuarioEncontrado.getRol().equals("ADMINISTRADOR")) {
+                panelManager.mostrar(10); //código 10 = MenuAdmin
+            } else if(usuarioEncontrado.getRol().equals("VENDEDOR")) {
+                panelManager.mostrar(20); //código 20 = MenuVendedor
+            }
+
+        } catch (ServiceException e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error al validar el usuario: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
     }
 }

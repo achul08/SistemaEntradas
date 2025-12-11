@@ -1,6 +1,7 @@
 package gui;
 
 import entidades.Estadio;
+import entidades.Usuario;
 import gui.estadio.FormularioEstadio;
 import gui.estadio.PantallaEliminarEstadio;
 import gui.estadio.PantallaSeleccionEstadios;
@@ -16,6 +17,11 @@ import gui.espectaculo.FormularioEspectaculo;
 import gui.espectaculo.PantallaSeleccionEspectaculos;
 import gui.espectaculo.PantallaEliminarEspectaculo;
 import gui.espectaculo.ReporteEspectaculos;
+import gui.usuario.*;
+import gui.venta.FormularioVenta;
+import gui.venta.ReporteVentas;
+import gui.venta.ReporteVentasVendedor;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -47,6 +53,7 @@ public class PanelManager {
         private PantallaSeleccionEspectaculos pantallaSeleccionEspectaculos;
         private PantallaEliminarEspectaculo pantallaEliminarEspectaculo;
         private ReporteEspectaculos reporteEspectaculos;
+        private Usuario usuarioLogueado; //guarda el usuario que hizo login
         JFrame jFrame; //aparece aca mi unica ventana
 
 
@@ -60,6 +67,21 @@ public class PanelManager {
         }
 
 
+    //NUEVOS MÉTODOS - Para manejar el usuario logueado
+    public void setUsuarioLogueado(Usuario usuario) {
+        this.usuarioLogueado = usuario;
+    }
+
+    public Usuario getUsuarioLogueado() {
+        return usuarioLogueado;
+    }
+
+    public int getIdUsuarioLogueado() {
+        if(usuarioLogueado != null) {
+            return usuarioLogueado.getIdUsuario();
+        }
+        return 0; //si no hay usuario logueado, devuelve 0
+    }
 
         //METODO
     /*
@@ -146,10 +168,29 @@ public class PanelManager {
                     mostrar(menuAdmin);
                     break;
 
-                case 11:  // Gestión de Usuarios (todavía no existe la pantalla)
-                    // Por ahora mostramos un mensaje
-                    JOptionPane.showMessageDialog(null, "Gestión de Usuarios - En desarrollo");
-                    mostrar(10); // Vuelve al MenuAdmin
+                case 11:  // Gestión de Usuarios
+                    MenuGestionUsuarios menuGestionUsuarios = new MenuGestionUsuarios(this);
+                    mostrar(menuGestionUsuarios);
+                    break;
+
+                case 12:  // FormularioUsuario (crear)
+                    FormularioUsuario formularioUsuario = new FormularioUsuario(this);
+                    mostrar(formularioUsuario);
+                    break;
+
+                case 13:  // PantallaSeleccionUsuarios
+                    PantallaSeleccionUsuarios pantallaSeleccionUsuarios = new PantallaSeleccionUsuarios(this);
+                    mostrar(pantallaSeleccionUsuarios);
+                    break;
+
+                case 14:  // PantallaEliminarUsuario
+                    PantallaEliminarUsuario pantallaEliminarUsuario = new PantallaEliminarUsuario(this);
+                    mostrar(pantallaEliminarUsuario);
+                    break;
+
+                case 15:  // ReporteUsuarios
+                    ReporteUsuarios reporteUsuarios = new ReporteUsuarios(this);
+                    mostrar(reporteUsuarios);
                     break;
 
                 case 20:  // NUEVO - Menú Vendedor
@@ -157,9 +198,9 @@ public class PanelManager {
                     mostrar(menuVendedor);
                     break;
 
-                case 21:  // Registrar Venta (todavía no existe)
-                    JOptionPane.showMessageDialog(null, "Registrar Venta - En desarrollo");
-                    mostrar(20); // Vuelve al MenuVendedor
+                case 21:  // Registrar Venta
+                    FormularioVenta formularioVenta = new FormularioVenta(this);
+                    mostrar(formularioVenta);
                     break;
 
                 case 22:  // Ver Espectáculos Disponibles (todavía no existe)
@@ -167,9 +208,9 @@ public class PanelManager {
                     mostrar(20);
                     break;
 
-                case 23:  // Ver Mis Ventas (todavía no existe)
-                    JOptionPane.showMessageDialog(null, "Ver Mis Ventas - En desarrollo");
-                    mostrar(20);
+                case 23:  // Ver Mis Ventas
+                    ReporteVentasVendedor reporteVentasVendedor = new ReporteVentasVendedor(this);
+                    mostrar(reporteVentasVendedor);
                     break;
 
                 case 30:  // MenuGestionUbicaciones
@@ -236,9 +277,9 @@ public class PanelManager {
                     mostrar(reporteEspectaculos);
                     break;
 
-                case 50:  // Reportes de Ventas (todavía no existe)
-                    JOptionPane.showMessageDialog(null, "Reportes de Ventas - En desarrollo");
-                    mostrar(10);
+                case 50:  // Reportes de Ventas
+                    ReporteVentas reporteVentas = new ReporteVentas(this);
+                    mostrar(reporteVentas);
                     break;
             }
         }

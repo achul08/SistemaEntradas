@@ -1,6 +1,9 @@
 import gui.PanelManager;
+import service.ServiceUsuario;
+import service.ServiceException;
+import entidades.Administrador;
+import entidades.Vendedor;
 import javax.swing.*;
-
 
 public class Main {
     public static void main(String[] args) {
@@ -15,6 +18,9 @@ public class Main {
             System.out.println("Error: " + e.getMessage());
         }
 */
+
+        //PASO 1: Cargar usuarios precargados
+        cargarUsuariosPrecargados();
 
 
         SwingUtilities.invokeLater(new Runnable() { //SwingUtilities.invokeLater() es una buena práctica en Swing
@@ -46,6 +52,85 @@ public class Main {
                 }
             }
         });
+    }
+               private static void cargarUsuariosPrecargados() {
+                    ServiceUsuario serviceUsuario = new ServiceUsuario();
+
+            try {
+                System.out.println("===========================================");
+                System.out.println("Verificando usuarios precargados...");
+                System.out.println("===========================================");
+
+
+                //USUARIO 1: ADMINISTRADOR
+                boolean adminExiste = false;
+                try {
+                    var usuarioExistente = serviceUsuario.consultar(1);
+                    if(usuarioExistente != null && usuarioExistente.getIdUsuario() != 0) {
+                        adminExiste = true;
+                        System.out.println("✓ Administrador ya existe (ID: 1)");
+                    }
+                } catch (Exception e) {}
+
+                if(!adminExiste) {
+                    Administrador admin = new Administrador("Azu", "M.", "admin", "admin123");
+                    serviceUsuario.insertar(admin);
+                    System.out.println("✓ Administrador creado");
+                }
+
+
+                //USUARIO 2: VENDEDOR 1
+                boolean vendedor1Existe = false;
+                try {
+                    var usuarioExistente = serviceUsuario.consultar(2);
+                    if(usuarioExistente != null && usuarioExistente.getIdUsuario() != 0) {
+                        vendedor1Existe = true;
+                        System.out.println("✓ Vendedor 1 ya existe (ID: 2)");
+                    }
+                } catch (Exception e) {}
+
+                if(!vendedor1Existe) {
+                    Vendedor vendedor1 = new Vendedor("Orne", "C.", "vendedor1", "vend123");
+                    serviceUsuario.insertar(vendedor1);
+                    System.out.println("✓ Vendedor 1 creado");
+                }
+
+
+                //USUARIO 3: VENDEDOR 2
+                boolean vendedor2Existe = false;
+                try {
+                    var usuarioExistente = serviceUsuario.consultar(3);
+                    if(usuarioExistente != null && usuarioExistente.getIdUsuario() != 0) {
+                        vendedor2Existe = true;
+                        System.out.println("✓ Vendedor 2 ya existe (ID: 3)");
+                    }
+                } catch (Exception e) {}
+
+                if(!vendedor2Existe) {
+                    Vendedor vendedor2 = new Vendedor("Facu", "M.", "vendedor2", "vend123");
+                    serviceUsuario.insertar(vendedor2);
+                    System.out.println("✓ Vendedor 2 creado");
+                }
+
+
+                System.out.println("\n===========================================");
+                System.out.println("USUARIOS DISPONIBLES PARA LOGIN:");
+                System.out.println("===========================================");
+                System.out.println("ADMINISTRADOR:");
+                System.out.println("  Username: admin");
+                System.out.println("  Password: admin123");
+                System.out.println("");
+                System.out.println("VENDEDORES:");
+                System.out.println("  Username: vendedor1  Password: vend123");
+                System.out.println("  Username: vendedor2  Password: vend123");
+                System.out.println("===========================================\n");
+
+
+            } catch (ServiceException e) {
+                System.err.println("ERROR al cargar usuarios: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
 
 
 
@@ -60,4 +145,3 @@ public class Main {
     // DAO que implementa IDAO con los 5 métodos
     // Service con al menos el método insertar
 
-}
