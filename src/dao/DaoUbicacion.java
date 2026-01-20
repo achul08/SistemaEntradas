@@ -22,13 +22,32 @@ public class DaoUbicacion implements IDAO<Ubicacion>{
             System.out.println("Cargó el driver");
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             System.out.println("Se conectó a la base de datos");
-            preparedStatement = connection.prepareStatement("INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad) VALUES (?,?,?,?)");
 
+            //MODIFICADO: Ahora incluye foto_url en el INSERT
+            //Antes era: INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad) VALUES (?,?,?,?)
+            //Ahora es: INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad, foto_url) VALUES (?,?,?,?,?)
+            preparedStatement = connection.prepareStatement(
+                    "INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad, foto_url) VALUES (?,?,?,?,?)"
+            );
+
+            //PASO 1: Setear el ID del estadio (parámetro 1)
             preparedStatement.setInt(1, elemento.getIdEstadio());
+
+            //PASO 2: Setear el nombre (parámetro 2)
             preparedStatement.setString(2, elemento.getNombre());
+
+            //PASO 3: Setear el precio (parámetro 3)
             preparedStatement.setDouble(3, elemento.getPrecio());
+
+            //PASO 4: Setear la capacidad (parámetro 4)
             preparedStatement.setInt(4, elemento.getCapacidad());
 
+            //PASO 5: Setear la foto URL (parámetro 5) ← NUEVO
+            //Si elemento.getFotoUrl() es null, guarda NULL en la BD
+            //Si tiene valor, guarda ese valor
+            preparedStatement.setString(5, elemento.getFotoUrl());
+
+            //Ejecutar el INSERT
             int resultado = preparedStatement.executeUpdate();
             System.out.println("Se insertó correctamente. Filas afectadas: " + resultado);
         }
@@ -45,14 +64,36 @@ public class DaoUbicacion implements IDAO<Ubicacion>{
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-            preparedStatement = connection.prepareStatement("UPDATE UBICACION SET id_estadio=?, nombre=?, precio=?, capacidad=? WHERE id_ubicacion=?");
 
+            //MODIFICADO: Ahora incluye foto_url en el UPDATE
+            //Antes era: UPDATE UBICACION SET id_estadio=?, nombre=?, precio=?, capacidad=? WHERE id_ubicacion=?
+            //Ahora es: UPDATE UBICACION SET id_estadio=?, nombre=?, precio=?, capacidad=?, foto_url=? WHERE id_ubicacion=?
+            preparedStatement = connection.prepareStatement(
+                    "UPDATE UBICACION SET id_estadio=?, nombre=?, precio=?, capacidad=?, foto_url=? WHERE id_ubicacion=?"
+            );
+
+            //PASO 1: Setear el ID del estadio (parámetro 1)
             preparedStatement.setInt(1, elemento.getIdEstadio());
-            preparedStatement.setString(2, elemento.getNombre());
-            preparedStatement.setDouble(3, elemento.getPrecio());
-            preparedStatement.setInt(4, elemento.getCapacidad());
-            preparedStatement.setInt(5, elemento.getIdUbicacion());
 
+            //PASO 2: Setear el nombre (parámetro 2)
+            preparedStatement.setString(2, elemento.getNombre());
+
+            //PASO 3: Setear el precio (parámetro 3)
+            preparedStatement.setDouble(3, elemento.getPrecio());
+
+            //PASO 4: Setear la capacidad (parámetro 4)
+            preparedStatement.setInt(4, elemento.getCapacidad());
+
+            //PASO 5: Setear la foto URL (parámetro 5) ← NUEVO
+            //Si elemento.getFotoUrl() es null, actualiza a NULL en la BD
+            //Si tiene valor, actualiza a ese valor
+            preparedStatement.setString(5, elemento.getFotoUrl());
+
+            //PASO 6: Setear el ID de la ubicación (parámetro 6)
+            //Este es el WHERE, indica QUÉ ubicación modificar
+            preparedStatement.setInt(6, elemento.getIdUbicacion());
+
+            //Ejecutar el UPDATE
             int resultado = preparedStatement.executeUpdate();
         }
         catch (ClassNotFoundException | SQLException e) {

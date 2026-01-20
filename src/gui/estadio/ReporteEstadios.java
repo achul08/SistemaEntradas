@@ -56,8 +56,7 @@ public class ReporteEstadios extends ReporteBase {
                     try {
                         //Intentar cargar la imagen desde la URL
                         String urlString = value.toString();
-                        URL url = new URL(urlString);
-                        ImageIcon icon = new ImageIcon(url);
+                        ImageIcon icon = new ImageIcon(urlString);
 
                         //Redimensionar la imagen a un tamaño razonable (100x75 px)
                         Image img = icon.getImage();
