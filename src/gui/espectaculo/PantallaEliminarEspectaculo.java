@@ -27,8 +27,8 @@ public class PantallaEliminarEspectaculo extends PantallaEliminarBase {
     //CONSTRUCTOR -----
     public PantallaEliminarEspectaculo(PanelManager panel) {
         super(panel); //llama al constructor de PantallaEliminarBase
+        inicializar(); //carga los espectáculos en el ComboBox
     }
-
 
     //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS -----
 

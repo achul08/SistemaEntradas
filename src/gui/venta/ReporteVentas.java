@@ -17,10 +17,13 @@ import java.util.List;
 //Permite filtrar por espectáculo (futuro: también por fechas)
 
 public class ReporteVentas extends JPanel {
+    //ATRIBUTOS - SERVICES -----
     private ServiceVenta serviceVenta = new ServiceVenta();
     private ServiceEspectaculo serviceEspectaculo = new ServiceEspectaculo();
     private ServiceUbicacion serviceUbicacion = new ServiceUbicacion();
     private ServiceUsuario serviceUsuario = new ServiceUsuario();
+    //TODOS estos Services se crean ACÁ, antes del constructor
+    //Por eso cuando el constructor los use, ya van a existir
 
     private PanelManager panelManager;
     private JPanel panelReporte;
@@ -38,8 +41,11 @@ public class ReporteVentas extends JPanel {
     private SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 
+    //CONSTRUCTOR -----
     public ReporteVentas(PanelManager panelManager) {
         this.panelManager = panelManager;
+        //En este punto, TODOS los Services ya existen (se crearon en las líneas 24-27)
+        //Así que podemos llamar tranquilamente a armarReporte()
         armarReporte();
     }
 
@@ -103,8 +109,9 @@ public class ReporteVentas extends JPanel {
         definirColumnas();
         panelReporte.add(scrollPane, BorderLayout.CENTER);
 
-        cargarEspectaculosEnCombo();
-        cargarDatos(null); //cargar todas las ventas inicialmente
+        //AHORA SÍ podemos llamar a estos métodos porque los Services ya existen
+        cargarEspectaculosEnCombo(); //usa serviceEspectaculo
+        cargarDatos(null); //usa serviceVenta - cargar todas las ventas inicialmente
 
 
         //ZONA SUR - BOTÓN VOLVER Y TOTALES
@@ -115,6 +122,7 @@ public class ReporteVentas extends JPanel {
         panelTotal.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 10));
 
         try {
+            //Este bloque también usa serviceVenta, pero ya existe
             List<Venta> todasLasVentas = serviceVenta.consultarTodos();
             double total = serviceVenta.calcularTotalRecaudado(todasLasVentas);
             int cantidad = serviceVenta.calcularCantidadVendida(todasLasVentas);
@@ -191,6 +199,9 @@ public class ReporteVentas extends JPanel {
 
     private void cargarEspectaculosEnCombo() {
         try {
+            //ESTE método usa serviceEspectaculo
+            //Como se llama desde armarReporte(), que se llama desde el constructor,
+            //y serviceEspectaculo ya existe (línea 25), NO da error
             listaEspectaculos = serviceEspectaculo.consultarTodos();
             comboEspectaculos.addItem("(Seleccione un espectáculo)");
 

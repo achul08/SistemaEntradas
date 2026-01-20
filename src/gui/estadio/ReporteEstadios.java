@@ -6,10 +6,15 @@ import gui.base.ReporteBase;
 import service.ServiceEstadio;
 import service.ServiceException;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.net.URL;
 import java.util.List;
 
 //REPORTE ESTADIOS - Hereda de ReporteBase
 //Muestra una tabla con todos los estadios
+//MEJORA: Ahora muestra las FOTOS de los estadios en la tabla
 
 //RELACIÓN CON OTRAS CLASES:
 //- Hereda de ReporteBase (extends)
@@ -24,6 +29,68 @@ public class ReporteEstadios extends ReporteBase {
     //CONSTRUCTOR -----
     public ReporteEstadios(PanelManager panelManager) {
         super(panelManager); //llama al constructor de ReporteBase
+
+        //Configurar el renderer personalizado ANTES de inicializar
+        //para que las fotos se muestren correctamente
+        configurarRendererFotos();
+
+        inicializar(); //carga los datos
+    }
+
+
+    //METODO NUEVO: Configurar el renderer para mostrar fotos -----
+    private void configurarRendererFotos() {
+        //Crear un renderer personalizado que muestre imágenes en la columna de Foto
+        getTable().setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                                                           boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
+
+                //Si es la columna de Foto (columna 4), mostrar la imagen
+                if (column == 4 && value != null && !value.toString().isEmpty()) {
+                    //Crear un JLabel para mostrar la imagen
+                    JLabel label = new JLabel();
+                    label.setHorizontalAlignment(JLabel.CENTER);
+
+                    try {
+                        //Intentar cargar la imagen desde la URL
+                        String urlString = value.toString();
+                        URL url = new URL(urlString);
+                        ImageIcon icon = new ImageIcon(url);
+
+                        //Redimensionar la imagen a un tamaño razonable (100x75 px)
+                        Image img = icon.getImage();
+                        Image imgEscalada = img.getScaledInstance(100, 75, Image.SCALE_SMOOTH);
+                        ImageIcon iconEscalado = new ImageIcon(imgEscalada);
+
+                        label.setIcon(iconEscalado);
+
+                    } catch (Exception e) {
+                        //Si falla cargar la imagen, mostrar un mensaje
+                        label.setText("(Error al cargar foto)");
+                    }
+
+                    //Configurar colores según si está seleccionado
+                    if (isSelected) {
+                        label.setBackground(table.getSelectionBackground());
+                        label.setForeground(table.getSelectionForeground());
+                    } else {
+                        label.setBackground(table.getBackground());
+                        label.setForeground(table.getForeground());
+                    }
+                    label.setOpaque(true);
+
+                    return label;
+                } else {
+                    //Para las demás columnas, usar el renderer normal
+                    return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                }
+            }
+        });
+
+        //Aumentar la altura de las filas para que se vean las fotos
+        getTable().setRowHeight(80); //altura de 80 píxeles (antes era ~20)
     }
 
 
@@ -38,13 +105,15 @@ public class ReporteEstadios extends ReporteBase {
 
     //METODO 2 - obtenerNombresColumnas() -----
     //Define los nombres de las columnas de la tabla
+    //CAMBIO: Ahora incluimos la columna "Foto"
     @Override
     public String[] obtenerNombresColumnas() {
         return new String[]{
                 "ID Estadio",
                 "Nombre",
                 "Dirección",
-                "Capacidad Total"
+                "Capacidad Total",
+                "Foto"  //NUEVO: columna para mostrar la foto
         };
     }
 
@@ -64,13 +133,22 @@ public class ReporteEstadios extends ReporteBase {
     public Object[] convertirElementoAFila(Object elemento) {
         Estadio estadio = (Estadio) elemento; //cast de Object a Estadio
 
+        //Obtener la URL de la foto (puede ser null o vacía)
+        String fotoUrl = estadio.getFotoUrl();
+
+        //Si no tiene foto, mostrar texto indicativo
+        if (fotoUrl == null || fotoUrl.trim().isEmpty()) {
+            fotoUrl = "(Sin foto)";
+        }
+
         //crear el array con los datos del estadio
         //IMPORTANTE: el orden debe ser igual al de obtenerNombresColumnas()
         return new Object[]{
                 estadio.getIdEstadio(),      // columna 0: "ID Estadio"
                 estadio.getNombre(),         // columna 1: "Nombre"
                 estadio.getDireccion(),      // columna 2: "Dirección"
-                estadio.getCapacidadTotal()  // columna 3: "Capacidad Total"
+                estadio.getCapacidadTotal(), // columna 3: "Capacidad Total"
+                fotoUrl                      // columna 4: "Foto" (URL o texto)
         };
     }
 
@@ -89,3 +167,24 @@ public class ReporteEstadios extends ReporteBase {
         return 1; //código 1 = MenuPrincipal de estadios
     }
 }
+
+
+/*
+¿Qué hace este código?
+
+1. **`configurarRendererFotos()`** (línea 44):
+   - Crea un "renderer" personalizado para la tabla
+   - Cuando llega a la columna 4 (Foto), en lugar de mostrar texto, carga la imagen desde la URL
+   - Redimensiona la imagen a 100x75 píxeles para que entre bien en la tabla
+   - Si falla cargar la imagen, muestra "(Error al cargar foto)"
+
+2. **`setRowHeight(80)`** (línea 84):
+   - Aumenta la altura de las filas de 20 píxeles a 80 píxeles
+   - Así las fotos se ven completas
+
+3. **Nueva columna "Foto"** (línea 98):
+   - Agregamos una columna extra en la tabla
+
+4. **Manejo de URLs vacías** (línea 122):
+   - Si un estadio no tiene foto, muestra "(Sin foto)"
+ */

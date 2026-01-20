@@ -24,6 +24,7 @@ public class PantallaEliminarUbicacion extends PantallaEliminarBase {
     //CONSTRUCTOR -----
     public PantallaEliminarUbicacion(PanelManager panel) {
         super(panel); //llama al constructor de PantallaEliminarBase
+        inicializar(); //carga las ubicaciones en el ComboBox
     }
 
 

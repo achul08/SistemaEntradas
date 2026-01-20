@@ -24,6 +24,7 @@ public class PantallaSeleccionUbicaciones extends PantallaSeleccionBase {
     //CONSTRUCTOR -----
     public PantallaSeleccionUbicaciones(PanelManager panel) {
         super(panel); //llama al constructor de PantallaSeleccionBase
+        inicializar(); //carga las ubicaciones en el ComboBox
     }
 
 

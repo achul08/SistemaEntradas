@@ -20,11 +20,24 @@ import java.util.List;
 public class ReporteUsuarios extends ReporteBase {
     //ATRIBUTOS ESPECÍFICOS DE USUARIO
     private ServiceUsuario serviceUsuario = new ServiceUsuario(); //para consultar los usuarios
+    //serviceUsuario se crea ACÁ, antes del constructor
+    //Por eso cuando llamemos a inicializar() ya va a existir
 
 
     //CONSTRUCTOR
     public ReporteUsuarios(PanelManager panelManager) {
         super(panelManager); //llama al constructor de ReporteBase
+        //El constructor del padre (ReporteBase):
+        //1. Crea la ventana
+        //2. Crea la tabla vacía
+        //3. Crea los botones
+        //4. PERO no carga datos (porque esperaba que serviceUsuario esté listo)
+
+        //AHORA sí llamamos a inicializar() para llenar la tabla
+        inicializar(); //este método está en ReporteBase
+        //inicializar() llama a:
+        //- definirColumnas() → que llama a obtenerNombresColumnas() (línea 50)
+        //- cargarDatos() → que llama a consultarTodos() (línea 57) y convertirElementoAFila() (línea 64)
     }
 
 
@@ -56,6 +69,8 @@ public class ReporteUsuarios extends ReporteBase {
     @Override
     public List<?> consultarTodos() throws ServiceException {
         return serviceUsuario.consultarTodos(); //devuelve List<Usuario>
+        //Esta lista puede contener objetos Administrador y Vendedor mezclados
+        //Pero todos heredan de Usuario, así que no hay problema
     }
 
 
@@ -65,6 +80,8 @@ public class ReporteUsuarios extends ReporteBase {
     @Override
     public Object[] convertirElementoAFila(Object elemento) {
         Usuario usuario = (Usuario) elemento; //cast de Object a Usuario
+        //Aunque el objeto puede ser Administrador o Vendedor,
+        //lo tratamos como Usuario porque tiene todos los métodos que necesitamos
 
         //crear el array con los datos del usuario
         //IMPORTANTE: el orden debe ser igual al de obtenerNombresColumnas()

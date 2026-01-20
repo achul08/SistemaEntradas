@@ -2,200 +2,110 @@ package gui.estadio;
 
 import entidades.Estadio;
 import gui.PanelManager;
+import gui.base.PantallaSeleccionBase;
 import service.ServiceEstadio;
 import service.ServiceException;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
-/*PANTALLA SELECCIÓN ESTADIO - Para elegir cuál modificar
+//PANTALLA SELECCIÓN ESTADIOS - Hereda de PantallaSeleccionBase
+//Para elegir cuál estadio modificar
 
-Esta pantalla muestra un ComboBox con todos los estadios disponibles.
-El usuario selecciona uno y hace click en "Modificar".
-
-RELACIÓN CON OTRAS CLASES:
-- ServiceEstadio: para obtener todos los estadios de la BD
-- PanelManager: para cambiar a FormularioEstadio
-- FormularioEstadio: se abre en modo modificar con el estadio seleccionado
- */
+//RELACIÓN CON OTRAS CLASES:
+//- Hereda de PantallaSeleccionBase (extends)
+//- ServiceEstadio: para obtener todos los estadios de la BD
+//- PanelManager: para cambiar a FormularioEstadio
 
 
-public class PantallaSeleccionEstadios extends JPanel {
-    //ATRIBUTOS -----
-    private ServiceEstadio serviceEstadio = new ServiceEstadio();  //para consultar los estadios en la bds estadios en la bd
-    PanelManager panel; //para cambiar de pantalla
-    JPanel pantallaSeleccion; //panel interno que contiene todo
+public class PantallaSeleccionEstadios extends PantallaSeleccionBase {
+    //ATRIBUTOS ESPECÍFICOS DE ESTADIO -----
+    private ServiceEstadio serviceEstadio = new ServiceEstadio(); //para consultar los estadios en la BD
+    //IMPORTANTE: Esta línea se ejecuta ANTES del constructor
+    //Es decir, cuando se crea un objeto PantallaSeleccionEstadios,
+    //primero se inicializa serviceEstadio, y DESPUÉS se ejecuta el constructor
 
 
-    //combo box
-    JComboBox<String> comboEstadios;
+    //CONSTRUCTOR -----
+    public PantallaSeleccionEstadios(PanelManager panel) {
+        super(panel); //llama al constructor de PantallaSeleccionBase
+        //En este momento:
+        //1. serviceEstadio ya existe (se creó en la línea 27)
+        //2. PantallaSeleccionBase ya armó toda la estructura visual (ComboBox, botones, etc.)
+        //3. PERO el ComboBox todavía está vacío porque no se cargaron los datos
 
-    JButton jButtonModificar;
-    JButton jButtonCancelar;
-
-
-
-    // Lista con TODOS los estadios de la BD
-    // La necesitamos para saber cuál estadio seleccionó el usuario
-    List<Estadio> listaEstadios;
-
-
-    //CONSTRUCTOR ------
-    public PantallaSeleccionEstadios(PanelManager panel){
-        this.panel = panel;
-        // this.panel = el atributo de ESTA clase (PantallaSeleccionEstadio)
-        // panel = el parámetro que recibí (viene del PanelManager)
-        // Estoy guardando el panel que me pasaron en mi atributo panel
-        armarPantalla();
+        //AHORA llamamos a inicializar() para cargar los estadios en el ComboBox
+        //Como serviceEstadio ya existe, no va a dar error de null
+        inicializar();
     }
 
-    //METODO ARMAR PANTALLA ----------
-public void armarPantalla() {
-    //crear el panel interno
-    pantallaSeleccion = new JPanel();
-    pantallaSeleccion.setLayout(new BorderLayout(10, 10));
-    pantallaSeleccion.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+    //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS -----
+
+    //METODO 1 - getTitulo() -----
+    @Override
+    public String getTitulo() {
+        return "SELECCIONAR ESTADIO A MODIFICAR";
+    }
 
 
-    //ZONA NORTE. TITULO ------
-    JLabel titulo = new JLabel("SELECCIONAR ESTADIO A MODIFICAR", SwingConstants.CENTER);
-    titulo.setFont(new Font("Arial", Font.BOLD, 20));
-    titulo.setForeground(new Color(163, 188, 226));//azul clarito
-    titulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0)); //margen abajo
-
-    pantallaSeleccion.add(titulo, BorderLayout.NORTH);
+    //METODO 2 - getInstruccion() -----
+    @Override
+    public String getInstruccion() {
+        return "Seleccione un estadio";
+    }
 
 
-    //ZONA CENTRO. LABEL Y COMBO BOX -------
-    JPanel panelCentro = new JPanel();
-    panelCentro.setLayout(new GridLayout(2, 1, 10, 10));
-    panelCentro.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
-
-    //label que diga seleccione un estadio
-    JLabel labelInstruccion = new JLabel("Seleccione un estadio", SwingConstants.CENTER);
-    labelInstruccion.setFont(new Font("Arial", Font.PLAIN, 16));
-
-
-    //crear combobox vacio
-    comboEstadios = new JComboBox<>();
-    comboEstadios.setFont(new Font("Arial", Font.PLAIN, 14));
-
-    //agregar al panel centro
-    panelCentro.add(labelInstruccion);
-    panelCentro.add(comboEstadios);
-
-    pantallaSeleccion.add(panelCentro, BorderLayout.CENTER);
+    //METODO 3 - consultarTodos() -----
+    //Consulta todos los estadios de la BD
+    @Override
+    public List<?> consultarTodos() throws ServiceException {
+        return serviceEstadio.consultarTodos(); //devuelve List<Estadio>
+        //Este método es llamado por cargarElementosEnCombo() (que está en PantallaSeleccionBase)
+        //cargarElementosEnCombo() recorre la lista y llama a formatearElementoParaCombo() para cada estadio
+    }
 
 
-    //CARGAR LOS ESTADIOS EN EL COMBOBOX -------
-    cargarEstadiosEnCombo();
+    //METODO 4 - formatearElementoParaCombo() -----
+    //Define cómo se muestra cada estadio en el ComboBox
+    //Formato: "ID - Nombre"
+    @Override
+    public String formatearElementoParaCombo(Object elemento) {
+        Estadio estadio = (Estadio) elemento; //cast de Object a Estadio
 
-    //ZONA SUR. BOTONES ----
-    JPanel panelBotones = new JPanel();
-    panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 20,10));
-
-    //boton modificar
-    jButtonModificar = new JButton("Modificar");
-    jButtonModificar.setFont(new Font("Arial", Font.BOLD, 14));
-    jButtonModificar.setBackground(new Color(173, 216, 230));  // Azul clarito
-    jButtonModificar.setPreferredSize(new Dimension(150, 40));
-
-
-    //boton cancelar
-    jButtonCancelar = new JButton("Cancelar");
-    jButtonCancelar.setFont(new Font("Arial", Font.BOLD, 14));
-    jButtonCancelar.setBackground(new Color(220, 220, 220));  // Gris claro
-    jButtonCancelar.setPreferredSize(new Dimension(150, 40));
-
-    panelBotones.add(jButtonModificar);
-    panelBotones.add(jButtonCancelar);
+        //Devolvemos un String con el formato que queremos mostrar en el ComboBox
+        //Ejemplo: "1 - Estadio Luna Park"
+        return estadio.getIdEstadio() + " - " + estadio.getNombre();
+    }
 
 
-    pantallaSeleccion.add(panelBotones, BorderLayout.SOUTH);
-    this.setLayout(new BorderLayout());
-    this.add(pantallaSeleccion, BorderLayout.CENTER);
-    // PantallaSeleccionEstadio ES un JPanel
-    //Le ponemos BorderLayout y agregamos el panel interno
+    //METODO 5 - getMensajeSinElementos() -----
+    @Override
+    public String getMensajeSinElementos() {
+        return "No hay estadios disponibles para modificar";
+    }
 
 
-    //COMPOTAMIENTO DE LOS BOTONES ----
-    //boton modificar
-    jButtonModificar.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            abrirFormularioModificar();
-        }
-    });
+    //METODO 6 - abrirFormularioModificarConElemento() -----
+    //Abre FormularioEstadio en modo modificar con el estadio seleccionado
+    @Override
+    public void abrirFormularioModificarConElemento(Object elemento) {
+        Estadio estadio = (Estadio) elemento; //cast de Object a Estadio
 
-    //boton cancelar
-    jButtonCancelar.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            panel.mostrar(1);  // Volver al menú principal
-        }
-    });
+        //OPCIÓN 1: Usar el método especial de PanelManager para estadios
+        //Este método ya existía en tu código original
+        getPanelManager().mostrarFormularioModificar(estadio);
+
+        //OPCIÓN 2 (alternativa): Crear el formulario directamente
+        //Si prefieres hacerlo así, descomentá estas líneas y comentá la línea de arriba:
+        //FormularioEstadio formulario = new FormularioEstadio(getPanelManager(), estadio);
+        //getPanelManager().mostrar(formulario);
+    }
+
+
+    //METODO 7 - getCodigoMenuPrincipal() -----
+    //Devuelve el código del menú al que debe volver
+    @Override
+    public int getCodigoMenuPrincipal() {
+        return 1; //código 1 = MenuPrincipal de estadios (MenuGestionEstadios)
+    }
 }
-
-
-
-        //METODO --- CARGAR ESTADIOS EN COMBOBOX
-    private void cargarEstadiosEnCombo(){
-    try{
-        listaEstadios = serviceEstadio.consultarTodos();
-        if(listaEstadios.isEmpty()){
-            JOptionPane.showMessageDialog(this, "No hay estadios disponibles para modificar", "Sin estadios", JOptionPane.INFORMATION_MESSAGE);
-            panel.mostrar(1);
-            return;
-        }
-        //recorrer cada estadio y agregarlo al combobox
-        for (Estadio estadio : listaEstadios){
-            String item = estadio.getIdEstadio() + " - " + estadio.getNombre();
-            comboEstadios.addItem(item);
-        }
-    } catch (ServiceException e){
-        JOptionPane.showMessageDialog(this, "Error ala cargar los estadios: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        panel.mostrar(1);
-    }
-    }
-
-
-
-        //METODO --- ABRIR FORM
-    // s ejecuta cuando el usuario hace click en "Modificar"
-    //1. Obtener el índice seleccionado del ComboBox
-    //2. Buscar el estadio correspondiente en listaEstadios
-    //3. Abrir FormularioEstadio en modo modificar con ese estadio
-    private void abrirFormularioModificar(){
-    //verificar que haya algo seleccionado
-    if (comboEstadios.getSelectedIndex() == -1){
-        JOptionPane.showMessageDialog(this, "Por favor, seleccione un estadio", "Ningún estadio seleccionado", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-        // Obtener el índice seleccionado
-        int indiceSeleccionado = comboEstadios.getSelectedIndex();
-
-        // Obtener el estadio correspondiente de la lista
-        // Como el ComboBox y la lista están en el mismo orden,
-        // el índice del combo coincide con el índice de la lista
-        Estadio estadioSeleccionado = listaEstadios.get(indiceSeleccionado);
-
-        // Abrir FormularioEstadio en modo MODIFICAR con ese estadio
-        // Esto llama al constructor: FormularioEstadio(panel, estadio)
-        // que automáticamente:
-        // - Pone modoModificar = true
-        // - Guarda el ID
-        // - Llena los campos con cargarDatos(estadio)
-        panel.mostrarFormularioModificar(estadioSeleccionado);
-    }
-
-
-
-
-}
-
-
-
-

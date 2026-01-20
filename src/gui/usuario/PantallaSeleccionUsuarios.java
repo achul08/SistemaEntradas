@@ -25,8 +25,8 @@ public class PantallaSeleccionUsuarios extends PantallaSeleccionBase {
     //CONSTRUCTOR
     public PantallaSeleccionUsuarios(PanelManager panel) {
         super(panel); //llama al constructor de PantallaSeleccionBase
+        inicializar(); //carga los usuarios en el ComboBox
     }
-
 
     //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS
 

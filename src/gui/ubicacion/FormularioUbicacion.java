@@ -31,6 +31,7 @@ public class FormularioUbicacion extends FormularioBase {
     private JTextField jTextFieldNombre;
     private JTextField jTextFieldPrecio;
     private JTextField jTextFieldCapacidad;
+    private JTextField jTextFieldFotoUrl;
 
     //labels específicos de ubicacion
     private JLabel jLabelIdUbicacion; //solo se muestra en modo modificar
@@ -38,6 +39,7 @@ public class FormularioUbicacion extends FormularioBase {
     private JLabel jLabelNombre;
     private JLabel jLabelPrecio;
     private JLabel jLabelCapacidad;
+    private JLabel jLabelFotoUrl;
 
     //lista de estadios (para saber qué estadio seleccionó el usuario)
     private List<Estadio> listaEstadios;
@@ -79,9 +81,9 @@ public class FormularioUbicacion extends FormularioBase {
         JPanel panelCampos = new JPanel();
 
         if (isModoModificar()) {
-            panelCampos.setLayout(new GridLayout(5, 2, 10, 15));
+            panelCampos.setLayout(new GridLayout(6, 2, 10, 15));
         } else {
-            panelCampos.setLayout(new GridLayout(4, 2, 10, 15));
+            panelCampos.setLayout(new GridLayout(5, 2, 10, 15));
         }
 
         if (isModoModificar()) {
@@ -127,8 +129,17 @@ public class FormularioUbicacion extends FormularioBase {
         jLabelCapacidad.setFont(new Font("Arial", Font.PLAIN, 14));
         jTextFieldCapacidad = new JTextField(20);
 
+        //url de la foto
+        jLabelFotoUrl = new JLabel("URL de la foto (opcional)");
+        jLabelFotoUrl.setFont(new Font("Arial", Font.PLAIN, 14));
+        jTextFieldFotoUrl = new JTextField(20);
+        jTextFieldFotoUrl.setToolTipText("Ejemplo: https://ejemplo.com/foto-ubicacion.jpg");
+
+
         panelCampos.add(jLabelCapacidad);
         panelCampos.add(jTextFieldCapacidad);
+        panelCampos.add(jLabelFotoUrl);
+        panelCampos.add(jTextFieldFotoUrl);
 
         return panelCampos;
     }
@@ -174,6 +185,8 @@ public class FormularioUbicacion extends FormularioBase {
     public void guardar() {
         //leer datos de los campos
         String nombre = jTextFieldNombre.getText();
+        String fotoUrl = jTextFieldFotoUrl.getText().trim();
+
 
 
         //VALIDACIONES DE GUI -----
@@ -225,6 +238,7 @@ public class FormularioUbicacion extends FormularioBase {
         ubicacion.setNombre(nombre);
         ubicacion.setPrecio(precio);
         ubicacion.setCapacidad(capacidad);
+        ubicacion.setFotoUrl(fotoUrl);
 
         if (isModoModificar()) {
             ubicacion.setIdUbicacion(getIdElementoModificar());
@@ -249,8 +263,10 @@ public class FormularioUbicacion extends FormularioBase {
                 jTextFieldNombre.setText("");
                 jTextFieldPrecio.setText("");
                 jTextFieldCapacidad.setText("");
+                jTextFieldFotoUrl.setText("");
                 comboEstadios.setSelectedIndex(0);
                 jTextFieldNombre.requestFocus();
+
             }
         }
         catch (ServiceException e) {
@@ -273,6 +289,7 @@ public class FormularioUbicacion extends FormularioBase {
         jTextFieldNombre.setText(ubicacion.getNombre());
         jTextFieldPrecio.setText(String.valueOf(ubicacion.getPrecio()));
         jTextFieldCapacidad.setText(String.valueOf(ubicacion.getCapacidad()));
+        jTextFieldFotoUrl.setText(ubicacion.getFotoUrl() != null ? ubicacion.getFotoUrl() : "");
 
         //seleccionar el estadio correcto en el combo
         //buscar el índice del estadio en la lista

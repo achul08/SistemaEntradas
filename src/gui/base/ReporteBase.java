@@ -40,7 +40,7 @@ public abstract class ReporteBase extends JPanel {
 
 
     //METODO ARMAR TABLA REPORTE -----
-    //Construye la estructura visual común
+//Construye la estructura visual común
     private void armarTablaReporte() {
         //crear el panel interno
         panelReporte = new JPanel();
@@ -74,14 +74,14 @@ public abstract class ReporteBase extends JPanel {
         scrollPane = new JScrollPane();
         scrollPane.setViewportView(jTable); //asociar el scroll con la tabla
 
-        //definir las columnas (llama al método abstracto de la clase hija)
-        definirColumnas();
+        //IMPORTANTE: Ya NO llamamos a definirColumnas() acá
+        //Ahora lo vamos a llamar desde inicializar()
 
         panelReporte.add(scrollPane, BorderLayout.CENTER);
 
 
-        //CARGAR LOS DATOS EN LA TABLA -----
-        cargarDatos();
+        //IMPORTANTE: Ya NO llamamos a cargarDatos() acá
+        //Ahora lo vamos a llamar desde inicializar()
 
 
         //ZONA SUR - BOTÓN VOLVER -----
@@ -191,6 +191,24 @@ public abstract class ReporteBase extends JPanel {
     public JButton getButtonVolver() {
         return jButtonVolver;
     }
+
+
+    //METODO INICIALIZAR -----
+//Este método se llama DESPUÉS de que la clase hija termine de construirse
+//De esta forma, los Services ya están inicializados y funcionan correctamente
+//
+//IMPORTANTE: Este método debe ser llamado desde el constructor de las clases hijas
+//Ejemplo: super(panelManager); inicializar();
+    public void inicializar() {
+        //PASO 1: Definir las columnas de la tabla
+        //Llama al método abstracto de la clase hija para obtener los nombres de las columnas
+        definirColumnas();
+
+        //PASO 2: Cargar los datos en la tabla
+        //Llama al método abstracto de la clase hija para llenar la tabla con datos de la BD
+        cargarDatos();
+    }
+
 
 
     //MÉTODOS ABSTRACTOS (PUBLIC) -----

@@ -24,6 +24,7 @@ public class PantallaEliminarUsuario extends PantallaEliminarBase {
     //CONSTRUCTOR
     public PantallaEliminarUsuario(PanelManager panel) {
         super(panel); //llama al constructor de PantallaEliminarBase
+        inicializar(); //carga los usuarios en el ComboBox
     }
 
 

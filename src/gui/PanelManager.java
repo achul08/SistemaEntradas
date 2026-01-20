@@ -203,9 +203,12 @@ public class PanelManager {
                     mostrar(formularioVenta);
                     break;
 
-                case 22:  // Ver Espectáculos Disponibles (todavía no existe)
-                    JOptionPane.showMessageDialog(null, "Ver Espectáculos - En desarrollo");
-                    mostrar(20);
+                case 22:  // Ver Espectáculos Disponibles (para VENDEDOR)
+                    //Crear el reporte con el constructor especial para vendedor:
+                    //- true = solo mostrar espectáculos activos
+                    //- 20 = volver al MenuVendedor
+                    ReporteEspectaculos reporteEspectaculosVendedor = new ReporteEspectaculos(this, true, 20);
+                    mostrar(reporteEspectaculosVendedor);
                     break;
 
                 case 23:  // Ver Mis Ventas

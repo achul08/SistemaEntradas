@@ -23,7 +23,16 @@ public class PantallaEliminarEstadio extends PantallaEliminarBase {
 
     //CONSTRUCTOR -----
     public PantallaEliminarEstadio(PanelManager panel) {
+        //serviceEstadio ya se creó en la línea 23
+        //Entonces ya existe y está listo para usar
+
         super(panel); //llama al constructor de PantallaEliminarBase
+        //El padre arma toda la pantalla pero NO llena el ComboBox
+
+        //AHORA llamamos a inicializar() para llenar el ComboBox
+        inicializar(); //este método está en PantallaEliminarBase
+        //inicializar() → cargarElementosEnCombo() → consultarTodos() → serviceEstadio.consultarTodos()
+        //Como serviceEstadio ya existe, funciona perfecto
     }
 
 

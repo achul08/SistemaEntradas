@@ -28,6 +28,7 @@ public class PantallaSeleccionEspectaculos extends PantallaSeleccionBase {
     //CONSTRUCTOR -----
     public PantallaSeleccionEspectaculos(PanelManager panel) {
         super(panel); //llama al constructor de PantallaSeleccionBase
+        inicializar(); //carga los espectáculos en el ComboBox
     }
 
 

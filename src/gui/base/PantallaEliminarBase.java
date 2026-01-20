@@ -39,7 +39,7 @@ public abstract class PantallaEliminarBase extends JPanel {
 
 
     //METODO ARMAR PANTALLA -----
-    //Construye la estructura visual común
+//Construye la estructura visual común
     private void armarPantalla() {
         //crear el panel interno
         pantallaEliminar = new JPanel();
@@ -78,8 +78,8 @@ public abstract class PantallaEliminarBase extends JPanel {
         pantallaEliminar.add(panelCentro, BorderLayout.CENTER);
 
 
-        //CARGAR LOS ELEMENTOS EN EL COMBOBOX -----
-        cargarElementosEnCombo();
+        //IMPORTANTE: Ya NO llamamos a cargarElementosEnCombo() acá
+        //Ahora lo vamos a llamar desde inicializar()
 
 
         //ZONA SUR - BOTONES -----
@@ -259,6 +259,21 @@ public abstract class PantallaEliminarBase extends JPanel {
 
     public void setListaElementos(List<?> lista) {
         this.listaElementos = lista;
+    }
+
+
+
+    //METODO INICIALIZAR -----
+//Este método se llama DESPUÉS de que la clase hija termine de construirse
+//De esta forma, los Services ya están inicializados y funcionan correctamente
+//
+//IMPORTANTE: Este método debe ser llamado desde el constructor de las clases hijas
+//Ejemplo: super(panelManager); inicializar();
+    public void inicializar() {
+        //PASO 1: Cargar los elementos en el ComboBox
+        //Llama al método de la clase hija que consulta la BD
+        //Como se llama DESPUÉS del constructor de la hija, los Services ya existen
+        cargarElementosEnCombo();
     }
 
 
