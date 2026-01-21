@@ -2,11 +2,12 @@ package entidades;
 
 import java.sql.Timestamp;
 
-
-//HACER ESTA ULTIMA (depende de todo)
+//ENTIDAD VENTA - MODIFICADA
+//Ahora incluye el atributo tipoPromocion para saber qué descuento se aplicó
 
 
 public class Venta {
+    //ATRIBUTOS ORIGINALES -----
     private int idVenta;
     private int idEspectaculo;
     private int idUbicacion;
@@ -16,13 +17,20 @@ public class Venta {
     private String nombreCliente;
     private String dniCliente;
 
+    //ATRIBUTO NUEVO -----
+    //Guarda el nombre de la promoción que se aplicó
+    //Ejemplos: "Happy Hour", "Sin promoción"
+    private String tipoPromocion;
 
-    //constructores
 
+    //CONSTRUCTOR VACÍO -----
     public Venta() {
     }
 
-    public Venta(int idEspectaculo, int idUbicacion, int idVendedor, Timestamp fechaVenta, double precioFinal, String nombreCliente, String dniCliente) {
+    //CONSTRUCTOR CON PARÁMETROS (SIN ID porque es auto_increment) -----
+    //MODIFICADO: Ahora incluye tipoPromocion
+    public Venta(int idEspectaculo, int idUbicacion, int idVendedor, Timestamp fechaVenta,
+                 double precioFinal, String nombreCliente, String dniCliente, String tipoPromocion) {
         this.idEspectaculo = idEspectaculo;
         this.idUbicacion = idUbicacion;
         this.idVendedor = idVendedor;
@@ -30,10 +38,11 @@ public class Venta {
         this.precioFinal = precioFinal;
         this.nombreCliente = nombreCliente;
         this.dniCliente = dniCliente;
+        this.tipoPromocion = tipoPromocion; //NUEVO
     }
 
 
-//getters y setters
+    //GETTERS Y SETTERS ORIGINALES -----
 
     public int getIdVenta() {
         return idVenta;
@@ -99,8 +108,20 @@ public class Venta {
         this.dniCliente = dniCliente;
     }
 
+    //GETTER Y SETTER NUEVOS -----
+    //Para el atributo tipoPromocion
 
-    //tostring
+    public String getTipoPromocion() {
+        return tipoPromocion;
+    }
+
+    public void setTipoPromocion(String tipoPromocion) {
+        this.tipoPromocion = tipoPromocion;
+    }
+
+
+    //toString MODIFICADO -----
+    //Ahora incluye la promoción aplicada
     @Override
     public String toString() {
         return "Venta\n" +
@@ -111,6 +132,7 @@ public class Venta {
                 "\nFecha de la venta: " + fechaVenta +
                 "\nPrecio final: " + precioFinal +
                 "\nNombre del cliente: " + nombreCliente +
-                "\nDNI del cliente: " + dniCliente ;
+                "\nDNI del cliente: " + dniCliente +
+                "\nPromoción aplicada: " + tipoPromocion; //NUEVO
     }
 }

@@ -50,122 +50,79 @@ public class ReporteUbicaciones extends ReporteBase {
     }
 
 
-    //═════════════════════════════════════════════════════════════════════
-    // MÉTODO NUEVO: CONFIGURAR RENDERER PARA FOTOS
-    //═════════════════════════════════════════════════════════════════════
-    /*
-     * ¿Qué hace este método?
-     * Por defecto, JTable muestra TODO como texto.
-     * Este método le dice a la tabla: "En la columna 5, en lugar de mostrar texto,
-     * mostrá una imagen cargada desde la URL"
-     *
-     * Es como decirle a Excel: "Esta columna no son números, son imágenes"
-     */
+    //METODO: Configurar el renderer para mostrar fotos -----
+//Carga imágenes desde la carpeta resources/imagenes/ubicaciones/
     private void configurarRendererFotos() {
-        //getTable() es un método de ReporteBase que devuelve la JTable
-        //setDefaultRenderer() le dice a la tabla cómo dibujar las celdas
-        //Object.class significa "esto aplica a todas las columnas"
+        //getTable() devuelve la JTable (heredado de ReporteBase)
+        //setDefaultRenderer() le dice a la tabla cómo dibujar cada celda
         getTable().setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 
-            //Este método se ejecuta CADA VEZ que la tabla dibuja una celda
-            //Parámetros:
-            // - table: la tabla completa
-            // - value: el valor de esta celda (puede ser texto, número, URL, etc.)
-            // - isSelected: true si el usuario seleccionó esta fila
-            // - hasFocus: true si esta celda tiene el foco del teclado
-            // - row: número de fila (0, 1, 2, ...)
-            // - column: número de columna (0, 1, 2, ...)
+            //Este método se ejecuta para CADA celda de la tabla
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
                                                            boolean isSelected, boolean hasFocus,
                                                            int row, int column) {
 
-                //PREGUNTA: ¿Esta es la columna 5 (Foto)?
-                //column == 5 → columna "Foto"
-                //value != null → hay algo en esta celda
-                //!value.toString().isEmpty() → no es un texto vacío
-                if (column == 5 && value != null && !value.toString().isEmpty()) {
-                    //═════════════════════════════════════════════════════════
-                    // SÍ ES LA COLUMNA DE FOTO → Mostrar imagen
-                    //═════════════════════════════════════════════════════════
+                //PREGUNTA: ¿Es la columna 5 (Foto) y tiene contenido?
+                //NOTA: En ubicaciones la foto es la columna 5 (no 4 como en estadios)
+                //Columnas: 0=ID, 1=Estadio, 2=Nombre, 3=Precio, 4=Capacidad, 5=Foto
+                if (column == 5 && value != null && !value.toString().isEmpty() && !value.toString().equals("(Sin foto)")) {
 
-                    //Crear un JLabel (etiqueta) para mostrar la imagen
-                    //Un JLabel puede mostrar texto O imágenes
+                    //Crear un JLabel para mostrar la imagen
                     JLabel label = new JLabel();
-
-                    //Centrar la imagen dentro del JLabel
-                    label.setHorizontalAlignment(JLabel.CENTER);
+                    label.setHorizontalAlignment(JLabel.CENTER); //centrar la imagen
 
                     try {
-                        //PASO 1: Obtener la URL como String
-                        //value es un Object, lo convertimos a String
-                        String urlString = value.toString();
-                        //Ejemplo: "https://ejemplo.com/foto-platea.jpg"
+                        //PASO 1: Obtener el nombre del archivo desde la base de datos
+                        //Ejemplo: "platea.jpg"
+                        String nombreArchivo = value.toString();
 
-                        //PASO 2: Crear un objeto URL de Java
-                        //Este objeto sabe cómo conectarse a internet y descargar la imagen
-                        URL url = new URL(urlString);
+                        //PASO 2: Construir la ruta completa hacia el archivo
+                        //Busca en: resources/imagenes/ubicaciones/
+                        String rutaCompleta = "resources/imagenes/ubicaciones/" + nombreArchivo;
 
-                        //PASO 3: Crear un ImageIcon a partir de la URL
-                        //ImageIcon descarga la imagen de internet automáticamente
-                        ImageIcon icon = new ImageIcon(url);
+                        //PASO 3: Cargar la imagen desde el archivo
+                        //ImageIcon sabe cargar JPG, PNG, GIF, etc.
+                        ImageIcon icono = new ImageIcon(rutaCompleta);
 
-                        //PASO 4: Obtener la imagen "cruda" del ImageIcon
-                        //Esto nos da acceso a la imagen en memoria
-                        Image img = icon.getImage();
+                        //PASO 4: Redimensionar la imagen a 100x75 píxeles
+                        //Así todas las fotos tienen el mismo tamaño
+                        Image imagenOriginal = icono.getImage(); //obtener la imagen
+                        Image imagenChica = imagenOriginal.getScaledInstance(100, 75, Image.SCALE_SMOOTH); //redimensionar
+                        ImageIcon iconoChico = new ImageIcon(imagenChica); //crear nuevo icono
 
-                        //PASO 5: Redimensionar la imagen a un tamaño fijo
-                        //100x75 píxeles (ancho x alto)
-                        //Image.SCALE_SMOOTH hace que la imagen se vea bien al redimensionar
-                        //(sin píxeles dentados)
-                        Image imgEscalada = img.getScaledInstance(100, 75, Image.SCALE_SMOOTH);
-
-                        //PASO 6: Crear un nuevo ImageIcon con la imagen redimensionada
-                        ImageIcon iconEscalado = new ImageIcon(imgEscalada);
-
-                        //PASO 7: Poner el icono (imagen) en el JLabel
-                        label.setIcon(iconEscalado);
+                        //PASO 5: Poner la imagen en el label
+                        label.setIcon(iconoChico);
 
                     } catch (Exception e) {
-                        //Si algo salió mal (URL inválida, sin internet, etc.)
-                        //mostrar un mensaje de error en lugar de la imagen
-                        label.setText("(Error al cargar foto)");
+                        //Si hubo error (archivo no existe, ruta mal, etc.)
+                        //mostrar mensaje de error en rojo
+                        label.setText("(No encontrada)");
+                        label.setForeground(Color.RED);
                     }
 
-                    //PASO 8: Configurar colores según si está seleccionado
+                    //Configurar colores del label según si está seleccionado
                     if (isSelected) {
-                        //Si el usuario seleccionó esta fila, usar colores de selección
-                        label.setBackground(table.getSelectionBackground()); //fondo azul
-                        label.setForeground(table.getSelectionForeground()); //texto blanco
+                        //Fila seleccionada = fondo azul
+                        label.setBackground(table.getSelectionBackground());
                     } else {
-                        //Si no está seleccionado, usar colores normales
-                        label.setBackground(table.getBackground()); //fondo blanco
-                        label.setForeground(table.getForeground()); //texto negro
+                        //Fila normal = fondo blanco
+                        label.setBackground(table.getBackground());
                     }
+                    label.setOpaque(true); //hacer visible el fondo
 
-                    //setOpaque(true) hace que el fondo del JLabel sea visible
-                    //(si no, sería transparente)
-                    label.setOpaque(true);
-
-                    //PASO 9: Devolver el JLabel con la imagen
-                    //Esto es lo que se va a dibujar en la celda
+                    //Devolver el label con la imagen (esto se dibuja en la celda)
                     return label;
 
                 } else {
-                    //═════════════════════════════════════════════════════════
-                    // NO ES LA COLUMNA DE FOTO → Mostrar texto normal
-                    //═════════════════════════════════════════════════════════
-
-                    //super.getTableCellRendererComponent() llama al método original
-                    //que dibuja texto normal (como antes)
+                    //Para las demás columnas (ID, Estadio, etc.), mostrar texto normal
                     return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 }
             }
         });
 
-        //IMPORTANTE: Aumentar la altura de las filas para que se vean las fotos
-        //Por defecto, las filas tienen ~20 píxeles de alto
-        //Con 80 píxeles, las fotos de 75px se ven completas
+        //Aumentar la altura de las filas a 80 píxeles
+        //Así las fotos de 75px entran bien
         getTable().setRowHeight(80);
     }
 

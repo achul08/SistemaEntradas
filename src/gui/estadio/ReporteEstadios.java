@@ -38,58 +38,78 @@ public class ReporteEstadios extends ReporteBase {
     }
 
 
-    //METODO NUEVO: Configurar el renderer para mostrar fotos -----
+    //METODO: Configurar el renderer para mostrar fotos -----
+//Carga imágenes desde la carpeta resources/imagenes/estadios/
     private void configurarRendererFotos() {
-        //Crear un renderer personalizado que muestre imágenes en la columna de Foto
+        //getTable() devuelve la JTable (heredado de ReporteBase)
+        //setDefaultRenderer() le dice a la tabla cómo dibujar cada celda
         getTable().setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+
+            //Este método se ejecuta para CADA celda de la tabla
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
                                                            boolean isSelected, boolean hasFocus,
                                                            int row, int column) {
 
-                //Si es la columna de Foto (columna 4), mostrar la imagen
-                if (column == 4 && value != null && !value.toString().isEmpty()) {
+                //PREGUNTA: ¿Es la columna 4 (Foto) y tiene contenido?
+                if (column == 4 && value != null && !value.toString().isEmpty() && !value.toString().equals("(Sin foto)")) {
+
                     //Crear un JLabel para mostrar la imagen
                     JLabel label = new JLabel();
-                    label.setHorizontalAlignment(JLabel.CENTER);
+                    label.setHorizontalAlignment(JLabel.CENTER); //centrar la imagen
 
                     try {
-                        //Intentar cargar la imagen desde la URL
-                        String urlString = value.toString();
-                        ImageIcon icon = new ImageIcon(urlString);
+                        //PASO 1: Obtener el nombre del archivo desde la base de datos
+                        //Ejemplo: "monumental.jpg"
+                        String nombreArchivo = value.toString();
 
-                        //Redimensionar la imagen a un tamaño razonable (100x75 px)
-                        Image img = icon.getImage();
-                        Image imgEscalada = img.getScaledInstance(100, 75, Image.SCALE_SMOOTH);
-                        ImageIcon iconEscalado = new ImageIcon(imgEscalada);
+                        //PASO 2: Construir la ruta completa hacia el archivo
+                        //Busca en: resources/imagenes/estadios/
+                        String rutaCompleta = "resources/imagenes/estadios/" + nombreArchivo;
 
-                        label.setIcon(iconEscalado);
+                        //PASO 3: Cargar la imagen desde el archivo
+                        //ImageIcon sabe cargar JPG, PNG, GIF, etc.
+                        ImageIcon icono = new ImageIcon(rutaCompleta);
+
+                        //PASO 4: Redimensionar la imagen a 100x75 píxeles
+                        //Así todas las fotos tienen el mismo tamaño
+                        Image imagenOriginal = icono.getImage(); //obtener la imagen
+                        Image imagenChica = imagenOriginal.getScaledInstance(100, 75, Image.SCALE_SMOOTH); //redimensionar
+                        ImageIcon iconoChico = new ImageIcon(imagenChica); //crear nuevo icono
+
+                        //PASO 5: Poner la imagen en el label
+                        label.setIcon(iconoChico);
 
                     } catch (Exception e) {
-                        //Si falla cargar la imagen, mostrar un mensaje
-                        label.setText("(Error al cargar foto)");
+                        //Si hubo error (archivo no existe, ruta mal, etc.)
+                        //mostrar mensaje de error en rojo
+                        label.setText("(No encontrada)");
+                        label.setForeground(Color.RED);
                     }
 
-                    //Configurar colores según si está seleccionado
+                    //Configurar colores del label según si está seleccionado
                     if (isSelected) {
+                        //Fila seleccionada = fondo azul
                         label.setBackground(table.getSelectionBackground());
-                        label.setForeground(table.getSelectionForeground());
                     } else {
+                        //Fila normal = fondo blanco
                         label.setBackground(table.getBackground());
-                        label.setForeground(table.getForeground());
                     }
-                    label.setOpaque(true);
+                    label.setOpaque(true); //hacer visible el fondo
 
+                    //Devolver el label con la imagen (esto se dibuja en la celda)
                     return label;
+
                 } else {
-                    //Para las demás columnas, usar el renderer normal
+                    //Para las demás columnas (ID, Nombre, etc.), mostrar texto normal
                     return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 }
             }
         });
 
-        //Aumentar la altura de las filas para que se vean las fotos
-        getTable().setRowHeight(80); //altura de 80 píxeles (antes era ~20)
+        //Aumentar la altura de las filas a 80 píxeles
+        //Así las fotos de 75px entran bien
+        getTable().setRowHeight(80);
     }
 
 
