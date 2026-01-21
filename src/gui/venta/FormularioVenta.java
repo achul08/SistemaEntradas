@@ -11,6 +11,10 @@ import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import promocion.IPromocion; //NUEVO - para usar la interfaz
+import promocion.PromocionHappyHour; //NUEVO - promoción de 5am-6am
+import promocion.SinPromocion; //NUEVO - sin descuento
+import java.util.Calendar; //NUEVO - para obtener la hora actual
 
 
 
@@ -347,19 +351,87 @@ public class FormularioVenta extends JPanel {
         int indiceUbicacion = comboUbicaciones.getSelectedIndex();
         Ubicacion ubicacionSeleccionada = listaUbicaciones.get(indiceUbicacion);
 
+        //═════════════════════════════════════════════════════════════════════
+// PASO 1: DETERMINAR QUÉ PROMOCIÓN APLICAR
+//═════════════════════════════════════════════════════════════════════
+
+//Obtener la hora actual del sistema
+        Calendar ahora = Calendar.getInstance();
+        int horaActual = ahora.get(Calendar.HOUR_OF_DAY); //0-23
+
+//Variable para guardar la promoción a usar (interfaz IPromocion)
+        IPromocion promocion;
+
+//Verificar si estamos en Happy Hour (5am-6am)
+        if (horaActual >= 5 && horaActual < 6) {
+            //ESTAMOS EN HAPPY HOUR → usar PromocionHappyHour
+            promocion = new PromocionHappyHour();
+
+            //Mostrar mensaje al vendedor informando del descuento
+            JOptionPane.showMessageDialog(
+                    this,
+                    "¡HAPPY HOUR ACTIVO!\n20% de descuento aplicado automáticamente",
+                    "Promoción aplicada",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        } else {
+            //NO ES HAPPY HOUR → usar SinPromocion (precio normal)
+            promocion = new SinPromocion();
+        }
+
+
+//═════════════════════════════════════════════════════════════════════
+// PASO 2: CALCULAR EL PRECIO FINAL CON LA PROMOCIÓN
+//═════════════════════════════════════════════════════════════════════
+
+//Obtener el precio base de la ubicación (sin descuento)
+        double precioBase = ubicacionSeleccionada.getPrecio();
+
+//Aplicar la promoción (puede ser con descuento o sin descuento)
+//AQUÍ SE USA POLIMORFISMO: no nos importa si es HappyHour o SinPromocion,
+//simplemente llamamos a aplicarDescuento() y cada clase hace su trabajo
+        double precioFinal = promocion.aplicarDescuento(precioBase);
+
+
+//═════════════════════════════════════════════════════════════════════
+// PASO 3: CREAR EL OBJETO VENTA CON TODOS LOS DATOS
+//═════════════════════════════════════════════════════════════════════
+
         Venta venta = new Venta();
         venta.setIdEspectaculo(espectaculoSeleccionado.getIdEspectaculo());
         venta.setIdUbicacion(ubicacionSeleccionada.getIdUbicacion());
         venta.setIdVendedor(idVendedor);
         venta.setFechaVenta(new Timestamp(System.currentTimeMillis()));
-        venta.setPrecioFinal(ubicacionSeleccionada.getPrecio());
+        venta.setPrecioFinal(precioFinal); //CAMBIO: Ahora usa el precio con descuento aplicado
         venta.setNombreCliente(nombreCliente);
         venta.setDniCliente(dniCliente);
+        venta.setTipoPromocion(promocion.getNombre()); //NUEVO: Guardar el nombre de la promoción
 
         try {
             serviceVenta.insertar(venta);
 
-            JOptionPane.showMessageDialog(this, "Venta registrada correctamente\n\nCliente: " + nombreCliente + "\nEspectáculo: " + espectaculoSeleccionado.getNombre() + "\nUbicación: " + ubicacionSeleccionada.getNombre() + "\nPrecio: $" + ubicacionSeleccionada.getPrecio(), "Venta exitosa", JOptionPane.INFORMATION_MESSAGE);
+            //Construir el mensaje de confirmación
+//CAMBIO: Ahora muestra el precio original, el descuento aplicado, y el precio final
+            String mensaje = "Venta registrada correctamente\n\n" +
+                    "Cliente: " + nombreCliente + "\n" +
+                    "Espectáculo: " + espectaculoSeleccionado.getNombre() + "\n" +
+                    "Ubicación: " + ubicacionSeleccionada.getNombre() + "\n" +
+                    "Precio original: $" + String.format("%.2f", precioBase) + "\n" +
+                    "Promoción: " + promocion.getNombre() + "\n" +
+                    "Precio final: $" + String.format("%.2f", precioFinal);
+
+//Si hubo descuento, agregar cuánto se ahorró
+            if (precioFinal < precioBase) {
+                double ahorro = precioBase - precioFinal;
+                mensaje += "\n\n¡Ahorro: $" + String.format("%.2f", ahorro) + "!";
+            }
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    mensaje,
+                    "Venta exitosa",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
 
             jTextFieldNombreCliente.setText("");
             jTextFieldDniCliente.setText("");

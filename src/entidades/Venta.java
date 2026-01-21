@@ -3,7 +3,10 @@ package entidades;
 import java.sql.Timestamp;
 
 //ENTIDAD VENTA - MODIFICADA
-//Ahora incluye el atributo tipoPromocion para saber qué descuento se aplicó
+//Ahora incluye:
+// - tipoPromocion: qué promoción se aplicó (Happy Hour, etc.)
+// - valorAbono: cuánto vale el abono del cliente
+// - precioOriginal: precio de la entrada sin descuentos (para reportes)
 
 
 public class Venta {
@@ -13,14 +16,20 @@ public class Venta {
     private int idUbicacion;
     private int idVendedor;
     private Timestamp fechaVenta;
-    private double precioFinal;
+    private double precioFinal; //precio que pagó el cliente (con descuentos aplicados)
     private String nombreCliente;
     private String dniCliente;
 
-    //ATRIBUTO NUEVO -----
-    //Guarda el nombre de la promoción que se aplicó
-    //Ejemplos: "Happy Hour", "Sin promoción"
-    private String tipoPromocion;
+    //ATRIBUTOS NUEVOS (BONUS POINT 1: PROMOCIONES) -----
+    private String tipoPromocion; //ejemplo: "Happy Hour", "Sin promoción"
+
+    //ATRIBUTOS NUEVOS (BONUS POINT 2: ABONOS) -----
+    private double valorAbono; //cuánto vale el abono del cliente (0 si no tiene)
+    private double precioOriginal; //precio de la ubicación SIN descuentos (para prorrateo)
+    //Ejemplo: Si la entrada cuesta $1000, el abono vale $500, y hay happy hour (20% desc):
+    // - precioOriginal = 1000 (precio base de la ubicación)
+    // - valorAbono = 500 (lo que descuenta el abono)
+    // - precioFinal = 400 (después de aplicar promoción 20% a los $500 restantes)
 
 
     //CONSTRUCTOR VACÍO -----
@@ -28,9 +37,10 @@ public class Venta {
     }
 
     //CONSTRUCTOR CON PARÁMETROS (SIN ID porque es auto_increment) -----
-    //MODIFICADO: Ahora incluye tipoPromocion
+    //MODIFICADO: Ahora incluye tipoPromocion, valorAbono, precioOriginal
     public Venta(int idEspectaculo, int idUbicacion, int idVendedor, Timestamp fechaVenta,
-                 double precioFinal, String nombreCliente, String dniCliente, String tipoPromocion) {
+                 double precioFinal, String nombreCliente, String dniCliente,
+                 String tipoPromocion, double valorAbono, double precioOriginal) {
         this.idEspectaculo = idEspectaculo;
         this.idUbicacion = idUbicacion;
         this.idVendedor = idVendedor;
@@ -38,7 +48,9 @@ public class Venta {
         this.precioFinal = precioFinal;
         this.nombreCliente = nombreCliente;
         this.dniCliente = dniCliente;
-        this.tipoPromocion = tipoPromocion; //NUEVO
+        this.tipoPromocion = tipoPromocion;
+        this.valorAbono = valorAbono;
+        this.precioOriginal = precioOriginal;
     }
 
 
@@ -108,8 +120,7 @@ public class Venta {
         this.dniCliente = dniCliente;
     }
 
-    //GETTER Y SETTER NUEVOS -----
-    //Para el atributo tipoPromocion
+    //GETTERS Y SETTERS NUEVOS (PROMOCIONES) -----
 
     public String getTipoPromocion() {
         return tipoPromocion;
@@ -119,9 +130,27 @@ public class Venta {
         this.tipoPromocion = tipoPromocion;
     }
 
+    //GETTERS Y SETTERS NUEVOS (ABONOS) -----
+
+    public double getValorAbono() {
+        return valorAbono;
+    }
+
+    public void setValorAbono(double valorAbono) {
+        this.valorAbono = valorAbono;
+    }
+
+    public double getPrecioOriginal() {
+        return precioOriginal;
+    }
+
+    public void setPrecioOriginal(double precioOriginal) {
+        this.precioOriginal = precioOriginal;
+    }
+
 
     //toString MODIFICADO -----
-    //Ahora incluye la promoción aplicada
+    //Ahora incluye la promoción y el abono
     @Override
     public String toString() {
         return "Venta\n" +
@@ -130,9 +159,11 @@ public class Venta {
                 "\nid de la ubicacion: " + idUbicacion +
                 "\nid del vendedor: " + idVendedor +
                 "\nFecha de la venta: " + fechaVenta +
+                "\nPrecio original: " + precioOriginal +
+                "\nValor del abono: " + valorAbono +
+                "\nPromoción aplicada: " + tipoPromocion +
                 "\nPrecio final: " + precioFinal +
                 "\nNombre del cliente: " + nombreCliente +
-                "\nDNI del cliente: " + dniCliente +
-                "\nPromoción aplicada: " + tipoPromocion; //NUEVO
+                "\nDNI del cliente: " + dniCliente;
     }
 }

@@ -176,6 +176,7 @@ public class ReporteVentasVendedor extends JPanel {
         contenido.addColumn("Cliente");
         contenido.addColumn("DNI");
         contenido.addColumn("Precio");
+        contenido.addColumn("Promoción"); //NUEVO - columna para mostrar la promoción aplicada
         contenido.addColumn("Fecha");
     }
 
@@ -225,8 +226,13 @@ public class ReporteVentasVendedor extends JPanel {
 
                 //formatear la fecha
                 String fecha = formatoFecha.format(venta.getFechaVenta());
+                //Obtener la promoción aplicada
+                //Si es null (ventas viejas), mostrar "Sin promoción"
+                String promocion = venta.getTipoPromocion();
+                if (promocion == null || promocion.trim().isEmpty()) {
+                    promocion = "Sin promoción";
+                }
 
-                //crear la fila con los datos
                 Object[] fila = new Object[]{
                         venta.getIdVenta(),
                         nombreEspectaculo,
@@ -234,6 +240,7 @@ public class ReporteVentasVendedor extends JPanel {
                         venta.getNombreCliente(),
                         venta.getDniCliente(),
                         "$" + venta.getPrecioFinal(),
+                        promocion, //NUEVO - mostrar la promoción
                         fecha
                 };
 
