@@ -11,10 +11,10 @@ import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import promocion.IPromocion; //NUEVO - para usar la interfaz
-import promocion.PromocionHappyHour; //NUEVO - promoción de 5am-6am
-import promocion.SinPromocion; //NUEVO - sin descuento
-import java.util.Calendar; //NUEVO - para obtener la hora actual
+import promocion.IPromocion; //para usar la interfaz
+import promocion.PromocionHappyHour; //promoción de 5am-6am
+import promocion.SinPromocion; //sin descuento
+import java.util.Calendar; //para obtener la hora actual
 
 
 
@@ -31,6 +31,7 @@ public class FormularioVenta extends JPanel {
     private JComboBox<String> comboUbicaciones;
     private JTextField jTextFieldNombreCliente;
     private JTextField jTextFieldDniCliente;
+    private JTextField jTextFieldValorAbono; //NUEVO - para ingresar el valor del abono
 
     private JLabel jLabelEstadio;
     private JLabel jLabelFechaEspectaculo;
@@ -72,7 +73,7 @@ public class FormularioVenta extends JPanel {
 
         //ZONA CENTRO - CAMPOS
         JPanel panelCampos = new JPanel();
-        panelCampos.setLayout(new GridLayout(8, 2, 10, 15));
+        panelCampos.setLayout(new GridLayout(9, 2, 10, 15)); //CAMBIO: de 8 a 9 filas
         panelCampos.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
 
         //ComboBox ESPECTÁCULOS
@@ -141,6 +142,15 @@ public class FormularioVenta extends JPanel {
         jTextFieldDniCliente = new JTextField(20);
         panelCampos.add(labelDniCliente);
         panelCampos.add(jTextFieldDniCliente);
+
+        //TextField VALOR DEL ABONO - NUEVO
+        JLabel labelValorAbono = new JLabel("Valor del abono (0 si no tiene):");
+        labelValorAbono.setFont(new Font("Arial", Font.PLAIN, 14));
+        jTextFieldValorAbono = new JTextField(20);
+        jTextFieldValorAbono.setText("0"); //valor por defecto = 0
+        jTextFieldValorAbono.setToolTipText("Ingrese el valor del abono del cliente. Si no tiene abono, dejar en 0");
+        panelCampos.add(labelValorAbono);
+        panelCampos.add(jTextFieldValorAbono);
 
         formulario.add(panelCampos, BorderLayout.CENTER);
 
@@ -352,17 +362,68 @@ public class FormularioVenta extends JPanel {
         Ubicacion ubicacionSeleccionada = listaUbicaciones.get(indiceUbicacion);
 
         //═════════════════════════════════════════════════════════════════════
-// PASO 1: DETERMINAR QUÉ PROMOCIÓN APLICAR
-//═════════════════════════════════════════════════════════════════════
+        // PASO 1: LEER Y VALIDAR EL VALOR DEL ABONO
+        //═════════════════════════════════════════════════════════════════════
 
-//Obtener la hora actual del sistema
+        String valorAbonoTexto = jTextFieldValorAbono.getText().trim();
+        double valorAbono = 0.0;
+
+        //Intentar convertir el texto a número
+        try {
+            valorAbono = Double.parseDouble(valorAbonoTexto);
+
+            //Validar que el valor del abono no sea negativo
+            if (valorAbono < 0) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "El valor del abono no puede ser negativo",
+                        "Valor inválido",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                jTextFieldValorAbono.requestFocus();
+                return;
+            }
+
+        } catch (NumberFormatException ex) {
+            //Si no es un número válido, mostrar error
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El valor del abono debe ser un número válido\nEjemplos: 0, 500, 1000.50",
+                    "Formato incorrecto",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            jTextFieldValorAbono.requestFocus();
+            return;
+        }
+
+
+        //═════════════════════════════════════════════════════════════════════
+        // PASO 2: CREAR OBJETO ABONO Y CALCULAR PRECIO DESPUÉS DEL ABONO
+        //═════════════════════════════════════════════════════════════════════
+
+        //Obtener el precio base de la ubicación (sin ningún descuento)
+        double precioBase = ubicacionSeleccionada.getPrecio();
+
+        //Crear el objeto Abono con el valor ingresado
+        Abono abono = new Abono(valorAbono);
+
+        //Calcular el precio después de aplicar el abono
+        //Si precioBase = 1000 y valorAbono = 300 → precioConAbono = 700
+        double precioConAbono = abono.calcularPrecioFinal(precioBase);
+
+
+        //═════════════════════════════════════════════════════════════════════
+        // PASO 3: DETERMINAR QUÉ PROMOCIÓN APLICAR
+        //═════════════════════════════════════════════════════════════════════
+
+        //Obtener la hora actual del sistema
         Calendar ahora = Calendar.getInstance();
         int horaActual = ahora.get(Calendar.HOUR_OF_DAY); //0-23
 
-//Variable para guardar la promoción a usar (interfaz IPromocion)
+        //Variable para guardar la promoción a usar (interfaz IPromocion)
         IPromocion promocion;
 
-//Verificar si estamos en Happy Hour (5am-6am)
+        //Verificar si estamos en Happy Hour (5am-6am)
         if (horaActual >= 5 && horaActual < 6) {
             //ESTAMOS EN HAPPY HOUR → usar PromocionHappyHour
             promocion = new PromocionHappyHour();
@@ -380,50 +441,58 @@ public class FormularioVenta extends JPanel {
         }
 
 
-//═════════════════════════════════════════════════════════════════════
-// PASO 2: CALCULAR EL PRECIO FINAL CON LA PROMOCIÓN
-//═════════════════════════════════════════════════════════════════════
+        //═════════════════════════════════════════════════════════════════════
+        // PASO 4: APLICAR LA PROMOCIÓN AL PRECIO CON ABONO
+        //═════════════════════════════════════════════════════════════════════
 
-//Obtener el precio base de la ubicación (sin descuento)
-        double precioBase = ubicacionSeleccionada.getPrecio();
+        //IMPORTANTE: La promoción se aplica DESPUÉS del abono
+        //Ejemplo:
+        // - Precio base: $1000
+        // - Cliente tiene abono de $300 → queda $700
+        // - Happy Hour 20% descuento → $700 - 20% = $560
+        // - Precio final: $560
 
-//Aplicar la promoción (puede ser con descuento o sin descuento)
-//AQUÍ SE USA POLIMORFISMO: no nos importa si es HappyHour o SinPromocion,
-//simplemente llamamos a aplicarDescuento() y cada clase hace su trabajo
-        double precioFinal = promocion.aplicarDescuento(precioBase);
+        double precioFinal = promocion.aplicarDescuento(precioConAbono);
 
 
-//═════════════════════════════════════════════════════════════════════
-// PASO 3: CREAR EL OBJETO VENTA CON TODOS LOS DATOS
-//═════════════════════════════════════════════════════════════════════
+        //═════════════════════════════════════════════════════════════════════
+        // PASO 5: CREAR EL OBJETO VENTA CON TODOS LOS DATOS
+        //═════════════════════════════════════════════════════════════════════
 
         Venta venta = new Venta();
         venta.setIdEspectaculo(espectaculoSeleccionado.getIdEspectaculo());
         venta.setIdUbicacion(ubicacionSeleccionada.getIdUbicacion());
         venta.setIdVendedor(idVendedor);
         venta.setFechaVenta(new Timestamp(System.currentTimeMillis()));
-        venta.setPrecioFinal(precioFinal); //CAMBIO: Ahora usa el precio con descuento aplicado
+        venta.setPrecioFinal(precioFinal);
         venta.setNombreCliente(nombreCliente);
         venta.setDniCliente(dniCliente);
-        venta.setTipoPromocion(promocion.getNombre()); //NUEVO: Guardar el nombre de la promoción
+        venta.setTipoPromocion(promocion.getNombre());
+        venta.setValorAbono(valorAbono); //NUEVO - guardar el valor del abono
 
         try {
             serviceVenta.insertar(venta);
 
             //Construir el mensaje de confirmación
-//CAMBIO: Ahora muestra el precio original, el descuento aplicado, y el precio final
             String mensaje = "Venta registrada correctamente\n\n" +
                     "Cliente: " + nombreCliente + "\n" +
                     "Espectáculo: " + espectaculoSeleccionado.getNombre() + "\n" +
                     "Ubicación: " + ubicacionSeleccionada.getNombre() + "\n" +
-                    "Precio original: $" + String.format("%.2f", precioBase) + "\n" +
-                    "Promoción: " + promocion.getNombre() + "\n" +
+                    "Precio original: $" + String.format("%.2f", precioBase) + "\n";
+
+            //Si tiene abono, mostrar el detalle
+            if (valorAbono > 0) {
+                mensaje += "Abono: -$" + String.format("%.2f", valorAbono) + "\n";
+                mensaje += "Precio después del abono: $" + String.format("%.2f", precioConAbono) + "\n";
+            }
+
+            mensaje += "Promoción: " + promocion.getNombre() + "\n" +
                     "Precio final: $" + String.format("%.2f", precioFinal);
 
-//Si hubo descuento, agregar cuánto se ahorró
-            if (precioFinal < precioBase) {
-                double ahorro = precioBase - precioFinal;
-                mensaje += "\n\n¡Ahorro: $" + String.format("%.2f", ahorro) + "!";
+            //Calcular ahorro total
+            double ahorroTotal = precioBase - precioFinal;
+            if (ahorroTotal > 0) {
+                mensaje += "\n\n¡Ahorro total: $" + String.format("%.2f", ahorroTotal) + "!";
             }
 
             JOptionPane.showMessageDialog(
@@ -435,6 +504,7 @@ public class FormularioVenta extends JPanel {
 
             jTextFieldNombreCliente.setText("");
             jTextFieldDniCliente.setText("");
+            jTextFieldValorAbono.setText("0"); //NUEVO - limpiar el campo de abono
             jTextFieldNombreCliente.requestFocus();
             actualizarInfoUbicacion();
 

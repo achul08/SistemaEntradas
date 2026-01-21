@@ -31,7 +31,7 @@ public class DaoVenta implements IVentaDAO {
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             System.out.println("Se conectó a la base de datos");
             preparedStatement = connection.prepareStatement(
-                    "INSERT INTO VENTA (id_espectaculo, id_ubicacion, id_vendedor, fecha_venta, precio_final, nombre_cliente, dni_cliente, tipo_promocion) VALUES (?,?,?,?,?,?,?,?)"
+                    "INSERT INTO VENTA (id_espectaculo, id_ubicacion, id_vendedor, fecha_venta, precio_final, nombre_cliente, dni_cliente, tipo_promocion, valor_abono) VALUES (?,?,?,?,?,?,?,?,?)"
             );
             preparedStatement.setInt(1, elemento.getIdEspectaculo());
             preparedStatement.setInt(2, elemento.getIdUbicacion());
@@ -40,7 +40,8 @@ public class DaoVenta implements IVentaDAO {
             preparedStatement.setDouble(5, elemento.getPrecioFinal());
             preparedStatement.setString(6, elemento.getNombreCliente());
             preparedStatement.setString(7, elemento.getDniCliente());
-            preparedStatement.setString(8, elemento.getTipoPromocion()); //NUEVO - parámetro 8
+            preparedStatement.setString(8, elemento.getTipoPromocion()); //parámetro 8
+            preparedStatement.setDouble(9, elemento.getValorAbono()); //NUEVO - parámetro 9
             int resultado = preparedStatement.executeUpdate();
             System.out.println("Se insertó correctamente. Filas afectadas: " + resultado);
         }
@@ -68,7 +69,7 @@ public class DaoVenta implements IVentaDAO {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             preparedStatement = connection.prepareStatement(
-                    "UPDATE VENTA SET id_espectaculo=?, id_ubicacion=?, id_vendedor=?, fecha_venta=?, precio_final=?, nombre_cliente=?, dni_cliente=?, tipo_promocion=? WHERE id_venta=?"
+                    "UPDATE VENTA SET id_espectaculo=?, id_ubicacion=?, id_vendedor=?, fecha_venta=?, precio_final=?, nombre_cliente=?, dni_cliente=?, tipo_promocion=?, valor_abono=? WHERE id_venta=?"
             );
             preparedStatement.setInt(1, elemento.getIdEspectaculo());
             preparedStatement.setInt(2, elemento.getIdUbicacion());
@@ -77,8 +78,9 @@ public class DaoVenta implements IVentaDAO {
             preparedStatement.setDouble(5, elemento.getPrecioFinal());
             preparedStatement.setString(6, elemento.getNombreCliente());
             preparedStatement.setString(7, elemento.getDniCliente());
-            preparedStatement.setString(8, elemento.getTipoPromocion()); //NUEVO - parámetro 8
-            preparedStatement.setInt(9, elemento.getIdVenta()); //CAMBIO: Ahora es el parámetro 9 (antes era 8)
+            preparedStatement.setString(8, elemento.getTipoPromocion()); //parámetro 8
+            preparedStatement.setDouble(9, elemento.getValorAbono()); //NUEVO - parámetro 9
+            preparedStatement.setInt(10, elemento.getIdVenta()); //CAMBIO: Ahora es el parámetro 10 (antes era 9)
             int resultado = preparedStatement.executeUpdate();
         }
         catch (ClassNotFoundException | SQLException e) {
@@ -143,7 +145,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setPrecioFinal(rs.getDouble("precio_final"));
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
-                venta.setTipoPromocion(rs.getString("tipo_promocion")); //NUEVO
+                venta.setTipoPromocion(rs.getString("tipo_promocion"));
+                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
             }
         }
         catch (ClassNotFoundException | SQLException e) {
@@ -182,7 +185,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setPrecioFinal(rs.getDouble("precio_final"));
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
-                venta.setTipoPromocion(rs.getString("tipo_promocion")); //NUEVO
+                venta.setTipoPromocion(rs.getString("tipo_promocion"));
+                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
                 ventas.add(venta);
             }
         }
@@ -233,7 +237,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setPrecioFinal(rs.getDouble("precio_final"));
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
-                venta.setTipoPromocion(rs.getString("tipo_promocion")); //NUEVO
+                venta.setTipoPromocion(rs.getString("tipo_promocion"));
+                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
                 ventas.add(venta);
             }
         }
@@ -280,7 +285,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setPrecioFinal(rs.getDouble("precio_final"));
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
-                venta.setTipoPromocion(rs.getString("tipo_promocion")); //NUEVO
+                venta.setTipoPromocion(rs.getString("tipo_promocion"));
+                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
                 ventas.add(venta);
             }
         }
@@ -329,7 +335,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setPrecioFinal(rs.getDouble("precio_final"));
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
-                venta.setTipoPromocion(rs.getString("tipo_promocion")); //NUEVO
+                venta.setTipoPromocion(rs.getString("tipo_promocion"));
+                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
                 ventas.add(venta);
             }
         }
@@ -380,7 +387,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setPrecioFinal(rs.getDouble("precio_final"));
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
-                venta.setTipoPromocion(rs.getString("tipo_promocion")); //NUEVO
+                venta.setTipoPromocion(rs.getString("tipo_promocion"));
+                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
                 ventas.add(venta);
             }
         }

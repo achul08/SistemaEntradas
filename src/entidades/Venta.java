@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 //Ahora incluye:
 // - tipoPromocion: qué promoción se aplicó (Happy Hour, etc.)
 // - valorAbono: cuánto vale el abono del cliente
-// - precioOriginal: precio de la entrada sin descuentos (para reportes)
 
 
 public class Venta {
@@ -25,11 +24,6 @@ public class Venta {
 
     //ATRIBUTOS NUEVOS (BONUS POINT 2: ABONOS) -----
     private double valorAbono; //cuánto vale el abono del cliente (0 si no tiene)
-    private double precioOriginal; //precio de la ubicación SIN descuentos (para prorrateo)
-    //Ejemplo: Si la entrada cuesta $1000, el abono vale $500, y hay happy hour (20% desc):
-    // - precioOriginal = 1000 (precio base de la ubicación)
-    // - valorAbono = 500 (lo que descuenta el abono)
-    // - precioFinal = 400 (después de aplicar promoción 20% a los $500 restantes)
 
 
     //CONSTRUCTOR VACÍO -----
@@ -37,10 +31,10 @@ public class Venta {
     }
 
     //CONSTRUCTOR CON PARÁMETROS (SIN ID porque es auto_increment) -----
-    //MODIFICADO: Ahora incluye tipoPromocion, valorAbono, precioOriginal
+    //MODIFICADO: Ahora incluye tipoPromocion y valorAbono
     public Venta(int idEspectaculo, int idUbicacion, int idVendedor, Timestamp fechaVenta,
                  double precioFinal, String nombreCliente, String dniCliente,
-                 String tipoPromocion, double valorAbono, double precioOriginal) {
+                 String tipoPromocion, double valorAbono) {
         this.idEspectaculo = idEspectaculo;
         this.idUbicacion = idUbicacion;
         this.idVendedor = idVendedor;
@@ -50,7 +44,6 @@ public class Venta {
         this.dniCliente = dniCliente;
         this.tipoPromocion = tipoPromocion;
         this.valorAbono = valorAbono;
-        this.precioOriginal = precioOriginal;
     }
 
 
@@ -140,14 +133,6 @@ public class Venta {
         this.valorAbono = valorAbono;
     }
 
-    public double getPrecioOriginal() {
-        return precioOriginal;
-    }
-
-    public void setPrecioOriginal(double precioOriginal) {
-        this.precioOriginal = precioOriginal;
-    }
-
 
     //toString MODIFICADO -----
     //Ahora incluye la promoción y el abono
@@ -159,7 +144,6 @@ public class Venta {
                 "\nid de la ubicacion: " + idUbicacion +
                 "\nid del vendedor: " + idVendedor +
                 "\nFecha de la venta: " + fechaVenta +
-                "\nPrecio original: " + precioOriginal +
                 "\nValor del abono: " + valorAbono +
                 "\nPromoción aplicada: " + tipoPromocion +
                 "\nPrecio final: " + precioFinal +
