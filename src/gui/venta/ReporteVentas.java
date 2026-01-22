@@ -15,6 +15,7 @@ import java.util.List;
 //REPORTE VENTAS - Para ADMINISTRADORES
 //Muestra TODAS las ventas del sistema
 //Permite filtrar por espectáculo (futuro: también por fechas)
+//MODIFICADO: Ahora incluye columna "Abono" (PASO 2D del Bonus Point 2)
 
 public class ReporteVentas extends JPanel {
     //ATRIBUTOS - SERVICES -----
@@ -185,6 +186,10 @@ public class ReporteVentas extends JPanel {
     }
 
 
+    //═════════════════════════════════════════════════════════════════════
+    // MÉTODO: definirColumnas() - MODIFICADO (PASO 2D)
+    //═════════════════════════════════════════════════════════════════════
+    //CAMBIO: Agregamos columna "Abono" entre "Precio" y "Promoción"
     private void definirColumnas() {
         contenido.addColumn("ID Venta");
         contenido.addColumn("Espectáculo");
@@ -193,7 +198,8 @@ public class ReporteVentas extends JPanel {
         contenido.addColumn("Cliente");
         contenido.addColumn("DNI");
         contenido.addColumn("Precio");
-        contenido.addColumn("Promoción"); //NUEVO - columna para mostrar la promoción aplicada
+        contenido.addColumn("Abono");      //NUEVO - Columna para mostrar el valor del abono
+        contenido.addColumn("Promoción");
         contenido.addColumn("Fecha");
     }
 
@@ -231,6 +237,10 @@ public class ReporteVentas extends JPanel {
     }
 
 
+    //═════════════════════════════════════════════════════════════════════
+    // MÉTODO: cargarDatos() - MODIFICADO (PASO 2D)
+    //═════════════════════════════════════════════════════════════════════
+    //CAMBIO: Incluimos el valor del abono en cada fila
     private void cargarDatos(Integer idEspectaculoFiltro) {
         try {
             List<Venta> ventas;
@@ -245,7 +255,7 @@ public class ReporteVentas extends JPanel {
 
             if(ventas.isEmpty()) {
                 contenido.addRow(new Object[]{
-                        "-", "No hay ventas registradas", "-", "-", "-", "-", "-", "-"
+                        "-", "No hay ventas registradas", "-", "-", "-", "-", "-", "-", "-", "-"
                 });
                 return;
             }
@@ -278,22 +288,36 @@ public class ReporteVentas extends JPanel {
                 String fecha = formatoFecha.format(venta.getFechaVenta());
 
                 //Obtener la promoción aplicada
-//Si es null (ventas viejas), mostrar "Sin promoción"
+                //Si es null (ventas viejas), mostrar "Sin promoción"
                 String promocion = venta.getTipoPromocion();
                 if (promocion == null || promocion.trim().isEmpty()) {
                     promocion = "Sin promoción";
                 }
 
+                //NUEVO - PASO 2D: Obtener el valor del abono
+                //Si es 0, mostrar "-" (sin abono)
+                //Si es mayor a 0, mostrar "$XXX"
+                String valorAbono;
+                if (venta.getValorAbono() == 0) {
+                    valorAbono = "-";
+                } else {
+                    valorAbono = "$" + String.format("%.2f", venta.getValorAbono());
+                }
+
+                //IMPORTANTE: El orden debe coincidir con definirColumnas()
+                //ANTES era: ID, Espectaculo, Ubicacion, Vendedor, Cliente, DNI, Precio, Promocion, Fecha (9 columnas)
+                //AHORA es: ID, Espectaculo, Ubicacion, Vendedor, Cliente, DNI, Precio, Abono, Promocion, Fecha (10 columnas)
                 Object[] fila = new Object[]{
-                        venta.getIdVenta(),
-                        nombreEspectaculo,
-                        nombreUbicacion,
-                        nombreVendedor,
-                        venta.getNombreCliente(),
-                        venta.getDniCliente(),
-                        "$" + venta.getPrecioFinal(),
-                        promocion, //NUEVO - mostrar la promoción
-                        fecha
+                        venta.getIdVenta(),              // columna 0: ID Venta
+                        nombreEspectaculo,               // columna 1: Espectáculo
+                        nombreUbicacion,                 // columna 2: Ubicación
+                        nombreVendedor,                  // columna 3: Vendedor
+                        venta.getNombreCliente(),        // columna 4: Cliente
+                        venta.getDniCliente(),           // columna 5: DNI
+                        "$" + venta.getPrecioFinal(),    // columna 6: Precio
+                        valorAbono,                      // columna 7: Abono ← NUEVO
+                        promocion,                       // columna 8: Promoción
+                        fecha                            // columna 9: Fecha
                 };
 
                 contenido.addRow(fila);
@@ -301,7 +325,7 @@ public class ReporteVentas extends JPanel {
 
         } catch (ServiceException e) {
             contenido.addRow(new Object[]{
-                    "-", "Error al cargar las ventas: " + e.getMessage(), "-", "-", "-", "-", "-", "-"
+                    "-", "Error al cargar las ventas: " + e.getMessage(), "-", "-", "-", "-", "-", "-", "-", "-"
             });
         }
     }

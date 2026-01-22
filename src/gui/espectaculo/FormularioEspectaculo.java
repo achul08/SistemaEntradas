@@ -260,12 +260,8 @@ public class FormularioEspectaculo extends FormularioBase {
                 serviceEspectaculo.insertar(espectaculo);
                 JOptionPane.showMessageDialog(this, "Espectáculo creado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-                //limpiar los campos
-                jTextFieldNombre.setText("");
-                jTextFieldFecha.setText("");
-                jCheckBoxActivo.setSelected(true);
-                comboEstadios.setSelectedIndex(0);
-                jTextFieldNombre.requestFocus();
+                //volver
+                getPanelManager().mostrar(getCodigoMenuPrincipal());
             }
         }
         catch (ServiceException e) {

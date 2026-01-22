@@ -259,13 +259,8 @@ public class FormularioUbicacion extends FormularioBase {
                 serviceUbicacion.insertar(ubicacion);
                 JOptionPane.showMessageDialog(this, "Ubicación creada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-                //limpiar los campos
-                jTextFieldNombre.setText("");
-                jTextFieldPrecio.setText("");
-                jTextFieldCapacidad.setText("");
-                jTextFieldFotoUrl.setText("");
-                comboEstadios.setSelectedIndex(0);
-                jTextFieldNombre.requestFocus();
+                //volver
+                getPanelManager().mostrar(getCodigoMenuPrincipal());
 
             }
         }
