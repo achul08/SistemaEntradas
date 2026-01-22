@@ -183,12 +183,8 @@ public class FormularioEstadio extends FormularioBase {
                 serviceEstadio.insertar(estadio);
                 JOptionPane.showMessageDialog(this, "Estadio creado correctamente", "Exito", JOptionPane.INFORMATION_MESSAGE);
 
-                //limpiar los campos
-                jTextFieldNombre.setText("");
-                jTextFieldDireccion.setText("");
-                jTextFieldCapacidad.setText("");
-                jTextFieldFotoUrl.setText("");
-                jTextFieldNombre.requestFocus();
+                //volver al menú
+                getPanelManager().mostrar(getCodigoMenuPrincipal());
             }
         }
         catch (ServiceException e) {

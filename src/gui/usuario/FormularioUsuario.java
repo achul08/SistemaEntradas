@@ -228,13 +228,8 @@ public class FormularioUsuario extends FormularioBase {
                 serviceUsuario.insertar(usuario);
                 JOptionPane.showMessageDialog(this, "Usuario creado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-                //limpiar los campos
-                jTextFieldNombre.setText("");
-                jTextFieldApellido.setText("");
-                jTextFieldUsername.setText("");
-                jPasswordField.setText("");
-                comboRol.setSelectedIndex(0);
-                jTextFieldNombre.requestFocus();
+                //volver
+                getPanelManager().mostrar(getCodigoMenuPrincipal());
             }
         }
         catch (ServiceException e) {

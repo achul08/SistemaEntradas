@@ -152,17 +152,33 @@ public class ServiceUsuario {
     // ═══════════════════════════════════════════════════════════════════════
     public void eliminar(int id) throws ServiceException {
         try {
-            // VALIDACIÓN: Verificar que el usuario EXISTA antes de eliminar
+            //VALIDACIÓN: Verificar que el usuario EXISTA antes de eliminar
             Usuario usuario = daoUsuario.consultar(id);
 
             if(usuario == null || usuario.getIdUsuario() == 0) {
                 throw new ServiceException("El usuario con ID " + id + " no existe");
             }
 
-            // Si existe, eliminar de la BD
+            //NUEVA VALIDACIÓN: Si es un vendedor, verificar que NO tenga ventas
+            if(usuario.getRol().equals("VENDEDOR")) {
+                //Importar DaoVenta
+                dao.DaoVenta daoVenta = new dao.DaoVenta();
+                java.util.List<entidades.Venta> ventasDelVendedor = daoVenta.consultarPorVendedor(id);
+
+                if(!ventasDelVendedor.isEmpty()) {
+                    throw new ServiceException(
+                            "No se puede eliminar el vendedor porque tiene " +
+                                    ventasDelVendedor.size() +
+                                    " venta(s) registrada(s). " +
+                                    "Los registros de ventas deben conservarse por motivos contables."
+                    );
+                }
+            }
+
+            //Si pasó las validaciones, eliminar
             daoUsuario.eliminar(id);
 
-        } catch (DaoException e) {
+        } catch (dao.DaoException e) {
             throw new ServiceException("Error en base de datos");
         }
     }
