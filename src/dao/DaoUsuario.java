@@ -1,7 +1,7 @@
 package dao;
 
-//DAO USUARIO - modificado para trabajar con herencia
-//Ahora devuelve objetos Administrador o Vendedor según el rol en la BD
+//trabaja con herencia
+//devuelve objetos admin o vend según el rol en la BD
 
 import entidades.Usuario;
 import entidades.Administrador;
@@ -35,7 +35,7 @@ public class DaoUsuario implements IDAO<Usuario>{
             preparedStatement.setString(2, elemento.getApellido());
             preparedStatement.setString(3, elemento.getUsername());
             preparedStatement.setString(4, elemento.getPassword());
-            preparedStatement.setString(5, elemento.getRol()); //llama a getRol() de Administrador o Vendedor
+            preparedStatement.setString(5, elemento.getRol()); //llama a getRol() de admin o vend
 
             int resultado = preparedStatement.executeUpdate();
             System.out.println("Se insertó correctamente. Filas afectadas: " + resultado);
@@ -61,7 +61,7 @@ public class DaoUsuario implements IDAO<Usuario>{
             preparedStatement.setString(2, elemento.getApellido());
             preparedStatement.setString(3, elemento.getUsername());
             preparedStatement.setString(4, elemento.getPassword());
-            preparedStatement.setString(5, elemento.getRol()); //llama a getRol() de Administrador o Vendedor
+            preparedStatement.setString(5, elemento.getRol()); //llama a getRol() de admin o vend
             preparedStatement.setInt(6, elemento.getIdUsuario());
 
             int resultado = preparedStatement.executeUpdate();

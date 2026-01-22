@@ -65,35 +65,18 @@ public class DaoUbicacion implements IDAO<Ubicacion>{
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
-            //MODIFICADO: Ahora incluye foto_url en el UPDATE
-            //Antes era: UPDATE UBICACION SET id_estadio=?, nombre=?, precio=?, capacidad=? WHERE id_ubicacion=?
-            //Ahora es: UPDATE UBICACION SET id_estadio=?, nombre=?, precio=?, capacidad=?, foto_url=? WHERE id_ubicacion=?
+
             preparedStatement = connection.prepareStatement(
                     "UPDATE UBICACION SET id_estadio=?, nombre=?, precio=?, capacidad=?, foto_url=? WHERE id_ubicacion=?"
             );
 
-            //PASO 1: Setear el ID del estadio (parámetro 1)
             preparedStatement.setInt(1, elemento.getIdEstadio());
-
-            //PASO 2: Setear el nombre (parámetro 2)
             preparedStatement.setString(2, elemento.getNombre());
-
-            //PASO 3: Setear el precio (parámetro 3)
             preparedStatement.setDouble(3, elemento.getPrecio());
-
-            //PASO 4: Setear la capacidad (parámetro 4)
             preparedStatement.setInt(4, elemento.getCapacidad());
 
-            //PASO 5: Setear la foto URL (parámetro 5) ← NUEVO
-            //Si elemento.getFotoUrl() es null, actualiza a NULL en la BD
-            //Si tiene valor, actualiza a ese valor
             preparedStatement.setString(5, elemento.getFotoUrl());
-
-            //PASO 6: Setear el ID de la ubicación (parámetro 6)
-            //Este es el WHERE, indica QUÉ ubicación modificar
             preparedStatement.setInt(6, elemento.getIdUbicacion());
-
-            //Ejecutar el UPDATE
             int resultado = preparedStatement.executeUpdate();
         }
         catch (ClassNotFoundException | SQLException e) {

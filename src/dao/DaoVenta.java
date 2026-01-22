@@ -17,10 +17,8 @@ public class DaoVenta implements IVentaDAO {
     private String DB_PASSWORD = "";
 
 
-    //═════════════════════════════════════════════════════════════════════
-    // MÉTODOS BÁSICOS DE IDAO (heredados)
-    //═════════════════════════════════════════════════════════════════════
 
+    // MÉTODOS BÁSICOS DE IDAO (heredados)
     @Override
     public void insertar(Venta elemento) throws DaoException {
         Connection connection = null;

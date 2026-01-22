@@ -60,44 +60,63 @@ public class ReporteEstadios extends ReporteBase {
 
                     try {
                         //PASO 1: Obtener el nombre del archivo desde la base de datos
-                        //Ejemplo: "monumental.jpg"
                         String nombreArchivo = value.toString();
 
-                        //PASO 2: Construir la ruta completa hacia el archivo
-                        //Busca en: resources/imagenes/estadios/
-                        String rutaCompleta = "resources/imagenes/estadios/" + nombreArchivo;
+                        //PASO 2: Construir la ruta usando getResource()
+                        String rutaRecurso = "imagenes/estadios/" + nombreArchivo;
+                        java.net.URL urlImagen = getClass().getClassLoader().getResource(rutaRecurso);
 
-                        //PASO 3: Cargar la imagen desde el archivo
-                        //ImageIcon sabe cargar JPG, PNG, GIF, etc.
-                        ImageIcon icono = new ImageIcon(rutaCompleta);
+                        //PASO 3: Verificar si encontró la imagen
+                        if (urlImagen != null) {
+                            //Si encontró la imagen, cargarla
+                            ImageIcon icono = new ImageIcon(urlImagen);
 
-                        //PASO 4: Redimensionar la imagen a 100x75 píxeles
-                        //Así todas las fotos tienen el mismo tamaño
-                        Image imagenOriginal = icono.getImage(); //obtener la imagen
-                        Image imagenChica = imagenOriginal.getScaledInstance(100, 75, Image.SCALE_SMOOTH); //redimensionar
-                        ImageIcon iconoChico = new ImageIcon(imagenChica); //crear nuevo icono
+                            //PASO 4: Redimensionar la imagen a 100x75 píxeles
+                            Image imagenOriginal = icono.getImage();
+                            Image imagenChica = imagenOriginal.getScaledInstance(100, 75, Image.SCALE_SMOOTH);
+                            ImageIcon iconoChico = new ImageIcon(imagenChica);
 
-                        //PASO 5: Poner la imagen en el label
-                        label.setIcon(iconoChico);
+                            //PASO 5: Poner la imagen en el label
+                            label.setIcon(iconoChico);
 
+                            //PASO 6: Configurar colores (ESTO FALTABA DENTRO DEL IF)
+                            if (isSelected) {
+                                label.setBackground(table.getSelectionBackground());
+                                label.setForeground(table.getSelectionForeground());
+                            } else {
+                                label.setBackground(table.getBackground());
+                                label.setForeground(table.getForeground());
+                            }
+                            label.setOpaque(true);
+
+                        } else {
+                            //Si NO encontró la imagen, mostrar mensaje de error
+                            label.setText("(No encontrada)");
+                            label.setForeground(Color.RED);
+
+                            //Configurar colores de fondo
+                            if (isSelected) {
+                                label.setBackground(table.getSelectionBackground());
+                            } else {
+                                label.setBackground(table.getBackground());
+                            }
+                            label.setOpaque(true);
+                        }
                     } catch (Exception e) {
-                        //Si hubo error (archivo no existe, ruta mal, etc.)
-                        //mostrar mensaje de error en rojo
-                        label.setText("(No encontrada)");
+                        //Si hubo error, mostrar mensaje
+                        label.setText("(Error: " + e.getMessage() + ")");
                         label.setForeground(Color.RED);
+
+                        //Configurar colores de fondo
+                        if (isSelected) {
+                            label.setBackground(table.getSelectionBackground());
+                        } else {
+                            label.setBackground(table.getBackground());
+                        }
+                        label.setOpaque(true);
                     }
 
-                    //Configurar colores del label según si está seleccionado
-                    if (isSelected) {
-                        //Fila seleccionada = fondo azul
-                        label.setBackground(table.getSelectionBackground());
-                    } else {
-                        //Fila normal = fondo blanco
-                        label.setBackground(table.getBackground());
-                    }
-                    label.setOpaque(true); //hacer visible el fondo
-
-                    //Devolver el label con la imagen (esto se dibuja en la celda)
+                    //IMPORTANTE: Devolver el label con la imagen
                     return label;
 
                 } else {
@@ -108,7 +127,6 @@ public class ReporteEstadios extends ReporteBase {
         });
 
         //Aumentar la altura de las filas a 80 píxeles
-        //Así las fotos de 75px entran bien
         getTable().setRowHeight(80);
     }
 

@@ -74,30 +74,34 @@ public class ReporteUbicaciones extends ReporteBase {
 
                     try {
                         //PASO 1: Obtener el nombre del archivo desde la base de datos
-                        //Ejemplo: "platea.jpg"
+                        //Ejemplo: "ubicacionesLuna.jpg"
                         String nombreArchivo = value.toString();
 
-                        //PASO 2: Construir la ruta completa hacia el archivo
-                        //Busca en: resources/imagenes/ubicaciones/
-                        String rutaCompleta = "resources/imagenes/ubicaciones/" + nombreArchivo;
+                        //PASO 2: Construir la ruta usando getResource()
+                        //IMPORTANTE: NO incluir "resources/" porque ya está marcado como Resources Root
+                        //Solo ponemos "imagenes/ubicaciones/" + nombreArchivo
+                        java.net.URL urlImagen = getClass().getClassLoader().getResource("imagenes/ubicaciones/" + nombreArchivo);
 
-                        //PASO 3: Cargar la imagen desde el archivo
-                        //ImageIcon sabe cargar JPG, PNG, GIF, etc.
-                        ImageIcon icono = new ImageIcon(rutaCompleta);
+                        //PASO 3: Verificar si encontró la imagen
+                        if (urlImagen != null) {
+                            //Si encontró la imagen, cargarla
+                            ImageIcon icono = new ImageIcon(urlImagen);
 
-                        //PASO 4: Redimensionar la imagen a 100x75 píxeles
-                        //Así todas las fotos tienen el mismo tamaño
-                        Image imagenOriginal = icono.getImage(); //obtener la imagen
-                        Image imagenChica = imagenOriginal.getScaledInstance(100, 75, Image.SCALE_SMOOTH); //redimensionar
-                        ImageIcon iconoChico = new ImageIcon(imagenChica); //crear nuevo icono
+                            //PASO 4: Redimensionar la imagen a 100x75 píxeles
+                            Image imagenOriginal = icono.getImage();
+                            Image imagenChica = imagenOriginal.getScaledInstance(100, 75, Image.SCALE_SMOOTH);
+                            ImageIcon iconoChico = new ImageIcon(imagenChica);
 
-                        //PASO 5: Poner la imagen en el label
-                        label.setIcon(iconoChico);
-
+                            //PASO 5: Poner la imagen en el label
+                            label.setIcon(iconoChico);
+                        } else {
+                            //Si NO encontró la imagen, mostrar mensaje de error
+                            label.setText("(No encontrada)");
+                            label.setForeground(Color.RED);
+                        }
                     } catch (Exception e) {
-                        //Si hubo error (archivo no existe, ruta mal, etc.)
-                        //mostrar mensaje de error en rojo
-                        label.setText("(No encontrada)");
+                        //Si hubo algún error al cargar, mostrar el mensaje del error
+                        label.setText("(Error: " + e.getMessage() + ")");
                         label.setForeground(Color.RED);
                     }
 
