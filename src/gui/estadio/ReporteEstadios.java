@@ -62,39 +62,64 @@ public class ReporteEstadios extends ReporteBase {
                         //PASO 1: Obtener el nombre del archivo desde la base de datos
                         String nombreArchivo = value.toString();
 
+                        System.out.println("═══════════════════════════════════");
+                        System.out.println("DEBUG ESTADIO - Buscando: " + nombreArchivo);
+
                         //PASO 2: Construir la ruta usando getResource()
                         String rutaRecurso = "imagenes/estadios/" + nombreArchivo;
                         java.net.URL urlImagen = getClass().getClassLoader().getResource(rutaRecurso);
 
+                        System.out.println("DEBUG ESTADIO - URL: " + urlImagen);
+
                         //PASO 3: Verificar si encontró la imagen
                         if (urlImagen != null) {
-                            //Si encontró la imagen, cargarla
-                            ImageIcon icono = new ImageIcon(urlImagen);
+                            System.out.println("DEBUG ESTADIO - ✓ URL encontrada, usando ImageIO...");
 
-                            //PASO 4: Redimensionar la imagen a 100x75 píxeles
-                            Image imagenOriginal = icono.getImage();
-                            Image imagenChica = imagenOriginal.getScaledInstance(100, 75, Image.SCALE_SMOOTH);
-                            ImageIcon iconoChico = new ImageIcon(imagenChica);
+                            //CAMBIO IMPORTANTE: Usar ImageIO en lugar de ImageIcon
+                            //ImageIO es más robusto para leer JPG
+                            java.awt.image.BufferedImage imagenOriginal = javax.imageio.ImageIO.read(urlImagen);
 
-                            //PASO 5: Poner la imagen en el label
-                            label.setIcon(iconoChico);
+                            if (imagenOriginal != null) {
+                                System.out.println("DEBUG ESTADIO - ✓ Imagen leída: " + imagenOriginal.getWidth() + "x" + imagenOriginal.getHeight());
 
-                            //PASO 6: Configurar colores (ESTO FALTABA DENTRO DEL IF)
-                            if (isSelected) {
-                                label.setBackground(table.getSelectionBackground());
-                                label.setForeground(table.getSelectionForeground());
+                                //PASO 4: Redimensionar la imagen a 100x75 píxeles
+                                Image imagenChica = imagenOriginal.getScaledInstance(100, 75, Image.SCALE_SMOOTH);
+                                ImageIcon iconoChico = new ImageIcon(imagenChica);
+
+                                //PASO 5: Poner la imagen en el label
+                                label.setIcon(iconoChico);
+                                System.out.println("DEBUG ESTADIO - ✓✓✓ Imagen cargada exitosamente");
+
+                                //PASO 6: Configurar colores
+                                if (isSelected) {
+                                    label.setBackground(table.getSelectionBackground());
+                                    label.setForeground(table.getSelectionForeground());
+                                } else {
+                                    label.setBackground(table.getBackground());
+                                    label.setForeground(table.getForeground());
+                                }
+                                label.setOpaque(true);
+
                             } else {
-                                label.setBackground(table.getBackground());
-                                label.setForeground(table.getForeground());
+                                //ImageIO no pudo leer la imagen
+                                System.out.println("DEBUG ESTADIO - ✗ ImageIO devolvió null");
+                                label.setText("(Error lectura)");
+                                label.setForeground(Color.RED);
+
+                                if (isSelected) {
+                                    label.setBackground(table.getSelectionBackground());
+                                } else {
+                                    label.setBackground(table.getBackground());
+                                }
+                                label.setOpaque(true);
                             }
-                            label.setOpaque(true);
 
                         } else {
-                            //Si NO encontró la imagen, mostrar mensaje de error
+                            //No encontró la URL
+                            System.out.println("DEBUG ESTADIO - ✗ URL no encontrada");
                             label.setText("(No encontrada)");
                             label.setForeground(Color.RED);
 
-                            //Configurar colores de fondo
                             if (isSelected) {
                                 label.setBackground(table.getSelectionBackground());
                             } else {
@@ -102,12 +127,15 @@ public class ReporteEstadios extends ReporteBase {
                             }
                             label.setOpaque(true);
                         }
+                        System.out.println("═══════════════════════════════════");
+
                     } catch (Exception e) {
-                        //Si hubo error, mostrar mensaje
+                        System.out.println("DEBUG ESTADIO - ✗✗✗ EXCEPCIÓN: " + e.getMessage());
+                        e.printStackTrace();
+
                         label.setText("(Error: " + e.getMessage() + ")");
                         label.setForeground(Color.RED);
 
-                        //Configurar colores de fondo
                         if (isSelected) {
                             label.setBackground(table.getSelectionBackground());
                         } else {
@@ -115,7 +143,6 @@ public class ReporteEstadios extends ReporteBase {
                         }
                         label.setOpaque(true);
                     }
-
                     //IMPORTANTE: Devolver el label con la imagen
                     return label;
 
