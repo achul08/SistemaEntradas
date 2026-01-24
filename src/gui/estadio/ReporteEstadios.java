@@ -43,6 +43,17 @@ public class ReporteEstadios extends ReporteBase {
     private void configurarRendererFotos() {
         //getTable() devuelve la JTable (heredado de ReporteBase)
         //setDefaultRenderer() le dice a la tabla cómo dibujar cada celda
+        System.out.println("═══════════════════════════════════");
+        System.out.println("DEBUG: Verificando recursos...");
+
+        java.net.URL testUrl1 = getClass().getClassLoader().getResource("imagenes/");
+        java.net.URL testUrl2 = getClass().getClassLoader().getResource("imagenes/estadios/");
+        java.net.URL testUrl3 = getClass().getClassLoader().getResource("imagenes/estadios/luna.jpg");
+
+        System.out.println("¿Existe 'imagenes/'? " + (testUrl1 != null ? "SÍ: " + testUrl1 : "NO"));
+        System.out.println("¿Existe 'imagenes/estadios/'? " + (testUrl2 != null ? "SÍ: " + testUrl2 : "NO"));
+        System.out.println("¿Existe 'imagenes/estadios/luna.jpg'? " + (testUrl3 != null ? "SÍ: " + testUrl3 : "NO"));
+        System.out.println("═══════════════════════════════════");
         getTable().setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 
             //Este método se ejecuta para CADA celda de la tabla
@@ -66,8 +77,8 @@ public class ReporteEstadios extends ReporteBase {
                         System.out.println("DEBUG ESTADIO - Buscando: " + nombreArchivo);
 
                         //PASO 2: Construir la ruta usando getResource()
-                        String rutaRecurso = "imagenes/estadios/" + nombreArchivo;
-                        java.net.URL urlImagen = getClass().getClassLoader().getResource(rutaRecurso);
+                        String rutaRecurso = "resources/imagenes/estadios/" + nombreArchivo;
+                        java.net.URL urlImagen = ReporteEstadios.class.getClassLoader().getResource(rutaRecurso);
 
                         System.out.println("DEBUG ESTADIO - URL: " + urlImagen);
 
