@@ -27,7 +27,7 @@ public class DaoUbicacion implements IDAO<Ubicacion>{
             //Antes era: INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad) VALUES (?,?,?,?)
             //Ahora es: INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad, foto_url) VALUES (?,?,?,?,?)
             preparedStatement = connection.prepareStatement(
-                    "INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad, foto_url) VALUES (?,?,?,?,?)"
+                    "INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad) VALUES (?,?,?,?)"
             );
 
             //PASO 1: Setear el ID del estadio (parámetro 1)
@@ -41,11 +41,6 @@ public class DaoUbicacion implements IDAO<Ubicacion>{
 
             //PASO 4: Setear la capacidad (parámetro 4)
             preparedStatement.setInt(4, elemento.getCapacidad());
-
-            //PASO 5: Setear la foto URL (parámetro 5) ← NUEVO
-            //Si elemento.getFotoUrl() es null, guarda NULL en la BD
-            //Si tiene valor, guarda ese valor
-            preparedStatement.setString(5, elemento.getFotoUrl());
 
             //Ejecutar el INSERT
             int resultado = preparedStatement.executeUpdate();
@@ -67,16 +62,14 @@ public class DaoUbicacion implements IDAO<Ubicacion>{
 
 
             preparedStatement = connection.prepareStatement(
-                    "UPDATE UBICACION SET id_estadio=?, nombre=?, precio=?, capacidad=?, foto_url=? WHERE id_ubicacion=?"
+                    "UPDATE UBICACION SET id_estadio=?, nombre=?, precio=?, capacidad=? WHERE id_ubicacion=?"
             );
 
             preparedStatement.setInt(1, elemento.getIdEstadio());
             preparedStatement.setString(2, elemento.getNombre());
             preparedStatement.setDouble(3, elemento.getPrecio());
             preparedStatement.setInt(4, elemento.getCapacidad());
-
-            preparedStatement.setString(5, elemento.getFotoUrl());
-            preparedStatement.setInt(6, elemento.getIdUbicacion());
+            preparedStatement.setInt(5, elemento.getIdUbicacion());
             int resultado = preparedStatement.executeUpdate();
         }
         catch (ClassNotFoundException | SQLException e) {
@@ -122,7 +115,6 @@ public class DaoUbicacion implements IDAO<Ubicacion>{
                 ubicacion.setNombre(rs.getString("nombre"));
                 ubicacion.setPrecio(rs.getDouble("precio"));
                 ubicacion.setCapacidad(rs.getInt("capacidad"));
-                ubicacion.setFotoUrl(rs.getString("foto_url"));
             }
         }
         catch (ClassNotFoundException | SQLException e) {
@@ -150,7 +142,6 @@ public class DaoUbicacion implements IDAO<Ubicacion>{
                 ubicacion.setNombre(rs.getString("nombre"));
                 ubicacion.setPrecio(rs.getDouble("precio"));
                 ubicacion.setCapacidad(rs.getInt("capacidad"));
-                ubicacion.setFotoUrl(rs.getString("foto_url"));
                 ubicaciones.add(ubicacion);
             }
         }

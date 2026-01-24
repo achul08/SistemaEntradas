@@ -26,12 +26,11 @@ public class DaoEstadio implements IDAO<Estadio>{
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             System.out.println("Se conectó a la base de datos");
             preparedStatement = connection.prepareStatement(
-                    "INSERT INTO ESTADIO (nombre, direccion, capacidad_total, foto_url) VALUES (?,?,?,?)"
+                    "INSERT INTO ESTADIO (nombre, direccion, capacidad_total) VALUES (?,?,?)"
             );
             preparedStatement.setString(1, elemento.getNombre());
             preparedStatement.setString(2, elemento.getDireccion());
             preparedStatement.setInt(3, elemento.getCapacidadTotal());
-            preparedStatement.setString(4, elemento.getFotoUrl());
 
             int resultado = preparedStatement.executeUpdate();
             System.out.println("Se insertó correctamente. Filas afectadas: " + resultado);
@@ -51,14 +50,13 @@ public class DaoEstadio implements IDAO<Estadio>{
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             preparedStatement = connection.prepareStatement(
-                    "UPDATE ESTADIO SET nombre=?, direccion=?, capacidad_total=?, foto_url=? WHERE id_estadio=?"
+                    "UPDATE ESTADIO SET nombre=?, direccion=?, capacidad_total=? WHERE id_estadio=?"
             );
 
             preparedStatement.setString(1, elemento.getNombre());
             preparedStatement.setString(2, elemento.getDireccion());
             preparedStatement.setInt(3, elemento.getCapacidadTotal());
-            preparedStatement.setString(4, elemento.getFotoUrl());
-            preparedStatement.setInt(5, elemento.getIdEstadio());
+            preparedStatement.setInt(4, elemento.getIdEstadio());
 
             int resultado = preparedStatement.executeUpdate();
         }
@@ -104,7 +102,6 @@ public class DaoEstadio implements IDAO<Estadio>{
                 estadio.setNombre(rs.getString("nombre"));
                 estadio.setDireccion(rs.getString("direccion"));
                 estadio.setCapacidadTotal(rs.getInt("capacidad_total"));
-                estadio.setFotoUrl(rs.getString("foto_url"));
             }
         }
         catch (ClassNotFoundException | SQLException e) {
@@ -131,7 +128,6 @@ public class DaoEstadio implements IDAO<Estadio>{
                 estadio.setNombre(rs.getString("nombre"));
                 estadio.setDireccion(rs.getString("direccion"));
                 estadio.setCapacidadTotal(rs.getInt("capacidad_total"));
-                estadio.setFotoUrl(rs.getString("foto_url"));
                 estadios.add(estadio);
             }
         }

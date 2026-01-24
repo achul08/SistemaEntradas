@@ -25,13 +25,11 @@ public class FormularioEstadio extends FormularioBase {
     private JTextField jTextFieldNombre;
     private JTextField jTextFieldDireccion;
     private JTextField jTextFieldCapacidad;
-    private JTextField jTextFieldFotoUrl;
 
     //labels específicos de estadio
     private JLabel jLabelNombre;
     private JLabel jLabelDireccion;
     private JLabel jLabelCapacidad;
-    private JLabel jLabelFotoUrl;
     private JLabel jLabelIdEstadio; //solo se muestra en modo modificar
 
 
@@ -71,9 +69,9 @@ public class FormularioEstadio extends FormularioBase {
         //en modo MODIFICAR son 5 filas (id, nombre, direc, cap, foto)
         //en modo CREAR son 4 filas (nombre, direc, cap, foto)
         if (isModoModificar()) {
-            panelCampos.setLayout(new GridLayout(5, 2, 10, 15));
-        } else {
             panelCampos.setLayout(new GridLayout(4, 2, 10, 15));
+        } else {
+            panelCampos.setLayout(new GridLayout(3, 2, 10, 15));
         }
 
         //si el modo es MODIFICAR se muestra el id
@@ -100,10 +98,6 @@ public class FormularioEstadio extends FormularioBase {
         jLabelCapacidad = new JLabel("Capacidad Total");
         jLabelCapacidad.setFont(new Font("Arial", Font.PLAIN, 14));
         jTextFieldCapacidad = new JTextField(20);
-        jLabelFotoUrl = new JLabel("URL de la foto (opcional)");
-        jLabelFotoUrl.setFont(new Font("Arial", Font.PLAIN, 14));
-        jTextFieldFotoUrl = new JTextField(20);
-        jTextFieldFotoUrl.setToolTipText("Ejemplo: https://ejemplo.com/foto-estadio.jpg");
 
 
         //agregar al panel en orden izq-der, arriba-abajo
@@ -113,8 +107,6 @@ public class FormularioEstadio extends FormularioBase {
         panelCampos.add(jTextFieldDireccion);
         panelCampos.add(jLabelCapacidad);
         panelCampos.add(jTextFieldCapacidad);
-        panelCampos.add(jLabelFotoUrl);
-        panelCampos.add(jTextFieldFotoUrl);
 
         return panelCampos;
     }
@@ -127,8 +119,6 @@ public class FormularioEstadio extends FormularioBase {
         //leer datos de los campos
         String nombre = jTextFieldNombre.getText();
         String direccion = jTextFieldDireccion.getText();
-        String fotoUrl = jTextFieldFotoUrl.getText().trim();
-
 
         //VALIDACIONES DE GUI -----
         //verificar que el nombre no esté vacío
@@ -162,7 +152,7 @@ public class FormularioEstadio extends FormularioBase {
         estadio.setNombre(nombre);
         estadio.setDireccion(direccion);
         estadio.setCapacidadTotal(capacidad);
-        estadio.setFotoUrl(fotoUrl);
+
 
         if (isModoModificar()) {
             estadio.setIdEstadio(getIdElementoModificar()); //si estamos modificando asignar id
@@ -209,6 +199,5 @@ public class FormularioEstadio extends FormularioBase {
         jTextFieldNombre.setText(estadio.getNombre());
         jTextFieldDireccion.setText(estadio.getDireccion());
         jTextFieldCapacidad.setText(String.valueOf(estadio.getCapacidadTotal()));
-        jTextFieldFotoUrl.setText(estadio.getFotoUrl() != null ? estadio.getFotoUrl() : "");
     }
 }

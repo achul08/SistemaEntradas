@@ -1,19 +1,12 @@
 package entidades;
 
-//HACER ESTA 3RA (depende de estadio)
-
-
-
 public class Ubicacion {
     private int idUbicacion;
     private int idEstadio;
     private String nombre;
     private double precio;
     private int capacidad;
-    private String fotoUrl;
 
-
-    //constructores
     public Ubicacion() {
     }
 
@@ -24,8 +17,7 @@ public class Ubicacion {
         this.capacidad = capacidad;
     }
 
-    //setters y getters
-
+    // Getters y setters (SIN fotoUrl)
     public int getIdUbicacion() {
         return idUbicacion;
     }
@@ -66,26 +58,13 @@ public class Ubicacion {
         this.capacidad = capacidad;
     }
 
-    public String getFotoUrl() {
-        return fotoUrl;
-    }
-
-    public void setFotoUrl(String fotoUrl) {
-        this.fotoUrl = fotoUrl;
-    }
-
-
-    //tostring
-
-
     @Override
     public String toString() {
         return "Ubicacion\n" +
                 "\nid de la ubicacion: " + idUbicacion +
                 "\nid del estadio: " + idEstadio +
-                "\nNombre: " + nombre + '\'' +
+                "\nNombre: " + nombre +
                 "\nPrecio: " + precio +
-                "\nCapacidad: " + capacidad +
-                "\nFoto url: " + fotoUrl;
+                "\nCapacidad: " + capacidad;
     }
 }

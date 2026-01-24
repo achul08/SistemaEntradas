@@ -7,7 +7,6 @@ public class Estadio {
     private String nombre;
     private String direccion;
     private int capacidadTotal;
-    private String fotoUrl;
 
 
     //constructores
@@ -56,13 +55,6 @@ public class Estadio {
         this.capacidadTotal = capacidadTotal;
     }
 
-    public String getFotoUrl() {
-        return fotoUrl;
-    }
-
-    public void setFotoUrl(String fotoUrl) {
-        this.fotoUrl = fotoUrl;
-    }
 
 
     //tostring
@@ -73,8 +65,7 @@ public class Estadio {
                 "idEstadio: " + idEstadio +
                 "\nNombre del estadio: " + nombre +
                 "\nDireccion: '" + direccion +
-                "\nCapacidad Total=" + capacidadTotal +
-                "\nFoto: " + fotoUrl;
+                "\nCapacidad Total=" + capacidadTotal;
     }
 
 
