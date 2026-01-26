@@ -10,46 +10,51 @@ import entidades.Espectaculo;
 import entidades.Estadio;
 import java.util.Date;
 import java.util.List;
+import dao.DaoVenta;
+import entidades.Venta;
 
 
 public class ServiceEspectaculo {
     //ATRIBUTOS -----
     private DaoEspectaculo daoEspectaculo;
     private DaoEstadio daoEstadio; //necesitamos el DAO de Estadio para verificar que el estadio exista
+    private DaoVenta daoVenta;  // ← NUEVO
 
     //CONSTRUCTOR -----
     public ServiceEspectaculo() {
         daoEspectaculo = new DaoEspectaculo();
         daoEstadio = new DaoEstadio();
+        daoVenta = new DaoVenta();
     }
 
 
     //METODO 1 - INSERTAR (Crear un espectáculo nuevo) -----
     public void insertar(Espectaculo espectaculo) throws ServiceException {
         try {
-            //VALIDACIÓN 1: Nombre obligatorio
+            //VALIDACIONES
+            // Nombre obligatorio
             if(espectaculo.getNombre() == null || espectaculo.getNombre().trim().isEmpty()) {
                 throw new ServiceException("El nombre del espectáculo es obligatorio");
             }
 
-            //VALIDACIÓN 2: Fecha obligatoria
+            //Fecha obligatoria
             if(espectaculo.getFecha() == null) {
                 throw new ServiceException("La fecha del espectáculo es obligatoria");
             }
 
-            //VALIDACIÓN 3: La fecha no puede ser en el pasado
+            //La fecha no puede ser en el pasado
             Date hoy = new Date();
             if(espectaculo.getFecha().before(hoy)) {
                 throw new ServiceException("La fecha del espectáculo no puede ser en el pasado");
             }
 
-            //VALIDACIÓN 4: El estadio debe existir
+            //El estadio debe existir
             Estadio estadio = daoEstadio.consultar(espectaculo.getIdEstadio());
             if(estadio == null || estadio.getIdEstadio() == 0) {
                 throw new ServiceException("El estadio con ID " + espectaculo.getIdEstadio() + " no existe");
             }
 
-            //VALIDACIÓN 5: No puede haber dos espectáculos con el mismo nombre en el mismo estadio el mismo día
+            //No puede haber dos espectáculos con el mismo nombre en el mismo estadio el mismo día
             List<Espectaculo> espectaculos = daoEspectaculo.consultarTodos();
 
             for(Espectaculo e : espectaculos) {
@@ -73,35 +78,36 @@ public class ServiceEspectaculo {
     //METODO 2 - MODIFICAR (Actualizar un espectáculo existente) -----
     public void modificar(Espectaculo espectaculo) throws ServiceException {
         try {
-            //VALIDACIÓN 0: Verificar que el espectáculo EXISTA
+            //VALIDACIONES
+            // Verificar que el espectáculo EXISTA
             Espectaculo existente = daoEspectaculo.consultar(espectaculo.getIdEspectaculo());
             if(existente == null || existente.getIdEspectaculo() == 0) {
                 throw new ServiceException("El espectáculo con ID " + espectaculo.getIdEspectaculo() + " no existe");
             }
 
-            //VALIDACIÓN 1: Nombre obligatorio
+            //Nombre obligatorio
             if(espectaculo.getNombre() == null || espectaculo.getNombre().trim().isEmpty()) {
                 throw new ServiceException("El nombre del espectáculo es obligatorio");
             }
 
-            //VALIDACIÓN 2: Fecha obligatoria
+            //Fecha obligatoria
             if(espectaculo.getFecha() == null) {
                 throw new ServiceException("La fecha del espectáculo es obligatoria");
             }
 
-            //VALIDACIÓN 3: La fecha no puede ser en el pasado
+            //La fecha no puede ser en el pasado
             Date hoy = new Date();
             if(espectaculo.getFecha().before(hoy)) {
                 throw new ServiceException("La fecha del espectáculo no puede ser en el pasado");
             }
 
-            //VALIDACIÓN 4: El estadio debe existir
+            //El estadio debe existir
             Estadio estadio = daoEstadio.consultar(espectaculo.getIdEstadio());
             if(estadio == null || estadio.getIdEstadio() == 0) {
                 throw new ServiceException("El estadio con ID " + espectaculo.getIdEstadio() + " no existe");
             }
 
-            //VALIDACIÓN 5: No puede haber otro espectáculo con el mismo nombre en el mismo estadio el mismo día
+            //No puede haber otro espectáculo con el mismo nombre en el mismo estadio el mismo día
             List<Espectaculo> espectaculos = daoEspectaculo.consultarTodos();
 
             for(Espectaculo e : espectaculos) {
@@ -126,7 +132,8 @@ public class ServiceEspectaculo {
     //METODO 3 - ELIMINAR (Borrar un espectáculo) -----
     public void eliminar(int id) throws ServiceException {
         try {
-            //VALIDACIÓN: Verificar que el espectáculo EXISTA
+            //VALIDACIONES
+            // Verificar que el espectáculo EXISTA
             Espectaculo espectaculo = daoEspectaculo.consultar(id);
             if(espectaculo == null || espectaculo.getIdEspectaculo() == 0) {
                 throw new ServiceException("El espectáculo con ID " + id + " no existe");
@@ -134,17 +141,16 @@ public class ServiceEspectaculo {
 
             //VALIDACIÓN EXTRA: Verificar que no haya ventas asociadas a este espectáculo
             //Si ya se vendieron entradas para este espectáculo, NO se debe poder eliminar
-            //Esto lo vamos a implementar más adelante cuando tengamos la entidad VENTA
-            //Por ahora lo dejamos comentado:
-            /*
-            DaoVenta daoVenta = new DaoVenta();
-            List<Venta> ventas = daoVenta.consultarTodos();
-            for(Venta v : ventas) {
-                if(v.getIdEspectaculo() == id) {
-                    throw new ServiceException("No se puede eliminar el espectáculo porque ya tiene ventas registradas");
-                }
+            List<Venta> ventasDelEspectaculo = daoVenta.consultarPorEspectaculo(id);
+
+            if (!ventasDelEspectaculo.isEmpty()) {
+                throw new ServiceException(
+                        "No se puede eliminar el espectáculo porque tiene " +
+                                ventasDelEspectaculo.size() +
+                                " venta(s) registrada(s). " +
+                                "Los registros de ventas deben conservarse por motivos contables."
+                );
             }
-            */
 
             //si pasó las validaciones, eliminar
             daoEspectaculo.eliminar(id);

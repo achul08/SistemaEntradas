@@ -9,17 +9,21 @@ import dao.DaoException;
 import entidades.Ubicacion;
 import entidades.Estadio;
 import java.util.List;
+import dao.DaoVenta;
+import entidades.Venta;
 
 
 public class ServiceUbicacion {
     //ATRIBUTOS -----
     private DaoUbicacion daoUbicacion;
     private DaoEstadio daoEstadio; //necesitamos el DAO de Estadio para verificar que el estadio exista. Esto es porque una Ubicacion depende de un Estadio (FK)
+    private DaoVenta daoVenta;  // ← NUEVO
 
     //CONSTRUCTOR -----
     public ServiceUbicacion() {
         daoUbicacion = new DaoUbicacion();
         daoEstadio = new DaoEstadio();
+        daoVenta = new DaoVenta();
     }
 
 
@@ -167,18 +171,17 @@ public class ServiceUbicacion {
             }
 
             //VALIDACIÓN EXTRA: Verificar que no haya ventas asociadas a esta ubicación
-            //Si ya se vendieron entradas para esta ubicación, NO se debe poder eliminar
-            //Esto lo vamos a implementar más adelante cuando tengamos la entidad VENTA
-            //Por ahora lo dejamos comentado:
-            /*
-            DaoVenta daoVenta = new DaoVenta();
-            List<Venta> ventas = daoVenta.consultarTodos();
-            for(Venta v : ventas) {
-                if(v.getIdUbicacion() == id) {
-                    throw new ServiceException("No se puede eliminar la ubicación porque ya tiene ventas registradas");
-                }
+//Si ya se vendieron entradas para esta ubicación, NO se debe poder eliminar
+            List<Venta> ventasDeLaUbicacion = daoVenta.consultarPorUbicacion(id);
+
+            if (!ventasDeLaUbicacion.isEmpty()) {
+                throw new ServiceException(
+                        "No se puede eliminar la ubicación porque tiene " +
+                                ventasDeLaUbicacion.size() +
+                                " venta(s) registrada(s). " +
+                                "Los registros de ventas deben conservarse por motivos contables."
+                );
             }
-            */
 
             //si pasó las validaciones, eliminar
             daoUbicacion.eliminar(id);

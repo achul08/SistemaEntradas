@@ -272,6 +272,19 @@ public class ServiceVenta {
 
 
     //═════════════════════════════════════════════════════════════════════
+// MÉTODO 8: CONSULTAR POR UBICACIÓN (Ventas de una ubicación)
+//═════════════════════════════════════════════════════════════════════
+//Útil para validar si se puede eliminar una ubicación
+    public List<Venta> consultarPorUbicacion(int idUbicacion) throws ServiceException {
+        try {
+            return daoVenta.consultarPorUbicacion(idUbicacion);
+        } catch (DaoException e) {
+            throw new ServiceException("Error en base de datos");
+        }
+    }
+
+
+    //═════════════════════════════════════════════════════════════════════
     // MÉTODO 8: CONSULTAR POR FECHA (Ventas en un rango de fechas)
     //═════════════════════════════════════════════════════════════════════
     //Útil para reportes: "¿Cuánto se vendió en marzo?"

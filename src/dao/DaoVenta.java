@@ -203,9 +203,8 @@ public class DaoVenta implements IVentaDAO {
     }
 
 
-    //═════════════════════════════════════════════════════════════════════
+   //----------------------------------------------------------------------------------
     // MÉTODOS ESPECÍFICOS DE IVentaDAO
-    //═════════════════════════════════════════════════════════════════════
 
     @Override
     public List<Venta> consultarPorVendedor(int idVendedor) throws DaoException {
@@ -290,6 +289,58 @@ public class DaoVenta implements IVentaDAO {
         }
         catch (ClassNotFoundException | SQLException e) {
             throw new DaoException("Error al consultar ventas por espectáculo");
+        }
+        finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+        return ventas;
+    }
+
+
+    //═════════════════════════════════════════════════════════════════════
+// MÉTODO EXTRA: consultarPorUbicacion()
+//═════════════════════════════════════════════════════════════════════
+// Obtiene todas las ventas de una ubicación específica
+// Útil para validar si se puede eliminar una ubicación
+    @Override
+    public List<Venta> consultarPorUbicacion(int idUbicacion) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        List<Venta> ventas = new ArrayList<>();
+
+        try {
+            Class.forName(DB_JDBC_DRIVER);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
+            //SQL con WHERE para filtrar por ubicación
+            preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM VENTA WHERE id_ubicacion = ?"
+            );
+            preparedStatement.setInt(1, idUbicacion);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Venta venta = new Venta();
+                venta.setIdVenta(rs.getInt("id_venta"));
+                venta.setIdEspectaculo(rs.getInt("id_espectaculo"));
+                venta.setIdUbicacion(rs.getInt("id_ubicacion"));
+                venta.setIdVendedor(rs.getInt("id_vendedor"));
+                venta.setFechaVenta(rs.getTimestamp("fecha_venta"));
+                venta.setPrecioFinal(rs.getDouble("precio_final"));
+                venta.setNombreCliente(rs.getString("nombre_cliente"));
+                venta.setDniCliente(rs.getString("dni_cliente"));
+                venta.setTipoPromocion(rs.getString("tipo_promocion"));
+                venta.setValorAbono(rs.getDouble("valor_abono"));
+                ventas.add(venta);
+            }
+        }
+        catch (ClassNotFoundException | SQLException e) {
+            throw new DaoException("Error al consultar ventas por ubicación");
         }
         finally {
             try {
