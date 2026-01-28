@@ -9,14 +9,6 @@ import service.ServiceException;
 import javax.swing.*;
 import java.awt.*;
 
-//FORMULARIO ESTADIO - Hereda de FormularioBase
-//Pantalla para crear y modificar estadios
-
-//RELACIÓN CON OTRAS CLASES:
-//- Hereda de FormularioBase (extends)
-//- ServiceEstadio: para guardar/modificar en la base de datos
-//- PanelManager: para cambiar entre pantallas
-
 
 public class FormularioEstadio extends FormularioBase {
     //ATRIBUTOS ESPECÍFICOS DE ESTADIO -----
@@ -47,9 +39,6 @@ public class FormularioEstadio extends FormularioBase {
 
 
     //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS -----
-
-    //METODO 1 - getTitulo() -----
-    //Devuelve el título según el modo (crear/modificar)
     @Override
     public String getTitulo() {
         if (isModoModificar()) {
@@ -59,15 +48,12 @@ public class FormularioEstadio extends FormularioBase {
         }
     }
 
-
-    //METODO 2 - crearPanelCampos() -----
-    //Crea el panel con los campos específicos de estadio
     @Override
     public JPanel crearPanelCampos() {
         JPanel panelCampos = new JPanel();
 
-        //en modo MODIFICAR son 5 filas (id, nombre, direc, cap, foto)
-        //en modo CREAR son 4 filas (nombre, direc, cap, foto)
+        //en modo MODIFICAR son 4 filas (id, nombre, direc, cap)
+        //en modo CREAR son 3 filas (nombre, direc, cap)
         if (isModoModificar()) {
             panelCampos.setLayout(new GridLayout(4, 2, 10, 15));
         } else {
@@ -183,16 +169,12 @@ public class FormularioEstadio extends FormularioBase {
         }
     }
 
-
-    //METODO 4 - getCodigoMenuPrincipal() -----
-    //Devuelve el código del menú al que debe volver
     @Override
     public int getCodigoMenuPrincipal() {
         return 1; //codigo 1 = MenuPrincipal de estadios
     }
 
 
-    //METODO ADICIONAL - cargarDatos() -----
     //Solo se usa en modo modificar
     //Llena los campos del formulario con los datos del estadio
     private void cargarDatos(Estadio estadio) {

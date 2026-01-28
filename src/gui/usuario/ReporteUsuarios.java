@@ -8,13 +8,6 @@ import service.ServiceException;
 
 import java.util.List;
 
-//REPORTE USUARIOS - Hereda de ReporteBase
-//Muestra una tabla con todos los usuarios
-
-//RELACIÓN CON OTRAS CLASES:
-//- Hereda de ReporteBase (extends)
-//- ServiceUsuario: para obtener todos los usuarios de la BD
-//- PanelManager: para cambiar de pantalla
 
 
 public class ReporteUsuarios extends ReporteBase {
@@ -24,34 +17,19 @@ public class ReporteUsuarios extends ReporteBase {
     //Por eso cuando llamemos a inicializar() ya va a existir
 
 
-    //CONSTRUCTOR
+    //CONSTRUCTOR ------------------------
     public ReporteUsuarios(PanelManager panelManager) {
         super(panelManager); //llama al constructor de ReporteBase
-        //El constructor del padre (ReporteBase):
-        //1. Crea la ventana
-        //2. Crea la tabla vacía
-        //3. Crea los botones
-        //4. PERO no carga datos (porque esperaba que serviceUsuario esté listo)
-
-        //AHORA sí llamamos a inicializar() para llenar la tabla
-        inicializar(); //este método está en ReporteBase
-        //inicializar() llama a:
-        //- definirColumnas() → que llama a obtenerNombresColumnas() (línea 50)
-        //- cargarDatos() → que llama a consultarTodos() (línea 57) y convertirElementoAFila() (línea 64)
+        inicializar();
     }
 
 
-    //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS
-
-    //METODO 1 - getTitulo()
+    //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS --------------
     @Override
     public String getTitulo() {
         return "REPORTE DE USUARIOS";
     }
 
-
-    //METODO 2 - obtenerNombresColumnas()
-    //Define los nombres de las columnas de la tabla
     @Override
     public String[] obtenerNombresColumnas() {
         return new String[]{
@@ -64,47 +42,31 @@ public class ReporteUsuarios extends ReporteBase {
     }
 
 
-    //METODO 3 - consultarTodos()
-    //Consulta todos los usuarios de la BD
     @Override
     public List<?> consultarTodos() throws ServiceException {
         return serviceUsuario.consultarTodos(); //devuelve List<Usuario>
-        //Esta lista puede contener objetos Administrador y Vendedor mezclados
-        //Pero todos heredan de Usuario, así que no hay problema
     }
 
 
-    //METODO 4 - convertirElementoAFila()
-    //Convierte un usuario en un array de Object para mostrar en la tabla
-    //El ORDEN debe coincidir con el orden de las columnas
     @Override
     public Object[] convertirElementoAFila(Object elemento) {
         Usuario usuario = (Usuario) elemento; //cast de Object a Usuario
-        //Aunque el objeto puede ser Administrador o Vendedor,
-        //lo tratamos como Usuario porque tiene todos los métodos que necesitamos
-
-        //crear el array con los datos del usuario
-        //IMPORTANTE: el orden debe ser igual al de obtenerNombresColumnas()
         return new Object[]{
-                usuario.getIdUsuario(),      // columna 0: "ID Usuario"
-                usuario.getNombre(),         // columna 1: "Nombre"
-                usuario.getApellido(),       // columna 2: "Apellido"
-                usuario.getUsername(),       // columna 3: "Username"
-                usuario.getRol()             // columna 4: "Rol"
+                usuario.getIdUsuario(),
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getUsername(),
+                usuario.getRol()
         };
-        //NOTA: No mostramos la contraseña por seguridad
     }
 
 
-    //METODO 5 - getMensajeSinElementos()
     @Override
     public String getMensajeSinElementos() {
         return "No hay usuarios registrados";
     }
 
 
-    //METODO 6 - getCodigoMenuPrincipal()
-    //Devuelve el código del menú al que debe volver
     @Override
     public int getCodigoMenuPrincipal() {
         return 11; //código 11 = MenuGestionUsuarios

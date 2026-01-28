@@ -29,14 +29,14 @@ public class PantallaLogin extends JPanel {
     private JButton btnSalir;
 
 
-    //CONSTRUCTOR
+    //CONSTRUCTOR -----------
     public PantallaLogin(PanelManager panelManager) {
         this.panelManager = panelManager;
         armarPantalla();
     }
 
 
-    //METODO ARMAR PANTALLA
+    //METODO ARMAR PANTALLA ---------------
     private void armarPantalla() {
         pantallaLogin = new JPanel();
         pantallaLogin.setLayout(new BorderLayout(20, 20));
@@ -127,7 +127,7 @@ public class PantallaLogin extends JPanel {
         this.add(pantallaLogin, BorderLayout.CENTER);
 
 
-        //COMPORTAMIENTO DE LOS BOTONES
+        //COMPORTAMIENTO DE LOS BOTONES ---------------------------------
 
         //botón LOGIN
         btnLogin.addActionListener(new ActionListener() {

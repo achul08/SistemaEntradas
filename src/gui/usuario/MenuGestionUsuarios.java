@@ -6,14 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//MENU GESTION USUARIOS
-//Menú principal para gestionar usuarios (crear, modificar, eliminar, ver reporte)
-//Similar a MenuGestionEstadios pero para usuarios
-
-//RELACIÓN CON OTRAS CLASES:
-//- PanelManager: para navegar entre pantallas
-
-
 public class MenuGestionUsuarios extends JPanel {
     //ATRIBUTOS
     private PanelManager panelManager;
@@ -91,49 +83,39 @@ public class MenuGestionUsuarios extends JPanel {
 
 
         //COMPORTAMIENTO DE LOS BOTONES
-
-        //botón CREAR NUEVO USUARIO
-        //abre FormularioUsuario en modo crear
         btnNuevo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(12); //código 12 = FormularioUsuario (crear)
+                panelManager.mostrar(12);
             }
         });
 
-        //botón MODIFICAR USUARIO
-        //abre PantallaSeleccionUsuarios para elegir cuál modificar
         btnModificar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(13); //código 13 = PantallaSeleccionUsuarios
+                panelManager.mostrar(13);
             }
         });
 
-        //botón ELIMINAR USUARIO
-        //abre PantallaEliminarUsuario para elegir cuál eliminar
         btnEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(14); //código 14 = PantallaEliminarUsuario
+                panelManager.mostrar(14);
             }
         });
 
-        //botón VER REPORTE
-        //abre ReporteUsuarios con la tabla
+
         btnReporte.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(15); //código 15 = ReporteUsuarios
+                panelManager.mostrar(15);
             }
         });
 
-        //botón VOLVER
-        //vuelve al MenuAdmin
         btnVolver.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(10); //código 10 = MenuAdmin
+                panelManager.mostrar(10);
             }
         });
     }

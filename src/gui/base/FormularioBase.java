@@ -6,17 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//CLASE BASE ABSTRACTA - FormularioBase
-//Define la estructura común de todos los formularios (crear/modificar)
-//Las clases hijas implementan lo específico de cada entidad
-
-//RELACIÓN CON OTRAS CLASES:
-//- FormularioEstadio extends FormularioBase
-//- FormularioUbicacion extends FormularioBase
-//- FormularioEspectaculo extends FormularioBase
-//- FormularioUsuario extends FormularioBase
-
-
 public abstract class FormularioBase extends JPanel {
     //ATRIBUTOS COMUNES (PRIVATE) -----
     private PanelManager panelManager; //para cambiar de pantalla
@@ -32,7 +21,6 @@ public abstract class FormularioBase extends JPanel {
 
 
     //CONSTRUCTOR PARA CREAR -----
-    //Recibe solo el PanelManager
     public FormularioBase(PanelManager panelManager) {
         this.panelManager = panelManager;
         this.modoModificar = false; //modo crear
@@ -41,7 +29,6 @@ public abstract class FormularioBase extends JPanel {
 
 
     //CONSTRUCTOR PARA MODIFICAR -----
-    //Recibe el PanelManager y el ID del elemento a modificar
     public FormularioBase(PanelManager panelManager, int idElemento) {
         this.panelManager = panelManager;
         this.modoModificar = true; //modo modificar
@@ -51,8 +38,6 @@ public abstract class FormularioBase extends JPanel {
 
 
     //METODO ARMAR FORMULARIO -----
-    //Este método construye la estructura base del formulario
-    //Llama a métodos abstractos que las clases hijas deben implementar
     private void armarFormulario() {
         //crear el panel interno
         formulario = new JPanel();
@@ -106,8 +91,6 @@ public abstract class FormularioBase extends JPanel {
 
 
         //COMPORTAMIENTO DE LOS BOTONES -----
-
-        //boton GUARDAR
         jButtonGuardar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -115,7 +98,6 @@ public abstract class FormularioBase extends JPanel {
             }
         });
 
-        //boton CANCELAR
         jButtonCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -157,19 +139,8 @@ public abstract class FormularioBase extends JPanel {
     //MÉTODOS ABSTRACTOS (PUBLIC) -----
     //Las clases hijas DEBEN implementar estos métodos
 
-    //getTitulo() - Devuelve el título del formulario según el modo
-    //Ejemplo: "CREAR NUEVO ESTADIO" o "MODIFICAR ESTADIO"
     public abstract String getTitulo();
-
-    //crearPanelCampos() - Crea el panel con los campos específicos de la entidad
-    //Ejemplo: para Estadio → campos de nombre, dirección, capacidad
     public abstract JPanel crearPanelCampos();
-
-    //guardar() - Lógica para guardar o modificar el elemento
-    //Incluye validaciones de GUI, creación del objeto, llamada al Service
     public abstract void guardar();
-
-    //getCodigoMenuPrincipal() - Devuelve el código del menú al que debe volver
-    //Ejemplo: Estadio vuelve al código 1 (MenuPrincipal de estadios)
     public abstract int getCodigoMenuPrincipal();
 }

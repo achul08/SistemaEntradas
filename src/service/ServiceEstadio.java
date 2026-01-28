@@ -27,11 +27,11 @@ public class ServiceEstadio {
     //.isEmpty() es para verificar que este vacio, si es true, esta vacio
     //necesito los dos porque el isempty si tiene espacios me lo toma como false, entonces el trim le saca los espacios
 
-    // METODO 1 INSERTAR (Crear un estadio nuevo)
+
+    // METODOS ------------------
+    // INSERTAR (Crear un estadio nuevo)
     public void insertar(Estadio estadio) throws ServiceException {
         try {
-            //verificaciones
-            //verifico que no este vacio
             if(estadio.getNombre()==null || estadio.getNombre().trim().isEmpty()){
                 throw new ServiceException("El nombre del estadio es obligatorio");
             }
@@ -42,8 +42,6 @@ public class ServiceEstadio {
             if(estadio.getCapacidadTotal()<=0){
                 throw new ServiceException("La capacidad debe ser mayor a 0");
             }
-
-            //verificar que el nombre y la direc no existan (asi no hay 2 con el mismo nombre y direc)
             List<Estadio> estadios = daoEstadio.consultarTodos();
 
             for(Estadio e : estadios){ //compara nombres ignorando mayus minus
@@ -68,12 +66,9 @@ public class ServiceEstadio {
     }
 
 
-    //METODO 2 MODIFICAR (Actualizar un estadio)
-    //recibe un objeto Estadio con el id del que se quiere modificar y los nuevos datos
+    //MODIFICAR (Actualizar un estadio)
     public void modificar(Estadio estadio) throws ServiceException{
         try{
-            //validaciones
-            //existente
             Estadio existente = daoEstadio.consultar(estadio.getIdEstadio()); //busco en h2 que exista el estadio con ese id
             if (existente == null || existente.getIdEstadio() == 0) { //si es null (porque hubo un error en el dao) o es 0 (porque no existe)
                 throw new ServiceException("El estadio con ID " + estadio.getIdEstadio() + " no existe");
@@ -90,12 +85,9 @@ public class ServiceEstadio {
                 throw new ServiceException("La capacidad debe ser mayor a 0");
             }
 
-
-            //verificar que el nombre y direc nuevas no existan en otro estadio
             List<Estadio> estadios = daoEstadio.consultarTodos();
 
             for(Estadio e : estadios){
-                //si el nombre existe en uno que no sea el que estoy modificando
                 if(e.getNombre().trim().equalsIgnoreCase(estadio.getNombre().trim()) && e.getIdEstadio() != estadio.getIdEstadio()){
                     throw new ServiceException("Existe otro estadio con ese nombre. Cambiar nombre");
                 }
@@ -115,11 +107,9 @@ public class ServiceEstadio {
     }
 
 
-    //METODO 3 ELIMINAR (borrar un estadio)
-    //recibe el id del estadio a eliminar
+    //ELIMINAR (borrar un estadio)
     public void eliminar(int id) throws ServiceException{
         try{
-            //validaciones
             Estadio estadio = daoEstadio.consultar(id);
             if (estadio == null || estadio.getIdEstadio() == 0) {
                 throw new ServiceException("El estadio con ID " + id + " no existe");
@@ -133,8 +123,7 @@ public class ServiceEstadio {
     }
 
 
-    //METODO 4 CONSULTAR
-    // devuelve un objeto de tipo Estadio
+    //CONSULTAR
     public Estadio consultar(int id) throws ServiceException{
         try{
             return daoEstadio.consultar(id);
@@ -146,8 +135,7 @@ public class ServiceEstadio {
         }
 
 
-        //METODO 5 CONSULTAR TODOS
-        //devuelve una lista con todos los estadios
+        //CONSULTAR TODOS
     public List<Estadio> consultarTodos() throws ServiceException{
         try{
             return daoEstadio.consultarTodos();

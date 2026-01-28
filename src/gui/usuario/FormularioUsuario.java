@@ -11,14 +11,6 @@ import service.ServiceException;
 import javax.swing.*;
 import java.awt.*;
 
-//FORMULARIO USUARIO - Hereda de FormularioBase
-//Pantalla para crear y modificar usuarios (Administradores y Vendedores)
-
-//RELACIÓN CON OTRAS CLASES:
-//- Hereda de FormularioBase (extends)
-//- ServiceUsuario: para guardar/modificar en la base de datos
-//- PanelManager: para cambiar entre pantallas
-
 
 public class FormularioUsuario extends FormularioBase {
     //ATRIBUTOS ESPECÍFICOS DE USUARIO
@@ -58,9 +50,7 @@ public class FormularioUsuario extends FormularioBase {
     }
 
 
-    //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS
-
-    //METODO 1 - getTitulo()
+    //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS---------
     @Override
     public String getTitulo() {
         if (isModoModificar()) {
@@ -71,20 +61,15 @@ public class FormularioUsuario extends FormularioBase {
     }
 
 
-    //METODO 2 - crearPanelCampos()
     @Override
     public JPanel crearPanelCampos() {
         JPanel panelCampos = new JPanel();
-
-        //en modo MODIFICAR son 6 filas (id, nombre, apellido, username, password, rol)
-        //en modo CREAR son 5 filas (nombre, apellido, username, password, rol)
         if (isModoModificar()) {
             panelCampos.setLayout(new GridLayout(6, 2, 10, 15));
         } else {
             panelCampos.setLayout(new GridLayout(5, 2, 10, 15));
         }
 
-        //si el modo es MODIFICAR se muestra el id
         if (isModoModificar()) {
             jLabelIdUsuario = new JLabel("ID: " + getIdElementoModificar() + " (no se puede modificar el id)");
             jLabelIdUsuario.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -96,7 +81,6 @@ public class FormularioUsuario extends FormularioBase {
             panelCampos.add(espacioVacio);
         }
 
-        //CAMPO 1 - Nombre
         jLabelNombre = new JLabel("Nombre:");
         jLabelNombre.setFont(new Font("Arial", Font.PLAIN, 14));
         jTextFieldNombre = new JTextField(20);
@@ -104,7 +88,6 @@ public class FormularioUsuario extends FormularioBase {
         panelCampos.add(jLabelNombre);
         panelCampos.add(jTextFieldNombre);
 
-        //CAMPO 2 - Apellido
         jLabelApellido = new JLabel("Apellido:");
         jLabelApellido.setFont(new Font("Arial", Font.PLAIN, 14));
         jTextFieldApellido = new JTextField(20);
@@ -112,7 +95,6 @@ public class FormularioUsuario extends FormularioBase {
         panelCampos.add(jLabelApellido);
         panelCampos.add(jTextFieldApellido);
 
-        //CAMPO 3 - Username
         jLabelUsername = new JLabel("Username:");
         jLabelUsername.setFont(new Font("Arial", Font.PLAIN, 14));
         jTextFieldUsername = new JTextField(20);
@@ -120,7 +102,6 @@ public class FormularioUsuario extends FormularioBase {
         panelCampos.add(jLabelUsername);
         panelCampos.add(jTextFieldUsername);
 
-        //CAMPO 4 - Password
         jLabelPassword = new JLabel("Contraseña:");
         jLabelPassword.setFont(new Font("Arial", Font.PLAIN, 14));
         jPasswordField = new JPasswordField(20);
@@ -128,7 +109,6 @@ public class FormularioUsuario extends FormularioBase {
         panelCampos.add(jLabelPassword);
         panelCampos.add(jPasswordField);
 
-        //CAMPO 5 - Rol (ComboBox)
         jLabelRol = new JLabel("Rol:");
         jLabelRol.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -144,7 +124,7 @@ public class FormularioUsuario extends FormularioBase {
     }
 
 
-    //METODO 3 - guardar()
+
     @Override
     public void guardar() {
         //leer datos de los campos
@@ -155,36 +135,29 @@ public class FormularioUsuario extends FormularioBase {
 
 
         //VALIDACIONES DE GUI
-
-        //verificar que el nombre no esté vacío
         if (nombre.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "El nombre es obligatorio", "Campo Vacío", JOptionPane.WARNING_MESSAGE);
             jTextFieldNombre.requestFocus();
             return;
         }
 
-        //verificar que el apellido no esté vacío
         if (apellido.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "El apellido es obligatorio", "Campo Vacío", JOptionPane.WARNING_MESSAGE);
             jTextFieldApellido.requestFocus();
             return;
         }
-
-        //verificar que el username no esté vacío
         if (username.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "El username es obligatorio", "Campo Vacío", JOptionPane.WARNING_MESSAGE);
             jTextFieldUsername.requestFocus();
             return;
         }
 
-        //verificar que la contraseña no esté vacía
         if (password.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "La contraseña es obligatoria", "Campo Vacío", JOptionPane.WARNING_MESSAGE);
             jPasswordField.requestFocus();
             return;
         }
 
-        //verificar que el rol esté seleccionado
         if (comboRol.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un rol", "Rol no seleccionado", JOptionPane.WARNING_MESSAGE);
             comboRol.requestFocus();
@@ -192,7 +165,6 @@ public class FormularioUsuario extends FormularioBase {
         }
 
 
-        //OBTENER EL ROL SELECCIONADO
         rolSeleccionado = (String) comboRol.getSelectedItem();
 
 
@@ -208,7 +180,6 @@ public class FormularioUsuario extends FormularioBase {
             usuario = new Vendedor(nombre, apellido, username, password);
         }
 
-        //si estamos modificando, setear el ID
         if (isModoModificar()) {
             usuario.setIdUsuario(getIdElementoModificar());
         }
@@ -238,15 +209,12 @@ public class FormularioUsuario extends FormularioBase {
     }
 
 
-    //METODO 4 - getCodigoMenuPrincipal()
     @Override
     public int getCodigoMenuPrincipal() {
-        return 11; //código 11 = MenuGestionUsuarios
+        return 11;
     }
 
 
-    //METODO ADICIONAL - cargarDatos()
-    //Solo se usa en modo modificar
     private void cargarDatos(Usuario usuario) {
         //cargar los campos de texto
         jTextFieldNombre.setText(usuario.getNombre());

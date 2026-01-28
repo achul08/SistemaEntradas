@@ -12,10 +12,6 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-//REPORTE VENTAS - Para ADMINISTRADORES
-//Muestra TODAS las ventas del sistema
-//Permite filtrar por espectáculo (futuro: también por fechas)
-//MODIFICADO: Ahora incluye columna "Abono" (PASO 2D del Bonus Point 2)
 
 public class ReporteVentas extends JPanel {
     //ATRIBUTOS - SERVICES -----
@@ -23,8 +19,6 @@ public class ReporteVentas extends JPanel {
     private ServiceEspectaculo serviceEspectaculo = new ServiceEspectaculo();
     private ServiceUbicacion serviceUbicacion = new ServiceUbicacion();
     private ServiceUsuario serviceUsuario = new ServiceUsuario();
-    //TODOS estos Services se crean ACÁ, antes del constructor
-    //Por eso cuando el constructor los use, ya van a existir
 
     private PanelManager panelManager;
     private JPanel panelReporte;
@@ -45,8 +39,6 @@ public class ReporteVentas extends JPanel {
     //CONSTRUCTOR -----
     public ReporteVentas(PanelManager panelManager) {
         this.panelManager = panelManager;
-        //En este punto, TODOS los Services ya existen (se crearon en las líneas 24-27)
-        //Así que podemos llamar tranquilamente a armarReporte()
         armarReporte();
     }
 
@@ -110,9 +102,8 @@ public class ReporteVentas extends JPanel {
         definirColumnas();
         panelReporte.add(scrollPane, BorderLayout.CENTER);
 
-        //AHORA SÍ podemos llamar a estos métodos porque los Services ya existen
-        cargarEspectaculosEnCombo(); //usa serviceEspectaculo
-        cargarDatos(null); //usa serviceVenta - cargar todas las ventas inicialmente
+        cargarEspectaculosEnCombo();
+        cargarDatos(null);
 
 
         //ZONA SUR - BOTÓN VOLVER Y TOTALES
@@ -123,7 +114,6 @@ public class ReporteVentas extends JPanel {
         panelTotal.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 10));
 
         try {
-            //Este bloque también usa serviceVenta, pero ya existe
             List<Venta> todasLasVentas = serviceVenta.consultarTodos();
             double total = serviceVenta.calcularTotalRecaudado(todasLasVentas);
             int cantidad = serviceVenta.calcularCantidadVendida(todasLasVentas);
@@ -186,10 +176,8 @@ public class ReporteVentas extends JPanel {
     }
 
 
-    //═════════════════════════════════════════════════════════════════════
-    // MÉTODO: definirColumnas() - MODIFICADO (PASO 2D)
-    //═════════════════════════════════════════════════════════════════════
-    //CAMBIO: Agregamos columna "Abono" entre "Precio" y "Promoción"
+
+
     private void definirColumnas() {
         contenido.addColumn("ID Venta");
         contenido.addColumn("Espectáculo");
@@ -198,7 +186,7 @@ public class ReporteVentas extends JPanel {
         contenido.addColumn("Cliente");
         contenido.addColumn("DNI");
         contenido.addColumn("Precio");
-        contenido.addColumn("Abono");      //NUEVO - Columna para mostrar el valor del abono
+        contenido.addColumn("Abono");
         contenido.addColumn("Promoción");
         contenido.addColumn("Fecha");
     }
@@ -206,9 +194,6 @@ public class ReporteVentas extends JPanel {
 
     private void cargarEspectaculosEnCombo() {
         try {
-            //ESTE método usa serviceEspectaculo
-            //Como se llama desde armarReporte(), que se llama desde el constructor,
-            //y serviceEspectaculo ya existe (línea 25), NO da error
             listaEspectaculos = serviceEspectaculo.consultarTodos();
             comboEspectaculos.addItem("(Seleccione un espectáculo)");
 
@@ -237,10 +222,8 @@ public class ReporteVentas extends JPanel {
     }
 
 
-    //═════════════════════════════════════════════════════════════════════
-    // MÉTODO: cargarDatos() - MODIFICADO (PASO 2D)
-    //═════════════════════════════════════════════════════════════════════
-    //CAMBIO: Incluimos el valor del abono en cada fila
+
+
     private void cargarDatos(Integer idEspectaculoFiltro) {
         try {
             List<Venta> ventas;
@@ -287,16 +270,11 @@ public class ReporteVentas extends JPanel {
 
                 String fecha = formatoFecha.format(venta.getFechaVenta());
 
-                //Obtener la promoción aplicada
-                //Si es null (ventas viejas), mostrar "Sin promoción"
                 String promocion = venta.getTipoPromocion();
                 if (promocion == null || promocion.trim().isEmpty()) {
                     promocion = "Sin promoción";
                 }
 
-                //NUEVO - PASO 2D: Obtener el valor del abono
-                //Si es 0, mostrar "-" (sin abono)
-                //Si es mayor a 0, mostrar "$XXX"
                 String valorAbono;
                 if (venta.getValorAbono() == 0) {
                     valorAbono = "-";
@@ -304,10 +282,7 @@ public class ReporteVentas extends JPanel {
                     valorAbono = "$" + String.format("%.2f", venta.getValorAbono());
                 }
 
-                //IMPORTANTE: El orden debe coincidir con definirColumnas()
-                //ANTES era: ID, Espectaculo, Ubicacion, Vendedor, Cliente, DNI, Precio, Promocion, Fecha (9 columnas)
-                //AHORA es: ID, Espectaculo, Ubicacion, Vendedor, Cliente, DNI, Precio, Abono, Promocion, Fecha (10 columnas)
-                Object[] fila = new Object[]{
+                 Object[] fila = new Object[]{
                         venta.getIdVenta(),              // columna 0: ID Venta
                         nombreEspectaculo,               // columna 1: Espectáculo
                         nombreUbicacion,                 // columna 2: Ubicación

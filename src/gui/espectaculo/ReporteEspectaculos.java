@@ -11,27 +11,12 @@ import service.ServiceException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-//REPORTE ESPECTACULOS - Hereda de ReporteBase
-//Muestra una tabla con todos los espectáculos
-//MEJORA: Ahora puede usarse tanto para Admin como para Vendedor
-//- Admin ve TODOS los espectáculos (activos e inactivos)
-//- Vendedor ve SOLO los espectáculos ACTIVOS
-
-//RELACIÓN CON OTRAS CLASES:
-//- Hereda de ReporteBase (extends)
-//- ServiceEspectaculo: para obtener todos los espectáculos de la BD
-//- ServiceEstadio: para obtener el nombre del estadio de cada espectáculo
-//- PanelManager: para cambiar de pantalla
-
 
 public class ReporteEspectaculos extends ReporteBase {
     //ATRIBUTOS ESPECÍFICOS DE ESPECTACULO -----
     private ServiceEspectaculo serviceEspectaculo = new ServiceEspectaculo(); //para consultar los espectáculos
     private ServiceEstadio serviceEstadio = new ServiceEstadio(); //para obtener nombres de estadios
-
     private SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy"); //para mostrar fechas
-
-    //NUEVO: atributo para controlar el comportamiento según el tipo de usuario
     private boolean soloActivos; //true = muestra solo activos (vendedor), false = muestra todos (admin)
     private int codigoMenuVolver; //código del menú al que debe volver
 
@@ -64,8 +49,6 @@ public class ReporteEspectaculos extends ReporteBase {
 
 
     //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS -----
-
-    //METODO 1 - getTitulo() -----
     @Override
     public String getTitulo() {
         //Si soloActivos = true, es para vendedor
@@ -77,9 +60,6 @@ public class ReporteEspectaculos extends ReporteBase {
         }
     }
 
-
-    //METODO 2 - obtenerNombresColumnas() -----
-    //Define los nombres de las columnas de la tabla
     @Override
     public String[] obtenerNombresColumnas() {
         //Si es para vendedor (soloActivos = true), NO mostrar columna "Estado"
@@ -104,7 +84,7 @@ public class ReporteEspectaculos extends ReporteBase {
     }
 
 
-    //METODO 3 - consultarTodos() -----
+
     //Consulta los espectáculos de la BD según el tipo de usuario
     @Override
     public List<?> consultarTodos() throws ServiceException {
@@ -118,7 +98,6 @@ public class ReporteEspectaculos extends ReporteBase {
     }
 
 
-    //METODO 4 - convertirElementoAFila() -----
     //Convierte un espectáculo en un array de Object para mostrar en la tabla
     //El ORDEN debe coincidir con el orden de las columnas
     @Override
@@ -144,21 +123,17 @@ public class ReporteEspectaculos extends ReporteBase {
             //Si hay error al consultar, usar el valor por defecto
         }
 
-        //crear el array con los datos del espectáculo
-        //IMPORTANTE: el orden debe ser igual al de obtenerNombresColumnas()
-
         //Si es para vendedor (soloActivos = true), NO incluir columna "Estado"
         if(soloActivos) {
             return new Object[]{
-                    espectaculo.getIdEspectaculo(),    // columna 0: "ID"
-                    espectaculo.getNombre(),           // columna 1: "Nombre del Espectáculo"
-                    fecha,                             // columna 2: "Fecha"
-                    nombreEstadio                      // columna 3: "Estadio"
+                    espectaculo.getIdEspectaculo(),
+                    espectaculo.getNombre(),
+                    fecha,
+                    nombreEstadio
             };
         } else {
             //Si es para admin, incluir columna "Estado"
 
-            //convertir boolean a String con if-else
             String estado;
             if (espectaculo.isActivo()) {
                 estado = "Activo";
@@ -177,7 +152,6 @@ public class ReporteEspectaculos extends ReporteBase {
     }
 
 
-    //METODO 5 - getMensajeSinElementos() -----
     @Override
     public String getMensajeSinElementos() {
         //Mensaje diferente según el tipo de usuario
@@ -189,12 +163,8 @@ public class ReporteEspectaculos extends ReporteBase {
     }
 
 
-    //METODO 6 - getCodigoMenuPrincipal() -----
-    //Devuelve el código del menú al que debe volver
     @Override
     public int getCodigoMenuPrincipal() {
-        //Usar el código que se pasó en el constructor
-        //20 para vendedor, 40 para admin
         return codigoMenuVolver;
     }
 }

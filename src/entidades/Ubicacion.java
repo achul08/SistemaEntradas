@@ -21,39 +21,30 @@ public class Ubicacion {
     public int getIdUbicacion() {
         return idUbicacion;
     }
-
     public void setIdUbicacion(int idUbicacion) {
         this.idUbicacion = idUbicacion;
     }
-
     public int getIdEstadio() {
         return idEstadio;
     }
-
     public void setIdEstadio(int idEstadio) {
         this.idEstadio = idEstadio;
     }
-
     public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public double getPrecio() {
         return precio;
     }
-
     public void setPrecio(double precio) {
         this.precio = precio;
     }
-
     public int getCapacidad() {
         return capacidad;
     }
-
     public void setCapacidad(int capacidad) {
         this.capacidad = capacidad;
     }

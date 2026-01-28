@@ -7,16 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-//CLASE BASE ABSTRACTA - PantallaSeleccionBase
-//Define la estructura común de todas las pantallas de selección (para modificar)
-//Las clases hijas implementan lo específico de cada entidad
-
-//RELACIÓN CON OTRAS CLASES:
-//- PantallaSeleccionEstadios extends PantallaSeleccionBase
-//- PantallaSeleccionUbicaciones extends PantallaSeleccionBase
-//- PantallaSeleccionEspectaculos extends PantallaSeleccionBase
-
-
 public abstract class PantallaSeleccionBase extends JPanel {
     //ATRIBUTOS COMUNES (PRIVATE) -----
     private PanelManager panelManager; //para cambiar de pantalla
@@ -77,10 +67,6 @@ public abstract class PantallaSeleccionBase extends JPanel {
         panelCentro.add(comboElementos);
 
         pantallaSeleccion.add(panelCentro, BorderLayout.CENTER);
-
-
-        //IMPORTANTE: Ya NO llamamos a cargarElementosEnCombo() acá
-        //Ahora lo vamos a llamar desde inicializar()
 
 
         //ZONA SUR - BOTONES -----
@@ -230,42 +216,17 @@ public abstract class PantallaSeleccionBase extends JPanel {
 //IMPORTANTE: Este método debe ser llamado desde el constructor de las clases hijas
 //Ejemplo: super(panelManager); inicializar();
     public void inicializar() {
-        //PASO 1: Cargar los elementos en el ComboBox
-        //Llama al método de la clase hija que consulta la BD
-        //Como se llama DESPUÉS del constructor de la hija, los Services ya existen
         cargarElementosEnCombo();
     }
 
 
     //MÉTODOS ABSTRACTOS -----
     //Las clases hijas DEBEN implementar estos métodos
-
-    //getTitulo() - Devuelve el título de la pantalla
-    //Ejemplo: "SELECCIONAR ESTADIO A MODIFICAR"
     public abstract String getTitulo();
-
-    //getInstruccion() - Devuelve el texto de instrucción
-    //Ejemplo: "Seleccione un estadio"
     public abstract String getInstruccion();
-
-    //consultarTodos() - Consulta todos los elementos de la BD
-    //Ejemplo: serviceEstadio.consultarTodos()
-    //Devuelve: List<Estadio>, List<Ubicacion>, etc.
     public abstract List<?> consultarTodos() throws Exception;
-
-    //formatearElementoParaCombo() - Define cómo se muestra cada elemento en el ComboBox
-    //Ejemplo: return estadio.getIdEstadio() + " - " + estadio.getNombre();
     public abstract String formatearElementoParaCombo(Object elemento);
-
-    //getMensajeSinElementos() - Mensaje cuando no hay elementos
-    //Ejemplo: "No hay estadios disponibles para modificar"
     public abstract String getMensajeSinElementos();
-
-    //abrirFormularioModificarConElemento() - Abre el formulario en modo modificar
-    //Ejemplo: panelManager.mostrarFormularioModificar(estadio);
     public abstract void abrirFormularioModificarConElemento(Object elemento);
-
-    //getCodigoMenuPrincipal() - Código del menú al que vuelve
-    //Ejemplo: return 1; (MenuPrincipal de estadios)
     public abstract int getCodigoMenuPrincipal();
 }

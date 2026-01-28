@@ -6,13 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//MENU GESTIÓN UBICACIONES
-//Menú principal para gestionar ubicaciones (crear, modificar, eliminar, ver reporte)
-//Similar al MenuPrincipal de estadios pero para ubicaciones
-
-//RELACIÓN CON OTRAS CLASES:
-//- PanelManager: para navegar entre pantallas
-
 
 public class MenuGestionUbicaciones extends JPanel {
     //ATRIBUTOS -----
@@ -97,7 +90,7 @@ public class MenuGestionUbicaciones extends JPanel {
         btnNuevo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(31); //código 31 = FormularioUbicacion (crear)
+                panelManager.mostrar(31);
             }
         });
 
@@ -106,7 +99,7 @@ public class MenuGestionUbicaciones extends JPanel {
         btnModificar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(32); //código 32 = PantallaSeleccionUbicaciones
+                panelManager.mostrar(32);
             }
         });
 
@@ -115,7 +108,7 @@ public class MenuGestionUbicaciones extends JPanel {
         btnEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(33); //código 33 = PantallaEliminarUbicacion
+                panelManager.mostrar(33);
             }
         });
 
@@ -124,7 +117,7 @@ public class MenuGestionUbicaciones extends JPanel {
         btnReporte.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(34); //código 34 = ReporteUbicaciones
+                panelManager.mostrar(34);
             }
         });
 
@@ -133,7 +126,7 @@ public class MenuGestionUbicaciones extends JPanel {
         btnVolver.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(10); //código 10 = MenuAdmin
+                panelManager.mostrar(10);
             }
         });
     }

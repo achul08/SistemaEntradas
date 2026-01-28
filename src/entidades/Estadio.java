@@ -26,31 +26,24 @@ public class Estadio {
     public int getIdEstadio() {
         return idEstadio;
     }
-
     public void setIdEstadio(int idEstadio) {
         this.idEstadio = idEstadio;
     }
-
     public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public String getDireccion() {
         return direccion;
     }
-
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-
     public int getCapacidadTotal() {
         return capacidadTotal;
     }
-
     public void setCapacidadTotal(int capacidadTotal) {
         this.capacidadTotal = capacidadTotal;
     }
@@ -58,7 +51,6 @@ public class Estadio {
 
 
     //tostring
-
     @Override
     public String toString() {
         return "Estadio\n" +

@@ -20,7 +20,7 @@ public class Main {
         }
 */
 
-        //PASO 1: Cargar usuarios precargados
+        //Cargar usuarios precargados
         cargarUsuariosPrecargados();
 
 

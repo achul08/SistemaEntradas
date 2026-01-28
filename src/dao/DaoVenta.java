@@ -23,32 +23,33 @@ public class DaoVenta implements IVentaDAO {
     public void insertar(Venta elemento) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+
         try {
             Class.forName(DB_JDBC_DRIVER);
-            System.out.println("Cargó el driver");
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-            System.out.println("Se conectó a la base de datos");
+
             preparedStatement = connection.prepareStatement(
-                    "INSERT INTO VENTA (id_espectaculo, id_ubicacion, id_vendedor, fecha_venta, precio_final, nombre_cliente, dni_cliente, tipo_promocion, valor_abono) VALUES (?,?,?,?,?,?,?,?,?)"
+                    "INSERT INTO VENTA (id_espectaculo, id_ubicacion, id_vendedor, precio_final, " +
+                            "nombre_cliente, dni_cliente, tipo_promocion, valor_abono, cantidad) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
+
             preparedStatement.setInt(1, elemento.getIdEspectaculo());
             preparedStatement.setInt(2, elemento.getIdUbicacion());
             preparedStatement.setInt(3, elemento.getIdVendedor());
-            preparedStatement.setTimestamp(4, elemento.getFechaVenta());
-            preparedStatement.setDouble(5, elemento.getPrecioFinal());
-            preparedStatement.setString(6, elemento.getNombreCliente());
-            preparedStatement.setString(7, elemento.getDniCliente());
-            preparedStatement.setString(8, elemento.getTipoPromocion()); //parámetro 8
-            preparedStatement.setDouble(9, elemento.getValorAbono()); //NUEVO - parámetro 9
-            int resultado = preparedStatement.executeUpdate();
-            System.out.println("Se insertó correctamente. Filas afectadas: " + resultado);
+            preparedStatement.setDouble(4, elemento.getPrecioFinal());
+            preparedStatement.setString(5, elemento.getNombreCliente());
+            preparedStatement.setString(6, elemento.getDniCliente());
+            preparedStatement.setString(7, elemento.getTipoPromocion());
+            preparedStatement.setDouble(8, elemento.getValorAbono());
+            preparedStatement.setInt(9, elemento.getCantidad());
+
+            preparedStatement.executeUpdate();
         }
         catch (ClassNotFoundException | SQLException e) {
-            System.out.println("Error: " + e.getMessage());
-            throw new DaoException("Fallo la base de datos");
+            throw new DaoException("Error al insertar venta");
         }
         finally {
-            //cerrar recursos para evitar memory leaks
             try {
                 if (preparedStatement != null) preparedStatement.close();
                 if (connection != null) connection.close();
@@ -63,26 +64,32 @@ public class DaoVenta implements IVentaDAO {
     public void modificar(Venta elemento) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+
         try {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
             preparedStatement = connection.prepareStatement(
-                    "UPDATE VENTA SET id_espectaculo=?, id_ubicacion=?, id_vendedor=?, fecha_venta=?, precio_final=?, nombre_cliente=?, dni_cliente=?, tipo_promocion=?, valor_abono=? WHERE id_venta=?"
+                    "UPDATE VENTA SET id_espectaculo=?, id_ubicacion=?, id_vendedor=?, " +
+                            "precio_final=?, nombre_cliente=?, dni_cliente=?, tipo_promocion=?, valor_abono=?, cantidad=? " +
+                            "WHERE id_venta=?"
             );
+
             preparedStatement.setInt(1, elemento.getIdEspectaculo());
             preparedStatement.setInt(2, elemento.getIdUbicacion());
             preparedStatement.setInt(3, elemento.getIdVendedor());
-            preparedStatement.setTimestamp(4, elemento.getFechaVenta());
-            preparedStatement.setDouble(5, elemento.getPrecioFinal());
-            preparedStatement.setString(6, elemento.getNombreCliente());
-            preparedStatement.setString(7, elemento.getDniCliente());
-            preparedStatement.setString(8, elemento.getTipoPromocion()); //parámetro 8
-            preparedStatement.setDouble(9, elemento.getValorAbono()); //NUEVO - parámetro 9
-            preparedStatement.setInt(10, elemento.getIdVenta()); //CAMBIO: Ahora es el parámetro 10 (antes era 9)
-            int resultado = preparedStatement.executeUpdate();
+            preparedStatement.setDouble(4, elemento.getPrecioFinal());
+            preparedStatement.setString(5, elemento.getNombreCliente());
+            preparedStatement.setString(6, elemento.getDniCliente());
+            preparedStatement.setString(7, elemento.getTipoPromocion());
+            preparedStatement.setDouble(8, elemento.getValorAbono());
+            preparedStatement.setInt(9, elemento.getCantidad());
+            preparedStatement.setInt(10, elemento.getIdVenta());
+
+            preparedStatement.executeUpdate();
         }
         catch (ClassNotFoundException | SQLException e) {
-            throw new DaoException("Fallo la base de datos");
+            throw new DaoException("Error al modificar venta");
         }
         finally {
             try {
@@ -144,7 +151,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
                 venta.setTipoPromocion(rs.getString("tipo_promocion"));
-                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
+                venta.setValorAbono(rs.getDouble("valor_abono"));
+                venta.setCantidad(rs.getInt("cantidad"));
             }
         }
         catch (ClassNotFoundException | SQLException e) {
@@ -184,7 +192,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
                 venta.setTipoPromocion(rs.getString("tipo_promocion"));
-                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
+                venta.setValorAbono(rs.getDouble("valor_abono"));
+                venta.setCantidad(rs.getInt("cantidad"));
                 ventas.add(venta);
             }
         }
@@ -203,12 +212,11 @@ public class DaoVenta implements IVentaDAO {
     }
 
 
-   //----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
     // MÉTODOS ESPECÍFICOS DE IVentaDAO
 
     @Override
     public List<Venta> consultarPorVendedor(int idVendedor) throws DaoException {
-        //busca todas las ventas donde id_vendedor = idVendedor
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Venta> ventas = new ArrayList<>();
@@ -217,7 +225,6 @@ public class DaoVenta implements IVentaDAO {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
-            //SQL con WHERE para filtrar por vendedor
             preparedStatement = connection.prepareStatement(
                     "SELECT * FROM VENTA WHERE id_vendedor = ?"
             );
@@ -235,7 +242,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
                 venta.setTipoPromocion(rs.getString("tipo_promocion"));
-                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
+                venta.setValorAbono(rs.getDouble("valor_abono"));
+                venta.setCantidad(rs.getInt("cantidad"));
                 ventas.add(venta);
             }
         }
@@ -256,7 +264,6 @@ public class DaoVenta implements IVentaDAO {
 
     @Override
     public List<Venta> consultarPorEspectaculo(int idEspectaculo) throws DaoException {
-        //busca todas las ventas donde id_espectaculo = idEspectaculo
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Venta> ventas = new ArrayList<>();
@@ -265,7 +272,6 @@ public class DaoVenta implements IVentaDAO {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
-            //SQL con WHERE para filtrar por espectáculo
             preparedStatement = connection.prepareStatement(
                     "SELECT * FROM VENTA WHERE id_espectaculo = ?"
             );
@@ -283,7 +289,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
                 venta.setTipoPromocion(rs.getString("tipo_promocion"));
-                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
+                venta.setValorAbono(rs.getDouble("valor_abono"));
+                venta.setCantidad(rs.getInt("cantidad"));
                 ventas.add(venta);
             }
         }
@@ -302,11 +309,6 @@ public class DaoVenta implements IVentaDAO {
     }
 
 
-    //═════════════════════════════════════════════════════════════════════
-// MÉTODO EXTRA: consultarPorUbicacion()
-//═════════════════════════════════════════════════════════════════════
-// Obtiene todas las ventas de una ubicación específica
-// Útil para validar si se puede eliminar una ubicación
     @Override
     public List<Venta> consultarPorUbicacion(int idUbicacion) throws DaoException {
         Connection connection = null;
@@ -317,7 +319,6 @@ public class DaoVenta implements IVentaDAO {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
-            //SQL con WHERE para filtrar por ubicación
             preparedStatement = connection.prepareStatement(
                     "SELECT * FROM VENTA WHERE id_ubicacion = ?"
             );
@@ -336,6 +337,7 @@ public class DaoVenta implements IVentaDAO {
                 venta.setDniCliente(rs.getString("dni_cliente"));
                 venta.setTipoPromocion(rs.getString("tipo_promocion"));
                 venta.setValorAbono(rs.getDouble("valor_abono"));
+                venta.setCantidad(rs.getInt("cantidad"));
                 ventas.add(venta);
             }
         }
@@ -356,7 +358,6 @@ public class DaoVenta implements IVentaDAO {
 
     @Override
     public List<Venta> consultarPorFecha(Date fechaInicio, Date fechaFin) throws DaoException {
-        //busca todas las ventas donde fecha_venta esté entre fechaInicio y fechaFin
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Venta> ventas = new ArrayList<>();
@@ -365,11 +366,9 @@ public class DaoVenta implements IVentaDAO {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
-            //SQL con BETWEEN para filtrar por rango de fechas
             preparedStatement = connection.prepareStatement(
                     "SELECT * FROM VENTA WHERE fecha_venta BETWEEN ? AND ?"
             );
-            //convertir java.util.Date a java.sql.Timestamp
             preparedStatement.setTimestamp(1, new Timestamp(fechaInicio.getTime()));
             preparedStatement.setTimestamp(2, new Timestamp(fechaFin.getTime()));
 
@@ -385,7 +384,8 @@ public class DaoVenta implements IVentaDAO {
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
                 venta.setTipoPromocion(rs.getString("tipo_promocion"));
-                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
+                venta.setValorAbono(rs.getDouble("valor_abono"));
+                venta.setCantidad(rs.getInt("cantidad"));
                 ventas.add(venta);
             }
         }
@@ -406,9 +406,6 @@ public class DaoVenta implements IVentaDAO {
 
     @Override
     public List<Venta> consultarPorEspectaculoYFecha(int idEspectaculo, Date fechaInicio, Date fechaFin) throws DaoException {
-        //busca ventas que cumplan AMBAS condiciones:
-        //1. id_espectaculo = idEspectaculo
-        //2. fecha_venta entre fechaInicio y fechaFin
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         List<Venta> ventas = new ArrayList<>();
@@ -417,7 +414,6 @@ public class DaoVenta implements IVentaDAO {
             Class.forName(DB_JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
-            //SQL con WHERE para filtrar por espectáculo Y rango de fechas
             preparedStatement = connection.prepareStatement(
                     "SELECT * FROM VENTA WHERE id_espectaculo = ? AND fecha_venta BETWEEN ? AND ?"
             );
@@ -437,12 +433,61 @@ public class DaoVenta implements IVentaDAO {
                 venta.setNombreCliente(rs.getString("nombre_cliente"));
                 venta.setDniCliente(rs.getString("dni_cliente"));
                 venta.setTipoPromocion(rs.getString("tipo_promocion"));
-                venta.setValorAbono(rs.getDouble("valor_abono")); //NUEVO
+                venta.setValorAbono(rs.getDouble("valor_abono"));
+                venta.setCantidad(rs.getInt("cantidad"));
                 ventas.add(venta);
             }
         }
         catch (ClassNotFoundException | SQLException e) {
             throw new DaoException("Error al consultar ventas por espectáculo y fecha");
+        }
+        finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                System.out.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+        return ventas;
+    }
+
+
+    @Override
+    public List<Venta> consultarPorEspectaculoYUbicacion(int idEspectaculo, int idUbicacion) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        List<Venta> ventas = new ArrayList<>();
+
+        try {
+            Class.forName(DB_JDBC_DRIVER);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
+            preparedStatement = connection.prepareStatement(
+                    "SELECT * FROM VENTA WHERE id_espectaculo = ? AND id_ubicacion = ?"
+            );
+            preparedStatement.setInt(1, idEspectaculo);
+            preparedStatement.setInt(2, idUbicacion);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Venta venta = new Venta();
+                venta.setIdVenta(rs.getInt("id_venta"));
+                venta.setIdEspectaculo(rs.getInt("id_espectaculo"));
+                venta.setIdUbicacion(rs.getInt("id_ubicacion"));
+                venta.setIdVendedor(rs.getInt("id_vendedor"));
+                venta.setFechaVenta(rs.getTimestamp("fecha_venta"));
+                venta.setPrecioFinal(rs.getDouble("precio_final"));
+                venta.setNombreCliente(rs.getString("nombre_cliente"));
+                venta.setDniCliente(rs.getString("dni_cliente"));
+                venta.setTipoPromocion(rs.getString("tipo_promocion"));
+                venta.setValorAbono(rs.getDouble("valor_abono"));
+                venta.setCantidad(rs.getInt("cantidad"));
+                ventas.add(venta);
+            }
+        }
+        catch (ClassNotFoundException | SQLException e) {
+            throw new DaoException("Error al consultar ventas por espectáculo y ubicación");
         }
         finally {
             try {

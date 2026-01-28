@@ -6,13 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//MENU GESTIÓN ESPECTÁCULOS
-//Menú principal para gestionar espectáculos (crear, modificar, eliminar, ver reporte)
-//Similar al MenuGestionUbicaciones pero para espectáculos
-
-//RELACIÓN CON OTRAS CLASES:
-//- PanelManager: para navegar entre pantallas
-
 
 public class MenuGestionEspectaculos extends JPanel {
     //ATRIBUTOS -----
@@ -97,7 +90,7 @@ public class MenuGestionEspectaculos extends JPanel {
         btnNuevo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(41); //código 41 = FormularioEspectaculo (crear)
+                panelManager.mostrar(41);
             }
         });
 
@@ -106,7 +99,7 @@ public class MenuGestionEspectaculos extends JPanel {
         btnModificar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(42); //código 42 = PantallaSeleccionEspectaculos
+                panelManager.mostrar(42);
             }
         });
 
@@ -115,7 +108,7 @@ public class MenuGestionEspectaculos extends JPanel {
         btnEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(43); //código 43 = PantallaEliminarEspectaculo
+                panelManager.mostrar(43);
             }
         });
 
@@ -124,7 +117,7 @@ public class MenuGestionEspectaculos extends JPanel {
         btnReporte.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(44); //código 44 = ReporteEspectaculos
+                panelManager.mostrar(44);
             }
         });
 
@@ -133,7 +126,7 @@ public class MenuGestionEspectaculos extends JPanel {
         btnVolver.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                panelManager.mostrar(10); //código 10 = MenuAdmin
+                panelManager.mostrar(10);
             }
         });
     }

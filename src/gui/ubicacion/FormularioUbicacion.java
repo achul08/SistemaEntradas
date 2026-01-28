@@ -12,15 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-//FORMULARIO UBICACION - Hereda de FormularioBase
-//Pantalla para crear y modificar ubicaciones
-
-//RELACIÓN CON OTRAS CLASES:
-//- Hereda de FormularioBase (extends)
-//- ServiceUbicacion: para guardar/modificar en la base de datos
-//- ServiceEstadio: para obtener la lista de estadios
-//- PanelManager: para cambiar entre pantallas
-
 
 public class FormularioUbicacion extends FormularioBase {
     //ATRIBUTOS ESPECÍFICOS DE UBICACION -----
@@ -62,8 +53,6 @@ public class FormularioUbicacion extends FormularioBase {
 
 
     //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS -----
-
-    //METODO 1 - getTitulo() -----
     @Override
     public String getTitulo() {
         if (isModoModificar()) {
@@ -73,8 +62,6 @@ public class FormularioUbicacion extends FormularioBase {
         }
     }
 
-
-    //METODO 2 - crearPanelCampos()
     @Override
     public JPanel crearPanelCampos() {
         JPanel panelCampos = new JPanel();
@@ -96,7 +83,6 @@ public class FormularioUbicacion extends FormularioBase {
             panelCampos.add(espacioVacio);
         }
 
-        //CAMPO 1 - ComboBox de estadios
         jLabelEstadio = new JLabel("Estadio");
         jLabelEstadio.setFont(new Font("Arial", Font.PLAIN, 14));
 
@@ -107,7 +93,6 @@ public class FormularioUbicacion extends FormularioBase {
         panelCampos.add(jLabelEstadio);
         panelCampos.add(comboEstadios);
 
-        //CAMPO 2 - Nombre de la ubicacion
         jLabelNombre = new JLabel("Nombre");
         jLabelNombre.setFont(new Font("Arial", Font.PLAIN, 14));
         jTextFieldNombre = new JTextField(20);
@@ -115,7 +100,6 @@ public class FormularioUbicacion extends FormularioBase {
         panelCampos.add(jLabelNombre);
         panelCampos.add(jTextFieldNombre);
 
-        //CAMPO 3 - Precio
         jLabelPrecio = new JLabel("Precio");
         jLabelPrecio.setFont(new Font("Arial", Font.PLAIN, 14));
         jTextFieldPrecio = new JTextField(20);
@@ -123,7 +107,6 @@ public class FormularioUbicacion extends FormularioBase {
         panelCampos.add(jLabelPrecio);
         panelCampos.add(jTextFieldPrecio);
 
-        //CAMPO 4 - Capacidad
         jLabelCapacidad = new JLabel("Capacidad");
         jLabelCapacidad.setFont(new Font("Arial", Font.PLAIN, 14));
         jTextFieldCapacidad = new JTextField(20);
@@ -136,7 +119,6 @@ public class FormularioUbicacion extends FormularioBase {
     }
 
 
-    //METODO AUXILIAR - cargarEstadiosEnCombo() -----
     //Consulta todos los estadios de la BD y los carga en el ComboBox
     private void cargarEstadiosEnCombo() {
         try {
@@ -170,8 +152,6 @@ public class FormularioUbicacion extends FormularioBase {
         }
     }
 
-
-    //METODO 3 - guardar() -----
     @Override
     public void guardar() {
         //leer datos de los campos
@@ -257,15 +237,12 @@ public class FormularioUbicacion extends FormularioBase {
         }
     }
 
-
-    //METODO 4 - getCodigoMenuPrincipal() -----
     @Override
     public int getCodigoMenuPrincipal() {
         return 30; //código 30 = MenuGestionUbicaciones
     }
 
 
-    //METODO ADICIONAL - cargarDatos() -----
     //Solo se usa en modo modificar
     private void cargarDatos(Ubicacion ubicacion) {
         //cargar los campos de texto

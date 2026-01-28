@@ -7,16 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-//CLASE BASE ABSTRACTA - PantallaEliminarBase
-//Define la estructura común de todas las pantallas de eliminación
-//Las clases hijas implementan lo específico de cada entidad
-
-//RELACIÓN CON OTRAS CLASES:
-//- PantallaEliminarEstadio extends PantallaEliminarBase
-//- PantallaEliminarUbicacion extends PantallaEliminarBase
-//- PantallaEliminarEspectaculo extends PantallaEliminarBase
-
-
 public abstract class PantallaEliminarBase extends JPanel {
     //ATRIBUTOS COMUNES (PRIVATE) -----
     private PanelManager panelManager; //para cambiar de pantalla
@@ -76,11 +66,6 @@ public abstract class PantallaEliminarBase extends JPanel {
         panelCentro.add(comboElementos);
 
         pantallaEliminar.add(panelCentro, BorderLayout.CENTER);
-
-
-        //IMPORTANTE: Ya NO llamamos a cargarElementosEnCombo() acá
-        //Ahora lo vamos a llamar desde inicializar()
-
 
         //ZONA SUR - BOTONES -----
         JPanel panelBotones = new JPanel();
@@ -172,7 +157,6 @@ public abstract class PantallaEliminarBase extends JPanel {
     //METODO ELIMINAR ELEMENTO -----
     //Se ejecuta cuando el usuario hace click en "Eliminar"
     private void eliminarElemento() {
-        //PASO 1: Verificar que haya algo seleccionado
         if (comboElementos.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(
                     this,
@@ -182,15 +166,9 @@ public abstract class PantallaEliminarBase extends JPanel {
             );
             return;
         }
-
-        //PASO 2: Obtener el elemento seleccionado
         int indiceSeleccionado = comboElementos.getSelectedIndex();
         Object elementoSeleccionado = listaElementos.get(indiceSeleccionado);
-
-        //PASO 3: Obtener información del elemento para mostrar en el mensaje
         String infoElemento = obtenerInformacionElemento(elementoSeleccionado); //método abstracto
-
-        //PASO 4: Pedir confirmación
         int confirmacion = JOptionPane.showConfirmDialog(
                 this,
                 "¿Está seguro que desea eliminar el siguiente elemento?\n\n" +
@@ -200,8 +178,6 @@ public abstract class PantallaEliminarBase extends JPanel {
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE
         );
-
-        //PASO 5: Si el usuario confirmó, eliminar
         if (confirmacion == JOptionPane.YES_OPTION) {
             try {
                 //obtener el ID del elemento
@@ -270,49 +246,22 @@ public abstract class PantallaEliminarBase extends JPanel {
 //IMPORTANTE: Este método debe ser llamado desde el constructor de las clases hijas
 //Ejemplo: super(panelManager); inicializar();
     public void inicializar() {
-        //PASO 1: Cargar los elementos en el ComboBox
-        //Llama al método de la clase hija que consulta la BD
-        //Como se llama DESPUÉS del constructor de la hija, los Services ya existen
         cargarElementosEnCombo();
     }
 
 
     //MÉTODOS ABSTRACTOS (PUBLIC) -----
     //Las clases hijas DEBEN implementar estos métodos
-
-    //getTitulo() - Devuelve el título de la pantalla
-    //Ejemplo: "ELIMINAR ESTADIO"
     public abstract String getTitulo();
-
-    //getInstruccion() - Devuelve el texto de instrucción
-    //Ejemplo: "Seleccione el estadio que desea eliminar:"
     public abstract String getInstruccion();
 
-    //consultarTodos() - Consulta todos los elementos de la BD
-    //Ejemplo: serviceEstadio.consultarTodos()
     public abstract List<?> consultarTodos() throws Exception;
-
-    //formatearElementoParaCombo() - Define cómo se muestra cada elemento en el ComboBox
-    //Ejemplo: return estadio.getIdEstadio() + " - " + estadio.getNombre();
     public abstract String formatearElementoParaCombo(Object elemento);
-
-    //getMensajeSinElementos() - Mensaje cuando no hay elementos
-    //Ejemplo: "No hay estadios disponibles para eliminar"
     public abstract String getMensajeSinElementos();
-
-    //obtenerInformacionElemento() - Info del elemento para mostrar en la confirmación
-    //Ejemplo: return "ID: " + estadio.getIdEstadio() + "\nNombre: " + estadio.getNombre();
     public abstract String obtenerInformacionElemento(Object elemento);
-
-    //obtenerIdElemento() - Obtiene el ID del elemento
-    //Ejemplo: return ((Estadio) elemento).getIdEstadio();
     public abstract int obtenerIdElemento(Object elemento);
 
-    //eliminarEnBD() - Llama al Service para eliminar
-    //Ejemplo: serviceEstadio.eliminar(id);
     public abstract void eliminarEnBD(int id) throws Exception;
 
-    //getCodigoMenuPrincipal() - Código del menú al que vuelve
-    //Ejemplo: return 1;
     public abstract int getCodigoMenuPrincipal();
 }

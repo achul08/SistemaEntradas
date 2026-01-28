@@ -6,25 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//MENU ADMINISTRADOR - Panel principal para usuarios con rol ADMINISTRADOR
-//Tiene acceso completo al sistema
-
-//RELACIÓN CON OTRAS CLASES:
-//- PanelManager: para navegar entre pantallas
-/*
-MenuAdmin.java - El menú principal para administradores
-¿Qué hace?
-Es la pantalla que ve el usuario cuando hace click en "ADMINISTRADOR" en el login.
-Tiene 6 botones:
-
-Gestionar Usuarios → crear, modificar, eliminar usuarios
-Gestionar Estadios → tu CRUD de estadios que ya tenés funcionando
-Gestionar Ubicaciones → crear ubicaciones dentro de cada estadio
-Gestionar Espectáculos → crear eventos
-Ver Reportes → reportes de ventas
-Cerrar Sesión → vuelve al login
-
- */
 
 public class MenuAdmin extends JPanel {
     //ATRIBUTOS -----
@@ -55,7 +36,7 @@ public class MenuAdmin extends JPanel {
         menuPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30)); //margen general
 
 
-        //ZONA NORTE - HEADER (cabecera verde con título) ------
+        //ZONA NORTE -----
         JPanel panelHeader = new JPanel();
         panelHeader.setLayout(new BorderLayout());
         panelHeader.setBackground(new Color(76, 175, 80)); //verde

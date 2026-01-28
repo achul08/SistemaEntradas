@@ -8,15 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-//CLASE BASE ABSTRACTA - ReporteBase
-//Define la estructura común de todos los reportes (tablas con JTable)
-//Las clases hijas implementan lo específico de cada entidad
-
-//RELACIÓN CON OTRAS CLASES:
-//- ReporteEstadios extends ReporteBase
-//- ReporteUbicaciones extends ReporteBase
-//- ReporteEspectaculos extends ReporteBase
-
 
 public abstract class ReporteBase extends JPanel {
     //ATRIBUTOS COMUNES (PRIVATE) -----
@@ -40,7 +31,6 @@ public abstract class ReporteBase extends JPanel {
 
 
     //METODO ARMAR TABLA REPORTE -----
-//Construye la estructura visual común
     private void armarTablaReporte() {
         //crear el panel interno
         panelReporte = new JPanel();
@@ -74,15 +64,8 @@ public abstract class ReporteBase extends JPanel {
         scrollPane = new JScrollPane();
         scrollPane.setViewportView(jTable); //asociar el scroll con la tabla
 
-        //IMPORTANTE: Ya NO llamamos a definirColumnas() acá
-        //Ahora lo vamos a llamar desde inicializar()
 
         panelReporte.add(scrollPane, BorderLayout.CENTER);
-
-
-        //IMPORTANTE: Ya NO llamamos a cargarDatos() acá
-        //Ahora lo vamos a llamar desde inicializar()
-
 
         //ZONA SUR - BOTÓN VOLVER -----
         JPanel panelBotones = new JPanel();
@@ -114,9 +97,6 @@ public abstract class ReporteBase extends JPanel {
     }
 
 
-    //METODO DEFINIR COLUMNAS -----
-    //Agrega las columnas al modelo de datos
-    //Este método llama al método abstracto de la clase hija
     private void definirColumnas() {
         String[] columnas = obtenerNombresColumnas(); //llama al método abstracto
 
@@ -196,16 +176,8 @@ public abstract class ReporteBase extends JPanel {
     //METODO INICIALIZAR -----
 //Este método se llama DESPUÉS de que la clase hija termine de construirse
 //De esta forma, los Services ya están inicializados y funcionan correctamente
-//
-//IMPORTANTE: Este método debe ser llamado desde el constructor de las clases hijas
-//Ejemplo: super(panelManager); inicializar();
     public void inicializar() {
-        //PASO 1: Definir las columnas de la tabla
-        //Llama al método abstracto de la clase hija para obtener los nombres de las columnas
         definirColumnas();
-
-        //PASO 2: Cargar los datos en la tabla
-        //Llama al método abstracto de la clase hija para llenar la tabla con datos de la BD
         cargarDatos();
     }
 
@@ -214,27 +186,15 @@ public abstract class ReporteBase extends JPanel {
     //MÉTODOS ABSTRACTOS (PUBLIC) -----
     //Las clases hijas DEBEN implementar estos métodos
 
-    //getTitulo() - Devuelve el título del reporte
-    //Ejemplo: "REPORTE DE ESTADIOS"
     public abstract String getTitulo();
 
-    //obtenerNombresColumnas() - Devuelve los nombres de las columnas
-    //Ejemplo: return new String[]{"ID Estadio", "Nombre", "Dirección", "Capacidad Total"};
     public abstract String[] obtenerNombresColumnas();
 
-    //consultarTodos() - Consulta todos los elementos de la BD
-    //Ejemplo: serviceEstadio.consultarTodos()
     public abstract List<?> consultarTodos() throws Exception;
 
-    //convertirElementoAFila() - Convierte un elemento en un array de Object para la tabla
-    //Ejemplo: return new Object[]{estadio.getIdEstadio(), estadio.getNombre(), ...};
     public abstract Object[] convertirElementoAFila(Object elemento);
 
-    //getMensajeSinElementos() - Mensaje cuando no hay elementos
-    //Ejemplo: "No hay estadios registrados"
     public abstract String getMensajeSinElementos();
 
-    //getCodigoMenuPrincipal() - Código del menú al que vuelve
-    //Ejemplo: return 1;
     public abstract int getCodigoMenuPrincipal();
 }

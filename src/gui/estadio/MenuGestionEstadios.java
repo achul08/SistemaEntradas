@@ -6,9 +6,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-//MENU GESTIÓN ESTADIOS
-//Menú principal para gestionar estadios (crear, modificar, eliminar, ver reporte)
-//Igual que MenuPrincipal pero con nombre más descriptivo
 
 public class MenuGestionEstadios extends JPanel {
     private PanelManager panelManager;

@@ -12,16 +12,6 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-//REPORTE VENTAS VENDEDOR - Muestra las ventas de un vendedor específico
-//Cada vendedor ve SOLO sus propias ventas
-//MODIFICADO: Ahora incluye columna "Abono" (PASO 2D del Bonus Point 2)
-
-//RELACIÓN CON OTRAS CLASES:
-//- ServiceVenta: para obtener las ventas del vendedor
-//- ServiceEspectaculo: para mostrar el nombre del espectáculo
-//- ServiceUbicacion: para mostrar el nombre de la ubicación
-//- PanelManager: para cambiar de pantalla
-
 
 public class ReporteVentasVendedor extends JPanel {
     //ATRIBUTOS - SERVICES -----
@@ -64,9 +54,7 @@ public class ReporteVentasVendedor extends JPanel {
         panelReporte.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
 
-        //═════════════════════════════════════════════════════════════════════
         // ZONA NORTE - TÍTULO
-        //═════════════════════════════════════════════════════════════════════
         JLabel titulo = new JLabel("MIS VENTAS", SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 20));
         titulo.setForeground(new Color(33, 150, 243)); //azul
@@ -75,10 +63,7 @@ public class ReporteVentasVendedor extends JPanel {
         panelReporte.add(titulo, BorderLayout.NORTH);
 
 
-        //═════════════════════════════════════════════════════════════════════
         // ZONA CENTRO - TABLA
-        //═════════════════════════════════════════════════════════════════════
-
         //crear el modelo de datos (vacío por ahora)
         contenido = new DefaultTableModel();
 
@@ -103,9 +88,8 @@ public class ReporteVentasVendedor extends JPanel {
         cargarDatos();
 
 
-        //═════════════════════════════════════════════════════════════════════
+
         // ZONA SUR - BOTÓN VOLVER Y TOTAL
-        //═════════════════════════════════════════════════════════════════════
         JPanel panelSur = new JPanel();
         panelSur.setLayout(new BorderLayout());
 
@@ -154,9 +138,8 @@ public class ReporteVentasVendedor extends JPanel {
         this.add(panelReporte, BorderLayout.CENTER);
 
 
-        //═════════════════════════════════════════════════════════════════════
+
         // COMPORTAMIENTO DEL BOTÓN
-        //═════════════════════════════════════════════════════════════════════
         jButtonVolver.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -166,11 +149,6 @@ public class ReporteVentasVendedor extends JPanel {
     }
 
 
-    //═════════════════════════════════════════════════════════════════════
-    // MÉTODO: definirColumnas() - MODIFICADO (PASO 2D)
-    //═════════════════════════════════════════════════════════════════════
-    //CAMBIO: Agregamos columna "Abono" entre "Precio" y "Promoción"
-    //Define los nombres de las columnas de la tabla
     private void definirColumnas() {
         contenido.addColumn("ID Venta");
         contenido.addColumn("Espectáculo");
@@ -178,21 +156,15 @@ public class ReporteVentasVendedor extends JPanel {
         contenido.addColumn("Cliente");
         contenido.addColumn("DNI");
         contenido.addColumn("Precio");
-        contenido.addColumn("Abono");      //NUEVO - Columna para mostrar el valor del abono
+        contenido.addColumn("Abono");
         contenido.addColumn("Promoción");
         contenido.addColumn("Fecha");
     }
 
 
-    //═════════════════════════════════════════════════════════════════════
-    // MÉTODO: cargarDatos() - MODIFICADO (PASO 2D)
-    //═════════════════════════════════════════════════════════════════════
-    //CAMBIO: Incluimos el valor del abono en cada fila
-    //Consulta las ventas del vendedor y las muestra en la tabla
+
     private void cargarDatos() {
         try {
-            //consultar las ventas del vendedor
-            //Este método usa DaoVenta.consultarPorVendedor() que ya tenés implementado
             List<Venta> ventas = serviceVenta.consultarPorVendedor(idVendedor);
 
             //verificar si tiene ventas
@@ -238,9 +210,6 @@ public class ReporteVentasVendedor extends JPanel {
                     promocion = "Sin promoción";
                 }
 
-                //NUEVO - PASO 2D: Obtener el valor del abono
-                //Si es 0, mostrar "-" (sin abono)
-                //Si es mayor a 0, mostrar "$XXX"
                 String valorAbono;
                 if (venta.getValorAbono() == 0) {
                     valorAbono = "-";
@@ -248,9 +217,6 @@ public class ReporteVentasVendedor extends JPanel {
                     valorAbono = "$" + String.format("%.2f", venta.getValorAbono());
                 }
 
-                //IMPORTANTE: El orden debe coincidir con definirColumnas()
-                //ANTES era: ID, Espectaculo, Ubicacion, Cliente, DNI, Precio, Promocion, Fecha (8 columnas)
-                //AHORA es: ID, Espectaculo, Ubicacion, Cliente, DNI, Precio, Abono, Promocion, Fecha (9 columnas)
                 Object[] fila = new Object[]{
                         venta.getIdVenta(),              // columna 0: ID Venta
                         nombreEspectaculo,               // columna 1: Espectáculo

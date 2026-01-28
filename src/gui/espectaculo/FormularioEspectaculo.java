@@ -15,15 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-//FORMULARIO ESPECTACULO - Hereda de FormularioBase
-//Pantalla para crear y modificar espectáculos
-
-//RELACIÓN CON OTRAS CLASES:
-//- Hereda de FormularioBase (extends)
-//- ServiceEspectaculo: para guardar/modificar en la base de datos
-//- ServiceEstadio: para obtener la lista de estadios
-//- PanelManager: para cambiar entre pantallas
-
 
 public class FormularioEspectaculo extends FormularioBase {
     //ATRIBUTOS ESPECÍFICOS DE ESPECTACULO -----
@@ -69,8 +60,6 @@ public class FormularioEspectaculo extends FormularioBase {
 
 
     //IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS -----
-
-    //METODO 1 - getTitulo() -----
     @Override
     public String getTitulo() {
         if (isModoModificar()) {
@@ -80,8 +69,6 @@ public class FormularioEspectaculo extends FormularioBase {
         }
     }
 
-
-    //METODO 2 - crearPanelCampos()
     @Override
     public JPanel crearPanelCampos() {
         JPanel panelCampos = new JPanel();
@@ -144,7 +131,6 @@ public class FormularioEspectaculo extends FormularioBase {
     }
 
 
-    //METODO AUXILIAR - cargarEstadiosEnCombo() -----
     private void cargarEstadiosEnCombo() {
         try {
             listaEstadios = serviceEstadio.consultarTodos();
@@ -178,7 +164,6 @@ public class FormularioEspectaculo extends FormularioBase {
     }
 
 
-    //METODO 3 - guardar() -----
     @Override
     public void guardar() {
         //leer datos de los campos
@@ -187,29 +172,23 @@ public class FormularioEspectaculo extends FormularioBase {
 
 
         //VALIDACIONES DE GUI -----
-
-        //verificar que el nombre no esté vacío
         if (nombre.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "El nombre es obligatorio", "Campo Vacío", JOptionPane.WARNING_MESSAGE);
             jTextFieldNombre.requestFocus();
             return;
         }
 
-        //verificar que haya un estadio seleccionado
         if (comboEstadios.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un estadio", "Estadio no seleccionado", JOptionPane.WARNING_MESSAGE);
             comboEstadios.requestFocus();
             return;
         }
-
-        //verificar que la fecha no esté vacía
         if (fechaTexto.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "La fecha es obligatoria", "Campo Vacío", JOptionPane.WARNING_MESSAGE);
             jTextFieldFecha.requestFocus();
             return;
         }
 
-        //verificar que la fecha tenga formato válido
         Date fecha;
         try {
             fecha = formatoFecha.parse(fechaTexto);

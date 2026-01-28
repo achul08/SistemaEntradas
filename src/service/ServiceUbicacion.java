@@ -16,8 +16,8 @@ import entidades.Venta;
 public class ServiceUbicacion {
     //ATRIBUTOS -----
     private DaoUbicacion daoUbicacion;
-    private DaoEstadio daoEstadio; //necesitamos el DAO de Estadio para verificar que el estadio exista. Esto es porque una Ubicacion depende de un Estadio (FK)
-    private DaoVenta daoVenta;  // ← NUEVO
+    private DaoEstadio daoEstadio;
+    private DaoVenta daoVenta;
 
     //CONSTRUCTOR -----
     public ServiceUbicacion() {
@@ -27,58 +27,41 @@ public class ServiceUbicacion {
     }
 
 
-    //METODO 1 - INSERTAR (Crear una ubicación nueva) -----
+    //METODOS -------------
+    //INSERTAR (Crear una ubicación nueva) -----
     public void insertar(Ubicacion ubicacion) throws ServiceException {
         try {
-            //VALIDACIÓN 1: Nombre obligatorio
             if(ubicacion.getNombre() == null || ubicacion.getNombre().trim().isEmpty()) {
                 throw new ServiceException("El nombre de la ubicación es obligatorio");
             }
-
-            //VALIDACIÓN 2: Precio válido (mayor a 0)
             if(ubicacion.getPrecio() <= 0) {
                 throw new ServiceException("El precio debe ser mayor a 0");
             }
-
-            //VALIDACIÓN 3: Capacidad válida (mayor a 0)
             if(ubicacion.getCapacidad() <= 0) {
                 throw new ServiceException("La capacidad debe ser mayor a 0");
             }
-
-            //VALIDACIÓN 4: El estadio debe existir
-            //Busco el estadio en la BD para verificar que exista
             Estadio estadio = daoEstadio.consultar(ubicacion.getIdEstadio());
             if(estadio == null || estadio.getIdEstadio() == 0) {
                 throw new ServiceException("El estadio con ID " + ubicacion.getIdEstadio() + " no existe");
             }
 
-            //VALIDACIÓN 5: Nombre único por estadio
-            //No puede haber dos ubicaciones con el mismo nombre en el mismo estadio
-            //Ejemplo: puede haber "Platea" en estadio 1 y "Platea" en estadio 2, pero no dos "Platea" en estadio 1
             List<Ubicacion> ubicaciones = daoUbicacion.consultarTodos();
 
             for(Ubicacion u : ubicaciones) {
-                //comparo nombres ignorando mayus/minus Y verifico que sea del mismo estadio
                 if(u.getNombre().trim().equalsIgnoreCase(ubicacion.getNombre().trim())
                         && u.getIdEstadio() == ubicacion.getIdEstadio()) {
                     throw new ServiceException("Ya existe una ubicación con ese nombre en este estadio");
                 }
             }
 
-            //VALIDACIÓN 6: La suma de capacidades de las ubicaciones no debe superar la capacidad total del estadio
-            //Esto es opcional, pero es una buena validación de negocio
             int capacidadUsada = 0;
             for(Ubicacion u : ubicaciones) {
-                //sumo solo las ubicaciones del mismo estadio
                 if(u.getIdEstadio() == ubicacion.getIdEstadio()) {
                     capacidadUsada += u.getCapacidad();
                 }
             }
-
-            //ahora sumo la capacidad de la ubicación que quiero insertar
             capacidadUsada += ubicacion.getCapacidad();
 
-            //verifico que no supere la capacidad total del estadio
             if(capacidadUsada > estadio.getCapacidadTotal()) {
                 throw new ServiceException("La capacidad de las ubicaciones supera la capacidad total del estadio. " +
                         "Capacidad disponible: " + (estadio.getCapacidadTotal() - (capacidadUsada - ubicacion.getCapacidad())));
@@ -93,41 +76,30 @@ public class ServiceUbicacion {
     }
 
 
-    //METODO 2 - MODIFICAR (Actualizar una ubicación existente) -----
+
+    //MODIFICAR (Actualizar una ubicación existente)
     public void modificar(Ubicacion ubicacion) throws ServiceException {
         try {
-            //VALIDACIÓN 0: Verificar que la ubicación EXISTA
             Ubicacion existente = daoUbicacion.consultar(ubicacion.getIdUbicacion());
             if(existente == null || existente.getIdUbicacion() == 0) {
                 throw new ServiceException("La ubicación con ID " + ubicacion.getIdUbicacion() + " no existe");
             }
-
-            //VALIDACIÓN 1: Nombre obligatorio
             if(ubicacion.getNombre() == null || ubicacion.getNombre().trim().isEmpty()) {
                 throw new ServiceException("El nombre de la ubicación es obligatorio");
             }
-
-            //VALIDACIÓN 2: Precio válido
             if(ubicacion.getPrecio() <= 0) {
                 throw new ServiceException("El precio debe ser mayor a 0");
             }
-
-            //VALIDACIÓN 3: Capacidad válida
             if(ubicacion.getCapacidad() <= 0) {
                 throw new ServiceException("La capacidad debe ser mayor a 0");
             }
-
-            //VALIDACIÓN 4: El estadio debe existir
             Estadio estadio = daoEstadio.consultar(ubicacion.getIdEstadio());
             if(estadio == null || estadio.getIdEstadio() == 0) {
                 throw new ServiceException("El estadio con ID " + ubicacion.getIdEstadio() + " no existe");
             }
-
-            //VALIDACIÓN 5: Nombre único por estadio (pero puede mantener su propio nombre)
             List<Ubicacion> ubicaciones = daoUbicacion.consultarTodos();
 
             for(Ubicacion u : ubicaciones) {
-                //si el nombre existe en otra ubicación del mismo estadio (que no sea esta misma)
                 if(u.getNombre().trim().equalsIgnoreCase(ubicacion.getNombre().trim())
                         && u.getIdEstadio() == ubicacion.getIdEstadio()
                         && u.getIdUbicacion() != ubicacion.getIdUbicacion()) {
@@ -135,16 +107,12 @@ public class ServiceUbicacion {
                 }
             }
 
-            //VALIDACIÓN 6: Verificar capacidad total del estadio
             int capacidadUsada = 0;
             for(Ubicacion u : ubicaciones) {
-                //sumo las ubicaciones del mismo estadio, EXCEPTO esta que estoy modificando
                 if(u.getIdEstadio() == ubicacion.getIdEstadio() && u.getIdUbicacion() != ubicacion.getIdUbicacion()) {
                     capacidadUsada += u.getCapacidad();
                 }
             }
-
-            //ahora sumo la nueva capacidad de la ubicación que estoy modificando
             capacidadUsada += ubicacion.getCapacidad();
 
             if(capacidadUsada > estadio.getCapacidadTotal()) {
@@ -161,17 +129,14 @@ public class ServiceUbicacion {
     }
 
 
-    //METODO 3 - ELIMINAR (Borrar una ubicación) -----
+
+    //ELIMINAR (Borrar una ubicación)
     public void eliminar(int id) throws ServiceException {
         try {
-            //VALIDACIÓN: Verificar que la ubicación EXISTA
             Ubicacion ubicacion = daoUbicacion.consultar(id);
             if(ubicacion == null || ubicacion.getIdUbicacion() == 0) {
                 throw new ServiceException("La ubicación con ID " + id + " no existe");
             }
-
-            //VALIDACIÓN EXTRA: Verificar que no haya ventas asociadas a esta ubicación
-//Si ya se vendieron entradas para esta ubicación, NO se debe poder eliminar
             List<Venta> ventasDeLaUbicacion = daoVenta.consultarPorUbicacion(id);
 
             if (!ventasDeLaUbicacion.isEmpty()) {
@@ -183,7 +148,6 @@ public class ServiceUbicacion {
                 );
             }
 
-            //si pasó las validaciones, eliminar
             daoUbicacion.eliminar(id);
         }
         catch (DaoException e) {
@@ -192,7 +156,7 @@ public class ServiceUbicacion {
     }
 
 
-    //METODO 4 - CONSULTAR (Buscar una ubicación por ID) -----
+    //CONSULTAR (Buscar una ubicación por ID)
     public Ubicacion consultar(int id) throws ServiceException {
         try {
             return daoUbicacion.consultar(id);
@@ -203,7 +167,7 @@ public class ServiceUbicacion {
     }
 
 
-    //METODO 5 - CONSULTAR TODOS (Obtener todas las ubicaciones) -----
+    //CONSULTAR TODOS (Obtener todas las ubicaciones)
     public List<Ubicacion> consultarTodos() throws ServiceException {
         try {
             return daoUbicacion.consultarTodos();
@@ -214,7 +178,7 @@ public class ServiceUbicacion {
     }
 
 
-    //METODO EXTRA - CONSULTAR POR ESTADIO (Obtener las ubicaciones de un estadio específico) -----
+    //CONSULTAR POR ESTADIO (Obtener las ubicaciones de un estadio específico)
     //Este método es útil para:
     //- Mostrar las ubicaciones de un estadio en el formulario de venta
     //- Listar las ubicaciones al gestionar un estadio

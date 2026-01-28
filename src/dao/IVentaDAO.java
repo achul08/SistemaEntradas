@@ -6,16 +6,6 @@ import java.util.List;
 
 public interface IVentaDAO extends IDAO<Venta> {
 
-    //MÉTODOS BÁSICOS (heredados de IDAO):
-    //- insertar(Venta elemento)
-    //- modificar(Venta elemento)
-    //- eliminar(int id)
-    //- consultar(int id)
-    //- consultarTodos()
-
-
-    //MÉTODOS ESPECÍFICOS DE VENTA -----
-
     //consultarPorVendedor() - Obtiene todas las ventas realizadas por un vendedor específico
     public List<Venta> consultarPorVendedor(int idVendedor) throws DaoException;
 
@@ -35,4 +25,11 @@ public interface IVentaDAO extends IDAO<Venta> {
 
     //consultarPorEspectaculoYFecha() - Obtiene las ventas de un espectáculo en un rango de fechas
     public List<Venta> consultarPorEspectaculoYFecha(int idEspectaculo, Date fechaInicio, Date fechaFin) throws DaoException;
+
+    //consultar ventas específicas
+    public List<Venta> consultarPorEspectaculoYUbicacion(int idEspectaculo, int idUbicacion) throws DaoException;
+
+
+
 }
+

@@ -23,26 +23,14 @@ public class DaoUbicacion implements IDAO<Ubicacion>{
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             System.out.println("Se conectó a la base de datos");
 
-            //MODIFICADO: Ahora incluye foto_url en el INSERT
-            //Antes era: INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad) VALUES (?,?,?,?)
-            //Ahora es: INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad, foto_url) VALUES (?,?,?,?,?)
             preparedStatement = connection.prepareStatement(
                     "INSERT INTO UBICACION (id_estadio, nombre, precio, capacidad) VALUES (?,?,?,?)"
             );
-
-            //PASO 1: Setear el ID del estadio (parámetro 1)
             preparedStatement.setInt(1, elemento.getIdEstadio());
-
-            //PASO 2: Setear el nombre (parámetro 2)
             preparedStatement.setString(2, elemento.getNombre());
-
-            //PASO 3: Setear el precio (parámetro 3)
             preparedStatement.setDouble(3, elemento.getPrecio());
-
-            //PASO 4: Setear la capacidad (parámetro 4)
             preparedStatement.setInt(4, elemento.getCapacidad());
 
-            //Ejecutar el INSERT
             int resultado = preparedStatement.executeUpdate();
             System.out.println("Se insertó correctamente. Filas afectadas: " + resultado);
         }
